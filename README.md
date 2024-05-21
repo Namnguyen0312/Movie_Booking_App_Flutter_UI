@@ -1,4 +1,4 @@
-# movie_ticker_app_flutter
+# movie_ticket_app_flutter
 
 A new Flutter project.
 
