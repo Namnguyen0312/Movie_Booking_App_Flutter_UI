@@ -14,18 +14,16 @@ class ListStarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (movie.star != null && movie.star! >= 4)
+        if (movie.rating >= 4)
           ...List.generate(4, (index) => const StarWidget()),
-        if (movie.star != null && movie.star! > 4 && movie.star! < 5)
-          const StarHalfWidget(),
-        if (movie.star != null && movie.star! == 5)
+        if (movie.rating > 4 && movie.rating < 5) const StarHalfWidget(),
+        if (movie.rating == 5)
           ...List.generate(5, (index) => const StarWidget()),
-        if (movie.star != null && movie.star! < 4)
+        if (movie.rating < 4)
           ...List.generate(3, (index) => const StarWidget()),
-        if (movie.star != null && movie.star! > 3 && movie.star! < 4)
-          const StarHalfWidget(),
+        if (movie.rating > 3 && movie.rating < 4) const StarHalfWidget(),
         Text(
-          ' (${movie.star})',
+          ' (${movie.rating})',
           style: AppStyles.h5,
         ),
       ],

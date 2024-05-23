@@ -6,12 +6,12 @@ import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/about_text_
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/about_title_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/background_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/caster_bar.dart';
+import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/genres_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/trailer_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/selectCinema/select_cinema_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
-import 'package:movie_ticker_app_flutter/utils/helper.dart';
 
 class MovieDetailPage extends StatefulWidget {
   const MovieDetailPage({super.key});
@@ -40,7 +40,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    Movie? movie = ModalRoute.of(context)!.settings.arguments as Movie?;
+    Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -76,7 +76,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                       SizedBox(
                         width: size.width / 2.5,
                         child: Image.asset(
-                          AssetHelper.imgRalph,
+                          movie.image,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -86,12 +86,12 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                             Container(
                               margin: const EdgeInsets.only(
                                 left: kDefaultPadding,
-                                bottom: kDefaultPadding,
+                                bottom: kMinPadding,
                               ),
                               width: size.width,
                               child: Text(
-                                '${movie!.name}',
-                                style: AppStyles.h3,
+                                movie.title,
+                                style: AppStyles.h2,
                               ),
                             ),
                             Container(
@@ -103,12 +103,9 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                               child: ListStarWidget(movie: movie),
                             ),
                             Container(
-                              margin: const EdgeInsets.only(
-                                left: kDefaultPadding,
-                                bottom: kDefaultPadding,
-                              ),
+                              padding: const EdgeInsets.only(bottom: 20),
                               width: size.width,
-                              child: const Text('Action & adventure, Comedy'),
+                              child: GenresBar(movie: movie),
                             ),
                             Container(
                               margin: const EdgeInsets.only(
@@ -116,7 +113,10 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                                 bottom: kDefaultPadding,
                               ),
                               width: size.width,
-                              child: const Text('1h 41min'),
+                              child: Text(
+                                'Thời lượng: ${movie.duration} phút',
+                                style: AppStyles.h4,
+                              ),
                             ),
                             GestureDetector(
                               onTap: () {
@@ -126,7 +126,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                               },
                               child: Container(
                                 height: size.height / 15,
-                                width: size.height / 5,
+                                width: size.height / 4.6,
                                 decoration: const BoxDecoration(
                                   gradient: LinearGradient(
                                     colors: [
@@ -158,10 +158,15 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const AboutTitle(title: 'Mô Tả'),
-                      const AboutText(text: textSynopsis),
-                      const AboutText(text: textSynopsis2),
+                      AboutText(text: movie.description),
+                      const AboutTitle(title: 'Đạo diễn'),
+                      ListBar(
+                        list: movie.director,
+                      ),
                       const AboutTitle(title: 'Diễn Viên'),
-                      const CasterBar(),
+                      ListBar(
+                        list: movie.casters,
+                      ),
                       const AboutTitle(title: 'Trailer and song'),
                       TrailerBar(movie: movie, size: size),
                     ],

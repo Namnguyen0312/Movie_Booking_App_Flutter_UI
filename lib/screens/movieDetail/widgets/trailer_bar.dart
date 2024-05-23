@@ -25,56 +25,56 @@ class TrailerBar extends StatelessWidget {
           right: kDefaultPadding,
         ),
         child: Row(
-          children: movie!.trailers!
-              .map((e) => Builder(
-            builder: (context) {
-              return Padding(
-                padding: const EdgeInsets.only(left: kDefaultPadding),
-                child: Stack(
-                  children: [
-                    Container(
-                      height: size.height / 4.5,
-                      width: size.width / 1.5,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage(e),
-                            fit: BoxFit.cover),
-                        borderRadius:
-                        kDefaultBorderRadius,
-                      ),
-                    ),
-                    Container(
-                      height: size.height / 4.5,
-                      width: size.width / 1.5,
-                      decoration: const BoxDecoration(
-                        color: Gradients.darkGreyMid,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // Play Movie Trailer
-                      },
-                      child: SizedBox(
-                        height: size.height / 4.5,
-                        width: size.width / 1.5,
-                        child: Container(
-                          margin: EdgeInsets.all(size.width / 7),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.blueMain,
-                          ),
-                          child: const ImageIcon(
-                            AssetImage(AssetHelper.icoPlay),
-                          ),
+            children: movie!.trailers
+                .map(
+                  (e) => Builder(
+                    builder: (context) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: kDefaultPadding),
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: size.height / 4.5,
+                              width: size.width / 1.5,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(e), fit: BoxFit.cover),
+                                borderRadius: kDefaultBorderRadius,
+                              ),
+                            ),
+                            Container(
+                              height: size.height / 4.5,
+                              width: size.width / 1.5,
+                              decoration: const BoxDecoration(
+                                color: Gradients.darkGreyMid,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // Play Movie Trailer
+                              },
+                              child: SizedBox(
+                                height: size.height / 4.5,
+                                width: size.width / 1.5,
+                                child: Container(
+                                  margin: EdgeInsets.all(size.width / 7),
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.blueMain,
+                                  ),
+                                  child: const ImageIcon(
+                                    AssetImage(AssetHelper.icoPlay),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            },
-          ),
-          ).toList()),
+                      );
+                    },
+                  ),
+                )
+                .toList()),
       ),
     );
   }

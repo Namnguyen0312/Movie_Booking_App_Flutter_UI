@@ -1,10 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_ticker_app_flutter/data/temp_db.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 
 import '../../../common/widgets/stateless/list_star_widget.dart';
-import '../../../models/movie.dart';
 import '../../../utils/constants.dart';
 import '../../movieDetail/movie_detail_page.dart';
 
@@ -34,7 +34,7 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
           enlargeCenterPage: true,
           viewportFraction: 0.6,
         ),
-        items: movies.map((movie) {
+        items: TempDB.movies.map((movie) {
           return Builder(
             builder: (BuildContext context) {
               return GestureDetector(
@@ -53,7 +53,7 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                         borderRadius: kBigBorderRadius,
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage(movie.background.toString()),
+                          image: AssetImage(movie.image.toString()),
                         ),
                       ),
                     ),
@@ -81,7 +81,7 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                               bottom: kTopPadding,
                             ),
                             child: Text(
-                              movie.name.toString(),
+                              movie.title.toString(),
                               style: AppStyles.h1,
                             ),
                           ),

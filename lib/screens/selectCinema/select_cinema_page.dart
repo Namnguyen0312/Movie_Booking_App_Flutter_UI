@@ -37,7 +37,7 @@ class _SelectCinemaPageState extends State<SelectCinemaPage> {
       body: SafeArea(
         child: Column(
           children: [
-            CustomHeader(size: size, content: movie.name.toString()),
+            CustomHeader(size: size, content: movie.title.toString()),
             SelectCountry(
               size: size,
               items: items,

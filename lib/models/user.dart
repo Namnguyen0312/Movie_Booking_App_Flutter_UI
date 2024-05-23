@@ -1,20 +1,23 @@
-import 'package:flutter/material.dart';
+import 'package:movie_ticker_app_flutter/models/membership.dart';
 
 class User {
-  String id;
-  String name;
-  Image image;
-  int sdt;
+  final int id;
+  final String email;
+  final String role;
+  final String name;
+  final String password;
+  final String phone;
+  final int totalSpending;
+  final Membership membership;
 
-  User(
-    this.id,
-    this.name,
-    this.image,
-    this.sdt,
-  );
-
-  @override
-  String toString() {
-    return 'User{id: $id, name: $name, image: $image, sdt: $sdt}';
-  }
+  User({
+    required this.id,
+    required this.email,
+    required this.role,
+    required this.name,
+    required this.password,
+    required this.phone,
+    required this.totalSpending,
+    required this.membership,
+  });
 }

@@ -37,7 +37,7 @@ class ComingSoon extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                           horizontal: kTopPadding,
                         ),
-                        child: Image.asset(e.background.toString()),
+                        child: Image.asset(e.image.toString()),
                       ),
                     ),
                   );

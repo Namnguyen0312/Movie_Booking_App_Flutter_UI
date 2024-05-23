@@ -31,7 +31,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ArrowBackWhite(topPadding: kMinPadding),
-            MovieTitle(nameMovie: movie.name.toString()),
+            MovieTitle(nameMovie: movie.title.toString()),
             const Padding(
               padding: EdgeInsets.only(top: kDefaultIconSize),
               child: Row(

@@ -55,7 +55,7 @@ class _CheckOutState extends State<CheckOut> {
                             margin: const EdgeInsets.symmetric(
                                 vertical: kMinPadding),
                             child: Text(
-                              movie.name.toString(),
+                              movie.title.toString(),
                               style: AppStyles.h3,
                             ),
                           ),

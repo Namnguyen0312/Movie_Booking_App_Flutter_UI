@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:movie_ticker_app_flutter/data/temp_db.dart';
+import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 
-import '../../../models/movie.dart';
 import '../../../themes/app_colors.dart';
-import '../../../themes/app_styles.dart';
 import '../../../utils/constants.dart';
 
 class CategoryBar extends StatefulWidget {
@@ -23,12 +23,13 @@ class _CategoryBarState extends State<CategoryBar> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: kTopPadding, right: kDefaultPadding, bottom: kMediumPadding),
+      padding: const EdgeInsets.only(
+          left: kTopPadding, right: kDefaultPadding, bottom: kMediumPadding),
       child: SizedBox(
         height: widget.size.height / 15,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: movies.length,
+          itemCount: TempDB.tableGenres.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
@@ -55,7 +56,7 @@ class _CategoryBarState extends State<CategoryBar> {
                         borderRadius: kDefaultBorderRadius,
                       ),
                 child: Text(
-                  movies[index].getType(),
+                  TempDB.tableGenres[index].name,
                   style: AppStyles.h4,
                 ),
               ),
@@ -66,5 +67,3 @@ class _CategoryBarState extends State<CategoryBar> {
     );
   }
 }
-
-
