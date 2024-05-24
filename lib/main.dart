@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/home/home_page.dart';
+import 'package:movie_ticker_app_flutter/provider/cinema_provider.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
+import 'package:provider/provider.dart';
 
 import 'routes/routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CinemaProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

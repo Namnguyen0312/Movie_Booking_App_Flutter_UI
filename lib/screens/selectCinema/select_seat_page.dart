@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/arrow_white_back.dart';
+import 'package:movie_ticker_app_flutter/models/screening.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/check_out.dart';
 import 'package:movie_ticker_app_flutter/screens/selectCinema/widget/built_seat_status_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/selectCinema/widget/movie_title.dart';
@@ -12,7 +13,8 @@ import 'package:movie_ticker_app_flutter/utils/helper.dart';
 import '../../models/movie.dart';
 
 class SelectSeatPage extends StatefulWidget {
-  const SelectSeatPage({super.key});
+  const SelectSeatPage(
+      {super.key, required List<Screening> selectedScreenings});
 
   static const String routeName = '/select_seat_page';
 

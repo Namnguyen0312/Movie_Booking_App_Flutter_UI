@@ -27,7 +27,11 @@ class _CheckOutState extends State<CheckOut> {
       body: SafeArea(
         child: Column(
           children: [
-            CustomHeader(size: size, content: 'Kiểm Vé'),
+            CustomHeader(
+              size: size,
+              content: 'Kiểm Vé',
+              title: '',
+            ),
             Container(
               decoration: const BoxDecoration(
                 border: Border(

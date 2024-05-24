@@ -8,6 +8,7 @@ class CustomHeader extends StatelessWidget {
     super.key,
     required this.size,
     required this.content,
+    required String title,
   });
 
   final Size size;

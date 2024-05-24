@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/data/temp_db.dart';
+import 'package:movie_ticker_app_flutter/datasource/temp_db.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 
 class CustomSearchDelegate extends SearchDelegate {

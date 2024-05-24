@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/check_out.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
-import 'package:movie_ticker_app_flutter/screens/home/home_page.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_page.dart';
 import 'package:movie_ticker_app_flutter/screens/profile/profile_page.dart';
 import 'package:movie_ticker_app_flutter/screens/register/register_page.dart';
@@ -15,7 +15,9 @@ final Map<String, WidgetBuilder> routes = {
   HomeScreen.routeName: (context) => const HomeScreen(),
   MovieDetailPage.routeName: (context) => const MovieDetailPage(),
   SelectCinemaPage.routeName: (context) => const SelectCinemaPage(),
-  SelectSeatPage.routeName: (context) => const SelectSeatPage(),
+  SelectSeatPage.routeName: (context) => const SelectSeatPage(
+        selectedScreenings: [],
+      ),
   CheckOut.routeName: (context) => const CheckOut(),
   MyTicket.routeName: (context) => const MyTicket(),
   LoginPage.routeName: (context) => const LoginPage(),

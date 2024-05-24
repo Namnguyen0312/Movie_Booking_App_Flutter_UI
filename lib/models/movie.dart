@@ -1,4 +1,5 @@
 import 'package:movie_ticker_app_flutter/models/genre.dart';
+import 'package:movie_ticker_app_flutter/models/screening.dart';
 
 class Movie {
   final int id;
@@ -13,6 +14,7 @@ class Movie {
   final List<String> director;
   final List<String> casters;
   final List<String> trailers;
+  final List<Screening> screenings;
 
   Movie(
     this.id,
@@ -27,6 +29,7 @@ class Movie {
     this.director,
     this.casters,
     this.trailers,
+    this.screenings,
   );
 }
 

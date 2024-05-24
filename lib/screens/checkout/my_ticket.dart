@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/home/home_page.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/utils/helper.dart';
 
 import '../../themes/app_colors.dart';

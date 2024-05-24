@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:movie_ticker_app_flutter/models/movie.dart';
+import 'package:movie_ticker_app_flutter/provider/cinema_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-
-import '../../../models/movie.dart';
-import '../../../themes/app_styles.dart';
-import '../../../utils/constants.dart';
+import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
+import 'package:movie_ticker_app_flutter/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class ListChooseDay extends StatefulWidget {
-  const ListChooseDay({
-    super.key,
-    required this.size,
-  });
+  final Movie movie;
+  const ListChooseDay({super.key, required this.size, required this.movie});
 
   final Size size;
 
@@ -19,30 +18,45 @@ class ListChooseDay extends StatefulWidget {
 
 class _ListChooseDayState extends State<ListChooseDay> {
   late List<bool> _isSelected;
+  late List<DateTime> days;
 
   @override
   void initState() {
     super.initState();
+    days = _generateDays();
     _isSelected = List<bool>.generate(days.length, (index) => false);
+  }
+
+  List<DateTime> _generateDays() {
+    List<DateTime> days = [];
+    DateTime today = DateTime.now();
+    for (int i = 0; i < 7; i++) {
+      days.add(today.add(Duration(days: i)));
+    }
+    return days;
   }
 
   @override
   Widget build(BuildContext context) {
+    final cinemaProvider = Provider.of<CinemaProvider>(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
         children: List.generate(
           days.length,
-          (index) => _buildDayItem(days[index], index),
+          (index) =>
+              _buildDayItem(days[index], index, cinemaProvider, widget.movie),
         ),
       ),
     );
   }
 
-  Widget _buildDayItem(String day, int index) {
+  Widget _buildDayItem(
+      DateTime day, int index, CinemaProvider cinemaProvider, Movie movie) {
     return GestureDetector(
       onTap: () {
         _updateSelected(index);
+        cinemaProvider.selectDate(day, movie);
       },
       child: Container(
         height: widget.size.height / 8,
@@ -58,7 +72,7 @@ class _ListChooseDayState extends State<ListChooseDay> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              day,
+              _formatDay(day),
               style: AppStyles.h4.copyWith(
                 color: AppColors.white,
               ),
@@ -66,7 +80,7 @@ class _ListChooseDayState extends State<ListChooseDay> {
             Padding(
               padding: const EdgeInsets.only(top: kMinPadding),
               child: Text(
-                (20 + index).toString(),
+                day.day.toString(),
                 style: AppStyles.h5.copyWith(
                   color: AppColors.white,
                 ),
@@ -76,6 +90,11 @@ class _ListChooseDayState extends State<ListChooseDay> {
         ),
       ),
     );
+  }
+
+  String _formatDay(DateTime date) {
+    List<String> weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    return weekdays[date.weekday % 7];
   }
 
   void _updateSelected(int selectedIndex) {

@@ -1,28 +1,24 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:movie_ticker_app_flutter/datasource/temp_db.dart';
+import 'package:movie_ticker_app_flutter/models/movie.dart';
+import 'package:movie_ticker_app_flutter/provider/cinema_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
+import 'package:provider/provider.dart';
 
-class SelectCountry extends StatefulWidget {
-  const SelectCountry({
-    super.key,
-    required this.size,
-    required this.items,
-  });
-
+class SelectCountry extends StatelessWidget {
   final Size size;
-  final List<String> items;
+  final Movie movie;
 
-  @override
-  State<SelectCountry> createState() => _SelectCountryState();
-}
-
-class _SelectCountryState extends State<SelectCountry> {
-  String? selectedValue;
+  const SelectCountry({super.key, required this.size, required this.movie});
 
   @override
   Widget build(BuildContext context) {
+    final cinemaProvider = Provider.of<CinemaProvider>(context);
+    final items = TempDB.getCity();
+
     return DropdownButtonHideUnderline(
       child: DropdownButton2<String>(
         isExpanded: true,
@@ -47,7 +43,7 @@ class _SelectCountryState extends State<SelectCountry> {
             ),
           ],
         ),
-        items: widget.items
+        items: items
             .map((String item) => DropdownMenuItem<String>(
                   value: item,
                   child: Text(
@@ -61,15 +57,13 @@ class _SelectCountryState extends State<SelectCountry> {
                   ),
                 ))
             .toList(),
-        value: selectedValue,
+        value: cinemaProvider.selectedCity,
         onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
+          cinemaProvider.selectCity(value!, movie);
         },
         buttonStyleData: ButtonStyleData(
-          height: widget.size.height / 18,
-          width: widget.size.width / 2,
+          height: size.height / 18,
+          width: size.width / 2,
           padding:
               const EdgeInsets.only(left: kItemPadding, right: kItemPadding),
           decoration: BoxDecoration(
@@ -91,12 +85,11 @@ class _SelectCountryState extends State<SelectCountry> {
           iconDisabledColor: Colors.white,
         ),
         dropdownStyleData: DropdownStyleData(
-          maxHeight: widget.size.height / 5,
+          maxHeight: size.height / 5,
           decoration: const BoxDecoration(
             borderRadius: kDefaultBorderRadius,
             color: AppColors.darkBackground,
           ),
-          // offset: const Offset(-20, 0),
           scrollbarTheme: ScrollbarThemeData(
             radius: const Radius.circular(40),
             thickness: MaterialStateProperty.all(6),
