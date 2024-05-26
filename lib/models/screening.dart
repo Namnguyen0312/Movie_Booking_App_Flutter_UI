@@ -4,11 +4,11 @@ class Screening {
   final int id;
   final String start;
   final String date;
-  final List<Auditorium> auditoriums;
+  final Auditorium auditorium;
 
   Screening(
       {required this.id,
       required this.start,
       required this.date,
-      required this.auditoriums});
+      required this.auditorium});
 }

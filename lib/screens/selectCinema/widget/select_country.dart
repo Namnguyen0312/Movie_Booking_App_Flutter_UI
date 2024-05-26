@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:movie_ticker_app_flutter/datasource/temp_db.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
-import 'package:movie_ticker_app_flutter/provider/cinema_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +16,7 @@ class SelectCountry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cinemaProvider = Provider.of<CinemaProvider>(context);
+    final cinemaProvider = Provider.of<AppProvider>(context);
     final items = TempDB.getCity();
 
     return DropdownButtonHideUnderline(

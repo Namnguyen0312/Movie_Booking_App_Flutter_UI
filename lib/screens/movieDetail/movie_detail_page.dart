@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/arrow_white_back.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/about_text_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/about_title_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/background_widget.dart';
@@ -12,6 +13,7 @@ import 'package:movie_ticker_app_flutter/screens/selectCinema/select_cinema_page
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class MovieDetailPage extends StatefulWidget {
   const MovieDetailPage({super.key});
@@ -40,6 +42,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    final cinemaProvider = Provider.of<AppProvider>(context);
     Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
     Size size = MediaQuery.of(context).size;
 
@@ -120,6 +123,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                             ),
                             GestureDetector(
                               onTap: () {
+                                cinemaProvider.reset();
                                 Navigator.of(context).pushNamed(
                                     SelectCinemaPage.routeName,
                                     arguments: movie);

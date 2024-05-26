@@ -15,9 +15,7 @@ final Map<String, WidgetBuilder> routes = {
   HomeScreen.routeName: (context) => const HomeScreen(),
   MovieDetailPage.routeName: (context) => const MovieDetailPage(),
   SelectCinemaPage.routeName: (context) => const SelectCinemaPage(),
-  SelectSeatPage.routeName: (context) => const SelectSeatPage(
-        selectedScreenings: [],
-      ),
+  SelectSeatPage.routeName: (context) => const SelectSeatPage(),
   CheckOut.routeName: (context) => const CheckOut(),
   MyTicket.routeName: (context) => const MyTicket(),
   LoginPage.routeName: (context) => const LoginPage(),

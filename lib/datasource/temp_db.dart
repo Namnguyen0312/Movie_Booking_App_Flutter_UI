@@ -4,6 +4,7 @@ import 'package:movie_ticker_app_flutter/models/cinema.dart';
 import 'package:movie_ticker_app_flutter/models/genre.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/models/screening.dart';
+import 'package:movie_ticker_app_flutter/models/seat.dart';
 import 'package:movie_ticker_app_flutter/utils/helper.dart';
 
 class TempDB {
@@ -66,7 +67,12 @@ class TempDB {
         ['Director 4'],
         ['Nguyễn Lê Văn', 'Actor 8'],
         [AssetHelper.imgTrailer1, AssetHelper.imgTrailer2],
-        [tableScreening[0], tableScreening[5]]),
+        [
+          tableScreening[0],
+          tableScreening[5],
+          tableScreening[3],
+          tableScreening[1]
+        ]),
     Movie(
         5,
         'Scoob',
@@ -80,7 +86,12 @@ class TempDB {
         ['Director 5'],
         ['Actor 9', 'Actor 10'],
         [AssetHelper.imgMovieBanner, AssetHelper.imgMoviePoster],
-        [tableScreening[5], tableScreening[2]]),
+        [
+          tableScreening[5],
+          tableScreening[2],
+          tableScreening[1],
+          tableScreening[0]
+        ]),
     Movie(
         6,
         'Lab Krixi',
@@ -94,7 +105,15 @@ class TempDB {
         ['Director 6'],
         ['Nguyễn Lê Văn', 'Actor 2'],
         [AssetHelper.imgMoviePoster2, AssetHelper.imgMoviePoster3],
-        [tableScreening[1], tableScreening[5]]),
+        [
+          tableScreening[1],
+          tableScreening[2],
+          tableScreening[3],
+          tableScreening[0],
+          tableScreening[8],
+          tableScreening[9],
+          tableScreening[10],
+        ]),
   ];
 
   static List<String> getMovieNames() {
@@ -126,40 +145,70 @@ class TempDB {
 
   static List<Screening> tableScreening = [
     Screening(
-      auditoriums: [tableAuditorium[0], tableAuditorium[2]],
-      date: '2024-05-25',
+      auditorium: tableAuditorium[0],
+      date: '2024-05-30',
       id: 1,
       start: '8:30',
     ),
     Screening(
-      auditoriums: [tableAuditorium[3], tableAuditorium[5]],
-      date: '2024-05-25',
+      auditorium: tableAuditorium[1],
+      date: '2024-05-30',
       id: 2,
       start: '9:30',
     ),
     Screening(
-      auditoriums: [tableAuditorium[3], tableAuditorium[4]],
-      date: '2024-05-26',
+      auditorium: tableAuditorium[2],
+      date: '2024-05-30',
       id: 3,
+      start: '10:30',
+    ),
+    Screening(
+      auditorium: tableAuditorium[3],
+      date: '2024-05-30',
+      id: 4,
+      start: '11:30',
+    ),
+    Screening(
+      auditorium: tableAuditorium[4],
+      date: '2024-05-26',
+      id: 5,
       start: '17:30',
     ),
     Screening(
-      auditoriums: [tableAuditorium[1], tableAuditorium[0]],
+      auditorium: tableAuditorium[1],
       date: '2024-05-25',
-      id: 4,
+      id: 6,
       start: '20:30',
     ),
     Screening(
-      auditoriums: [tableAuditorium[0], tableAuditorium[6]],
+      auditorium: tableAuditorium[2],
       date: '2024-05-27',
-      id: 5,
+      id: 7,
       start: '9:30',
     ),
     Screening(
-      auditoriums: [tableAuditorium[4], tableAuditorium[5]],
+      auditorium: tableAuditorium[5],
       date: '2024-05-28',
-      id: 6,
+      id: 8,
       start: '21:30',
+    ),
+    Screening(
+      auditorium: tableAuditorium[1],
+      date: '2024-05-30',
+      id: 9,
+      start: '21:30',
+    ),
+    Screening(
+      auditorium: tableAuditorium[0],
+      date: '2024-05-30',
+      id: 10,
+      start: '21:21',
+    ),
+    Screening(
+      auditorium: tableAuditorium[1],
+      date: '2024-05-30',
+      id: 11,
+      start: '21:11',
     ),
   ];
 
@@ -194,11 +243,6 @@ class TempDB {
       name: 'C',
       cinema: tableCinema[5],
     ),
-    Auditorium(
-      id: 7,
-      name: 'D',
-      cinema: tableCinema[6],
-    ),
   ];
   static List<Cinema> tableCinema = [
     Cinema(
@@ -213,12 +257,12 @@ class TempDB {
     ),
     Cinema(
       id: 3,
-      address: tableAddress[1],
+      address: tableAddress[0],
       name: 'VNPT Cinema Hoàn Kiếm',
     ),
     Cinema(
       id: 4,
-      address: tableAddress[1],
+      address: tableAddress[0],
       name: 'LVNPT Cinema Lê Lợi',
     ),
     Cinema(
@@ -243,6 +287,75 @@ class TempDB {
     Address(id: 2, city: 'Hà Nội', district: 'b', street: 'b', ward: 'b'),
     Address(id: 3, city: 'TP.HCM', district: 'c', street: 'c', ward: 'c'),
     Address(id: 4, city: 'Hải Phòng', district: 'd', street: 'd', ward: 'd'),
+  ];
+
+  static List<Seat> tableSeat = [
+    Seat(
+        id: 1,
+        numberSeat: 'A1',
+        price: 49000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 2,
+        numberSeat: 'A2',
+        price: 49000,
+        status: SeatStatus.reserved,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 3,
+        numberSeat: 'A3',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 4,
+        numberSeat: 'A4',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 5,
+        numberSeat: 'A5',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 6,
+        numberSeat: 'A6',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 7,
+        numberSeat: 'A7',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 8,
+        numberSeat: 'A8',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 9,
+        numberSeat: 'A9',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 10,
+        numberSeat: 'A10',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
+    Seat(
+        id: 11,
+        numberSeat: 'B1',
+        price: 100000,
+        status: SeatStatus.available,
+        auditorium: tableAuditorium[0]),
   ];
 
   static List<String> getCity() {

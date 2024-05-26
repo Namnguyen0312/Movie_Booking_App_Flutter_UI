@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
-import 'package:movie_ticker_app_flutter/provider/cinema_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
@@ -38,7 +38,7 @@ class _ListChooseDayState extends State<ListChooseDay> {
 
   @override
   Widget build(BuildContext context) {
-    final cinemaProvider = Provider.of<CinemaProvider>(context);
+    final cinemaProvider = Provider.of<AppProvider>(context);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -52,7 +52,7 @@ class _ListChooseDayState extends State<ListChooseDay> {
   }
 
   Widget _buildDayItem(
-      DateTime day, int index, CinemaProvider cinemaProvider, Movie movie) {
+      DateTime day, int index, AppProvider cinemaProvider, Movie movie) {
     return GestureDetector(
       onTap: () {
         _updateSelected(index);
@@ -64,9 +64,7 @@ class _ListChooseDayState extends State<ListChooseDay> {
         margin: const EdgeInsets.only(right: kDefaultPadding),
         decoration: BoxDecoration(
           borderRadius: kDefaultBorderRadius,
-          color: _isSelected[index]
-              ? AppColors.blueMain
-              : AppColors.darkBackground,
+          color: _isSelected[index] ? AppColors.blueMain : AppColors.grey,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
