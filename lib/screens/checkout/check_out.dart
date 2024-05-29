@@ -3,7 +3,7 @@ import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widg
 import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/build_price_tag.dart';
-import 'package:movie_ticker_app_flutter/screens/screening/widgets/custom_header.dart';
+import 'package:movie_ticker_app_flutter/screens/checkout/widgets/custom_header.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';

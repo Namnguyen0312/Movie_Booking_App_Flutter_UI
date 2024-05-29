@@ -126,7 +126,6 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                             ),
                             GestureDetector(
                               onTap: () {
-                                cinemaProvider.reset();
                                 Navigator.of(context).pushNamed(
                                     SelectCinemaPage.routeName,
                                     arguments: movie);

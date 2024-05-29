@@ -8,6 +8,16 @@ import 'package:movie_ticker_app_flutter/models/screening.dart';
 class ApiService {
   static const String baseUrl = 'http://yourapiurl.com';
 
+  Future<List<Movie>> getAllMovie() async {
+    final response = await http.get(Uri.parse('$baseUrl/movies'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((movie) => Movie.fromJson(movie)).toList();
+    } else {
+      throw Exception('Failed to load address');
+    }
+  }
+
   Future<List<Address>> getAllAddress() async {
     final response = await http.get(Uri.parse('$baseUrl/address'));
     if (response.statusCode == 200) {

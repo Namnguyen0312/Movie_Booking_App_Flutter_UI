@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/provider/cinema_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
@@ -20,12 +20,12 @@ class _AllCinemaState extends State<AllCinema> {
   @override
   void initState() {
     super.initState();
-    Provider.of<CinemaProvider>(context, listen: false).getCityToAddress();
+    Provider.of<AppProvider>(context, listen: false).getCityToAddress();
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<CinemaProvider>(context);
+    final provider = Provider.of<AppProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Đặt vé theo rạp'),
