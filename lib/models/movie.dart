@@ -16,71 +16,57 @@ class Movie {
   final List<String> trailers;
   final List<Screening> screenings;
 
-  Movie(
-    this.id,
-    this.title,
-    this.duration,
-    this.image,
-    this.rating,
-    this.endDate,
-    this.releaseDate,
-    this.genres,
-    this.description,
-    this.director,
-    this.casters,
-    this.trailers,
-    this.screenings,
-  );
+  Movie({
+    required this.id,
+    required this.title,
+    required this.duration,
+    required this.image,
+    required this.rating,
+    required this.endDate,
+    required this.releaseDate,
+    required this.genres,
+    required this.description,
+    required this.director,
+    required this.casters,
+    required this.trailers,
+    required this.screenings,
+  });
+
+  factory Movie.fromJson(Map<String, dynamic> json) {
+    return Movie(
+      id: json['id'],
+      title: json['title'],
+      duration: json['duration'],
+      image: json['image'],
+      rating: json['rating'],
+      endDate: json['endDate'],
+      releaseDate: json['releaseDate'],
+      genres: (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
+      description: json['description'],
+      director: List<String>.from(json['director']),
+      casters: List<String>.from(json['casters']),
+      trailers: List<String>.from(json['trailers']),
+      screenings: (json['screenings'] as List)
+          .map((e) => Screening.fromJson(e))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'duration': duration,
+      'image': image,
+      'rating': rating,
+      'endDate': endDate,
+      'releaseDate': releaseDate,
+      'genres': genres.map((e) => e.toJson()).toList(),
+      'description': description,
+      'director': director,
+      'casters': casters,
+      'trailers': trailers,
+      'screenings': screenings.map((e) => e.toJson()).toList(),
+    };
+  }
 }
-
-// Object other
-
-final List<String> days = [
-  'SAT',
-  'SUN',
-  'MON',
-  'TUE',
-  'WED',
-  'THU',
-  'FRI',
-  'SAT',
-  'SUN',
-  'MON',
-];
-final List<String> times = ['12:20', '13:30', '14:30', '19:00'];
-
-enum TicketStates {
-  idle,
-  active,
-  busy,
-}
-
-final List<TicketStates> dayStates = [
-  TicketStates.active,
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.idle,
-];
-
-final List<TicketStates> dayStates1 = [
-  TicketStates.busy,
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.idle,
-];
-
-final List<TicketStates> dayStates2 = [
-  TicketStates.idle,
-  TicketStates.idle,
-  TicketStates.busy,
-  TicketStates.idle,
-];
-
-final List<String> seatRow = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-final List<String> seatNumber = ['1', '2', '3', '4', '5', '6', '7', '8'];

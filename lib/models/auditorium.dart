@@ -1,4 +1,4 @@
-import 'package:movie_ticker_app_flutter/models/cinema.dart';
+import 'cinema.dart';
 
 class Auditorium {
   final int id;
@@ -10,4 +10,20 @@ class Auditorium {
     required this.name,
     required this.cinema,
   });
+
+  factory Auditorium.fromJson(Map<String, dynamic> json) {
+    return Auditorium(
+      id: json['id'],
+      name: json['name'],
+      cinema: Cinema.fromJson(json['cinema']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'cinema': cinema.toJson(),
+    };
+  }
 }

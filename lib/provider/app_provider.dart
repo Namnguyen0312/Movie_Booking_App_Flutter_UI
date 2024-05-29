@@ -8,14 +8,14 @@ class AppProvider extends ChangeNotifier {
   String? _selectedCity;
   DateTime? _selectedDate;
   Screening? _selectedScreening;
-  List<Screening> _filteredScreenings = [];
+  List<Screening> _screenings = [];
   List<Movie> _movies = [];
 
   List<Movie> get movies => _movies;
 
   String? get selectedCity => _selectedCity;
   DateTime? get selectedDate => _selectedDate;
-  List<Screening> get filteredScreenings => _filteredScreenings;
+  List<Screening> get screenings => _screenings;
 
   Screening? get selectedScreening => _selectedScreening;
 
@@ -42,48 +42,83 @@ class AppProvider extends ChangeNotifier {
   }
 
   void reset() {
-    _filteredScreenings = [];
-    _selectedCity = null;
-    _selectedDate = null;
+    _screenings = [];
     notifyListeners();
   }
 
   void selectCity(String city, Movie movie) {
     _selectedCity = city;
     clearSelection();
-    _filterScreenings(movie);
     notifyListeners();
   }
 
-  void selectDate(DateTime date, Movie movie) {
+  void selectDate(DateTime date) {
     _selectedDate = date;
     clearSelection();
-    _filterScreenings(movie);
     notifyListeners();
   }
 
-  void _filterScreenings(Movie movie) {
-    if (_selectedCity == null || _selectedDate == null) return;
+  Future<void> getScreeningsByMovieAndCity(
+    Movie movie,
+    String city,
+    DateTime dateTime,
+  ) async {
+    // try {
+    //   final List<Screening> screenings =
+    //       await ApiService().getScreeningsByMovieAndCity(city, movieId);
 
-    _filteredScreenings = movie.screenings.where((screening) {
-      final screeningDate = DateTime.parse(screening.date);
-      return screeningDate.year == _selectedDate!.year &&
-          screeningDate.month == _selectedDate!.month &&
-          screeningDate.day == _selectedDate!.day &&
-          screening.auditorium.cinema.address.city == _selectedCity;
-    }).toList();
-
-    _filteredScreenings.sort((a, b) {
+    //   _screenings = screenings.where(
+    //     (screening) {
+    //       final screeningDate = DateTime.parse(screening.date);
+    //       return screeningDate.year == dateTime.year &&
+    //           screeningDate.month == dateTime.month &&
+    //           screeningDate.day == dateTime.day;
+    //     },
+    //   ).toList();
+    //   notifyListeners();
+    // } catch (error) {
+    //   rethrow;
+    // }
+    _screenings = movie.screenings.where(
+      (screening) {
+        final screeningDate = DateTime.parse(screening.date);
+        return screeningDate.year == dateTime.year &&
+            screeningDate.month == dateTime.month &&
+            screeningDate.day == dateTime.day &&
+            screening.auditorium.cinema.address.city == city;
+      },
+    ).toList();
+    _screenings.sort((a, b) {
       final format = DateFormat("yyyy-MM-dd HH:mm");
       final timeA = format.parse('${a.date} ${a.start}');
       final timeB = format.parse('${b.date} ${b.start}');
       return timeA.compareTo(timeB);
     });
+    notifyListeners();
   }
+
+  // void _filterScreenings(Movie movie) {
+  //   if (_selectedCity == null || _selectedDate == null) return;
+
+  //   _filteredScreenings = movie.screenings.where((screening) {
+  //     final screeningDate = DateTime.parse(screening.date);
+  //     return screeningDate.year == _selectedDate!.year &&
+  //         screeningDate.month == _selectedDate!.month &&
+  //         screeningDate.day == _selectedDate!.day &&
+  //         screening.auditorium.cinema.address.city == _selectedCity;
+  //   }).toList();
+
+  //   _filteredScreenings.sort((a, b) {
+  //     final format = DateFormat("yyyy-MM-dd HH:mm");
+  //     final timeA = format.parse('${a.date} ${a.start}');
+  //     final timeB = format.parse('${b.date} ${b.start}');
+  //     return timeA.compareTo(timeB);
+  //   });
+  // }
 
   Map<String, List<Screening>> get screeningsByCinema {
     Map<String, List<Screening>> groupedScreenings = {};
-    for (var screening in filteredScreenings) {
+    for (var screening in screenings) {
       final cinemaName = screening.auditorium.cinema.name;
       if (groupedScreenings.containsKey(cinemaName)) {
         groupedScreenings[cinemaName]!.add(screening);

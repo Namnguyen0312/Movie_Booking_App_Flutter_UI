@@ -1,4 +1,4 @@
-import 'package:movie_ticker_app_flutter/models/auditorium.dart';
+import 'auditorium.dart';
 
 class Seat {
   final int id;
@@ -15,13 +15,13 @@ class Seat {
     required this.auditorium,
   });
 
-  factory Seat.fromJson(Map<String, dynamic> json, Auditorium auditorium) {
+  factory Seat.fromJson(Map<String, dynamic> json) {
     return Seat(
       id: json['id'],
       numberSeat: json['numberSeat'],
       price: json['price'],
       status: SeatStatusExtension.fromString(json['status']),
-      auditorium: auditorium,
+      auditorium: Auditorium.fromJson(json['auditorium']),
     );
   }
 
@@ -31,7 +31,7 @@ class Seat {
       'numberSeat': numberSeat,
       'price': price,
       'status': status.toShortString(),
-      'auditorium': auditorium.id, // Giả sử bạn chỉ gửi id của auditorium
+      'auditorium': auditorium.toJson(),
     };
   }
 }

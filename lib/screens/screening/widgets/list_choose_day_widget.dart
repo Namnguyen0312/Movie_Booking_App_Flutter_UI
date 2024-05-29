@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
@@ -7,8 +6,7 @@ import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class ListChooseDay extends StatefulWidget {
-  final Movie movie;
-  const ListChooseDay({super.key, required this.size, required this.movie});
+  const ListChooseDay({super.key, required this.size});
 
   final Size size;
 
@@ -44,19 +42,17 @@ class _ListChooseDayState extends State<ListChooseDay> {
       child: Row(
         children: List.generate(
           days.length,
-          (index) =>
-              _buildDayItem(days[index], index, cinemaProvider, widget.movie),
+          (index) => _buildDayItem(days[index], index, cinemaProvider),
         ),
       ),
     );
   }
 
-  Widget _buildDayItem(
-      DateTime day, int index, AppProvider cinemaProvider, Movie movie) {
+  Widget _buildDayItem(DateTime day, int index, AppProvider cinemaProvider) {
     return GestureDetector(
       onTap: () {
         _updateSelected(index);
-        cinemaProvider.selectDate(day, movie);
+        cinemaProvider.selectDate(day);
       },
       child: Container(
         height: widget.size.height / 8,

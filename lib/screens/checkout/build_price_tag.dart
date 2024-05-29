@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../themes/app_colors.dart';
-import '../../../themes/app_styles.dart';
-import '../../../utils/constants.dart';
+import '../../themes/app_colors.dart';
+import '../../themes/app_styles.dart';
+import '../../utils/constants.dart';
 
 class BuildPriceTag extends StatelessWidget {
   const BuildPriceTag({

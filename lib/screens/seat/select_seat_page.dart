@@ -4,8 +4,9 @@ import 'package:movie_ticker_app_flutter/datasource/temp_db.dart';
 import 'package:movie_ticker_app_flutter/models/screening.dart';
 import 'package:movie_ticker_app_flutter/models/seat.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/check_out.dart';
-import 'package:movie_ticker_app_flutter/screens/selectCinema/widget/built_seat_status_bar.dart';
-import 'package:movie_ticker_app_flutter/screens/selectCinema/widget/movie_title.dart';
+import 'package:movie_ticker_app_flutter/screens/screening/widgets/built_seat_status_bar.dart';
+import 'package:movie_ticker_app_flutter/screens/screening/widgets/movie_title.dart';
+
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';

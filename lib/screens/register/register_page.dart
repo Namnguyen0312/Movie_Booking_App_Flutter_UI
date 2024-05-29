@@ -1,215 +1,360 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/login/login_page.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
+import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
+import 'package:movie_ticker_app_flutter/utils/animate.dart';
 
-import '../../common/widgets/stateless/my_button.dart';
-import '../../common/widgets/stateless/my_textfield.dart';
-import '../../common/widgets/stateless/square_tile.dart';
-
-// ignore: must_be_immutable
-class RegisterPage extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
   static const String routeName = '/register';
-
-  const RegisterPage({super.key});
-
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  //text editing controller
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
-
-  // sign up method
-  void signUserUp() async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        });
-  }
-
-  void incorrect() {
-    showDialog(
-        context: context,
-        anchorPoint: const Offset(10, 10),
-        builder: (context) {
-          return const AlertDialog(
-            title: Text('Login Success'),
-          );
-        });
-  }
-
-  // error message show dialog
-  void showErrorMessage(String message) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.blue,
-            title: Text(
-              message,
-              style: const TextStyle(color: Colors.white),
-              textAlign: TextAlign.center,
-            ),
-          );
-        });
-  }
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
+  final TextEditingController _repassController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close), // Biểu tượng "X"
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                Animate.createRoute(const HomeScreen()),
+                (route) => false,
+              );
+            },
+          ),
+        ],
+      ),
+      backgroundColor: Colors.white,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              textDirection: TextDirection.ltr,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //icon
                 const SizedBox(
-                  height: 12,
+                  height: 50,
                 ),
-                const Icon(
-                  Icons.ac_unit,
-                  size: 100,
-                ),
-
-                //welcome
-                const SizedBox(
-                  height: 38,
-                ),
-
-                //username
-                const SizedBox(
-                  height: 26,
-                ),
-                MyTextField(
-                  controller: usernameController,
-                  hintText: "Nhập Email",
-                  obscureText: false,
-                ),
-
-                //password
-                const SizedBox(
-                  height: 16,
-                ),
-                MyTextField(
-                  controller: passwordController,
-                  hintText: "Nhập Mật Khẩu",
-                  obscureText: true,
-                ),
-
-                //confirm password
-                const SizedBox(
-                  height: 16,
-                ),
-                MyTextField(
-                  controller: confirmPasswordController,
-                  hintText: "Nhập Lại Mật Khẩu",
-                  obscureText: true,
-                ),
-
-                //Btn Sign In
-                const SizedBox(
-                  height: 45,
-                ),
-                MyButton(
-                  onTap: signUserUp,
-                  textBtn: 'Đăng Ký',
-                ),
-
-                //divider continue
-                const SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                      Text(
-                        " hoặc tiếp tục với ",
-                        style: TextStyle(color: Colors.grey.shade700),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey.shade400,
-                        ),
-                      ),
-                    ],
+                const Text(
+                  'Đăng ký',
+                  style: TextStyle(
+                    color: Color(0xFF755DC1),
+                    fontSize: 27,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-
-                // google + apple signin button
                 const SizedBox(
-                  height: 16,
+                  height: 20,
+                ),
+                SizedBox(
+                  height: 56,
+                  child: TextField(
+                    controller: _userNameController,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Color(0xFF393939),
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Họ và tên',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF837E93),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF9F7BFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 17,
+                ),
+                SizedBox(
+                  height: 56,
+                  child: TextField(
+                    controller: _emailController,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Color(0xFF393939),
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF837E93),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF9F7BFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 17,
+                ),
+                SizedBox(
+                  height: 56,
+                  child: TextField(
+                    controller: _phoneController,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Color(0xFF393939),
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Điện thoại',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF837E93),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF9F7BFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 17,
+                ),
+                SizedBox(
+                  height: 56,
+                  child: TextField(
+                    controller: _addressController,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Color(0xFF393939),
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Địa chỉ',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF837E93),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF9F7BFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 17,
+                ),
+                SizedBox(
+                  height: 56,
+                  child: TextField(
+                    controller: _passController,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Color(0xFF393939),
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Mật khẩu',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF837E93),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF9F7BFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 17,
+                ),
+                SizedBox(
+                  height: 56,
+                  child: TextField(
+                    controller: _repassController,
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      color: Color(0xFF393939),
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Nhập lại mật khẩu',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF837E93),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF9F7BFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  child: SizedBox(
+                    width: 329,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF9F7BFF),
+                      ),
+                      child: const Text(
+                        'Đăng ký',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // google
-                    SquareTile(
-                      onTap: () {},
-                      imgPath: 'assets/images/google.png',
-                    ),
-
-                    //Image(image: AssetImage('lib/images/apple.png'), height: 30,),
-                    const SizedBox(
-                      width: 24,
-                    ),
-
-                    // apple
-                    SquareTile(
-                      onTap: () {},
-                      imgPath: "assets/images/apple.png",
-                    ),
-                  ],
-                ),
-
-                // not a member? register
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Đã có tài khoản ?',
+                    const Text(
+                      'Đã có tài khoản?',
+                      textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Colors.grey.shade700,
+                        color: Color(0xFF837E93),
+                        fontSize: 13,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     const SizedBox(
-                      width: 4,
+                      width: 2.5,
                     ),
-                    GestureDetector(
+                    InkWell(
                       onTap: () {
-                        Navigator.of(context).pushNamed(LoginPage.routeName);
+                        Navigator.of(context)
+                            .push(Animate.createRoute(const LoginScreen()));
                       },
                       child: const Text(
                         'Đăng nhập',
                         style: TextStyle(
-                            color: Colors.blueAccent,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.bold),
+                          color: Color(0xFF755DC1),
+                          fontSize: 13,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    )
+                    ),
                   ],
-                )
+                ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

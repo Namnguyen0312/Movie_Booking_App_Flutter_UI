@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/selectCinema/select_cinema_page.dart';
+import 'package:movie_ticker_app_flutter/screens/screening/select_cinema_page.dart';
 
 import '../../../models/movie.dart';
 import '../../../utils/constants.dart';

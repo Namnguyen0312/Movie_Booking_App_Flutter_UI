@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
-import 'package:movie_ticker_app_flutter/screens/checkout/widgets/build_price_tag.dart';
-import 'package:movie_ticker_app_flutter/screens/selectCinema/widget/custom_header.dart';
+import 'package:movie_ticker_app_flutter/screens/checkout/build_price_tag.dart';
+import 'package:movie_ticker_app_flutter/screens/screening/widgets/custom_header.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
@@ -30,7 +30,6 @@ class _CheckOutState extends State<CheckOut> {
             CustomHeader(
               size: size,
               content: 'Kiểm Vé',
-              title: '',
             ),
             Container(
               decoration: const BoxDecoration(

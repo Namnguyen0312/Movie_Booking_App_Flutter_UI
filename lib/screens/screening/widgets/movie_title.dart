@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/models/screening.dart';
-
-import '../../../themes/app_colors.dart';
-import '../../../themes/app_styles.dart';
-import '../../../utils/constants.dart';
+import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
+import 'package:movie_ticker_app_flutter/utils/constants.dart';
 
 class MovieTitle extends StatelessWidget {
   const MovieTitle({

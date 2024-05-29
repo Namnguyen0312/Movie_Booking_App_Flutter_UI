@@ -44,7 +44,10 @@ class Promo extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(content, style: AppStyles.h4),
-                    Text(title, style: AppStyles.h4.copyWith(color: AppColors.grey),),
+                    Text(
+                      title,
+                      style: AppStyles.h4.copyWith(color: AppColors.grey),
+                    ),
                   ],
                 ),
               ),

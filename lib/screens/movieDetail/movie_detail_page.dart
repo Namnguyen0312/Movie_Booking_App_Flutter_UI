@@ -9,7 +9,7 @@ import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/background_
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/caster_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/genres_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/trailer_bar.dart';
-import 'package:movie_ticker_app_flutter/screens/selectCinema/select_cinema_page.dart';
+import 'package:movie_ticker_app_flutter/screens/screening/select_cinema_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
@@ -76,11 +76,14 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                   ),
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: size.width / 2.5,
-                        child: Image.asset(
-                          movie.image,
-                          fit: BoxFit.cover,
+                      Hero(
+                        tag: movie.id,
+                        child: SizedBox(
+                          width: size.width / 2.5,
+                          child: Image.asset(
+                            movie.image,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       Expanded(

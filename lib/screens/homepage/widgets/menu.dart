@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/login/login_page.dart';
+import 'package:movie_ticker_app_flutter/screens/cinema/all_cinema.dart';
+import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
+import 'package:movie_ticker_app_flutter/utils/animate.dart';
 
 class Menu extends StatelessWidget {
   const Menu({
@@ -27,13 +29,16 @@ class Menu extends StatelessWidget {
             leading: const Icon(Icons.person),
             title: const Text('Hồ Sơ'),
             onTap: () {
-              Navigator.of(context).pushNamed(LoginPage.routeName);
+              Navigator.of(context).pushNamed(LoginScreen.routeName);
             },
           ),
           ListTile(
             leading: const Icon(Icons.movie),
             title: const Text('Rạp phim'),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context)
+                  .push(Animate.createRoute(const AllCinema()));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.monetization_on),

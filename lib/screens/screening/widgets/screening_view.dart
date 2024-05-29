@@ -31,7 +31,7 @@ class ScreeningView extends StatelessWidget {
         children: [
           Text(name, style: AppStyles.h2),
           SizedBox(
-            height: 100.0,
+            height: 50,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: screenings.length,
@@ -59,7 +59,7 @@ class ScreeningView extends StatelessWidget {
                         borderRadius: kSmallBorderRadius,
                       ),
                       child: Container(
-                        width: 80,
+                        width: 40,
                         padding: const EdgeInsets.all(kDefaultPadding),
                         decoration: BoxDecoration(
                           borderRadius: kSmallBorderRadius,
@@ -73,7 +73,7 @@ class ScreeningView extends StatelessWidget {
                           child: Text(
                             screening.start,
                             style: const TextStyle(
-                              fontSize: 16.0,
+                              fontSize: 4.0,
                               color: AppColors.white,
                               fontWeight: FontWeight.bold,
                             ),

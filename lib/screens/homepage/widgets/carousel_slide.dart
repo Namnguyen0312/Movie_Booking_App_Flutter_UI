@@ -2,10 +2,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
-import '../../../common/widgets/stateless/list_star_widget.dart';
 import '../../movieDetail/movie_detail_page.dart';
 
 class CarouselSliderFirm extends StatefulWidget {
@@ -63,59 +61,21 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                           },
                           child: Stack(
                             children: [
-                              Container(
-                                width: widget.size.width,
-                                height: widget.size.height,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                decoration: BoxDecoration(
-                                  color: AppColors.lightBlueNon,
-                                  borderRadius: kBigBorderRadius,
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage(movie.image.toString()),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                height: widget.size.height,
-                                decoration: const BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Gradients.darkGreyNon,
-                                      Gradients.darkGreyMid,
-                                      Gradients.darkGrey,
-                                    ],
-                                  ),
-                                  borderRadius: kBigBorderRadius,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      width: widget.size.width,
-                                      padding: const EdgeInsets.only(
-                                        left: kTopPadding,
-                                        bottom: kTopPadding,
-                                      ),
-                                      child: Text(
-                                        movie.title.toString(),
-                                        style: AppStyles.h1,
-                                      ),
+                              Hero(
+                                tag: movie.id, // Unique tag for each movie
+                                child: Container(
+                                  width: widget.size.width,
+                                  height: widget.size.height,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.lightBlueNon,
+                                    borderRadius: kBigBorderRadius,
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(movie.image.toString()),
                                     ),
-                                    Container(
-                                      width: widget.size.width,
-                                      padding: const EdgeInsets.only(
-                                        left: kTopPadding,
-                                        bottom: kTopPadding,
-                                      ),
-                                      margin: const EdgeInsets.only(
-                                          bottom: kDefaultPadding),
-                                      child: ListStarWidget(movie: movie),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ],

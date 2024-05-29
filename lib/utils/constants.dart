@@ -24,10 +24,10 @@ const String textSynopsis2 =
     'Ralph\'s goal was simple, wanting to win and get a medal to be considered a hero. But without realizing Ralph instead paved the way for criminals who can kill all the games in the game complex.';
 
 enum ResponseStatus {
-  SAVED,
-  FAILED,
-  UNAUTHORIZED,
-  AUTHORIZED,
-  EXPIRED,
-  NONE,
+  saved,
+  failed,
+  unauthorized,
+  authorized,
+  expired,
+  none,
 }

@@ -1,4 +1,4 @@
-import 'package:movie_ticker_app_flutter/models/auditorium.dart';
+import 'auditorium.dart';
 
 class Screening {
   final int id;
@@ -6,9 +6,28 @@ class Screening {
   final String date;
   final Auditorium auditorium;
 
-  Screening(
-      {required this.id,
-      required this.start,
-      required this.date,
-      required this.auditorium});
+  Screening({
+    required this.id,
+    required this.start,
+    required this.date,
+    required this.auditorium,
+  });
+
+  factory Screening.fromJson(Map<String, dynamic> json) {
+    return Screening(
+      id: json['id'],
+      start: json['start'],
+      date: json['date'],
+      auditorium: Auditorium.fromJson(json['auditorium']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'start': start,
+      'date': date,
+      'auditorium': auditorium.toJson(),
+    };
+  }
 }
