@@ -22,7 +22,10 @@ class TempDB {
       director: ['Director 1'],
       casters: ['Nguyễn Lê Văn', 'Actor 2'],
       trailers: [AssetHelper.imgTrailer1, AssetHelper.imgTrailer2],
-      screenings: [tableScreening[0], tableScreening[1]],
+      screenings: [
+        tableScreening[10],
+        tableScreening[11],
+      ],
     ),
     Movie(
       id: 2,
@@ -37,7 +40,10 @@ class TempDB {
       director: ['Director 2'],
       casters: ['Nguyễn Lê Văn', 'Actor 4'],
       trailers: [AssetHelper.imgMovieBanner, AssetHelper.imgMoviePoster],
-      screenings: [tableScreening[0], tableScreening[2], tableScreening[3]],
+      screenings: [
+        tableScreening[8],
+        tableScreening[9],
+      ],
     ),
     Movie(
       id: 3,
@@ -52,7 +58,10 @@ class TempDB {
       director: ['Director 3'],
       casters: ['Nguyễn Lê Văn', 'Actor 6'],
       trailers: [AssetHelper.imgMoviePoster2, AssetHelper.imgMoviePoster3],
-      screenings: [tableScreening[0], tableScreening[1], tableScreening[4]],
+      screenings: [
+        tableScreening[6],
+        tableScreening[7],
+      ],
     ),
     Movie(
       id: 4,
@@ -68,10 +77,8 @@ class TempDB {
       casters: ['Nguyễn Lê Văn', 'Actor 8'],
       trailers: [AssetHelper.imgTrailer1, AssetHelper.imgTrailer2],
       screenings: [
-        tableScreening[0],
+        tableScreening[4],
         tableScreening[5],
-        tableScreening[3],
-        tableScreening[1],
       ],
     ),
     Movie(
@@ -88,10 +95,8 @@ class TempDB {
       casters: ['Actor 9', 'Actor 10'],
       trailers: [AssetHelper.imgMovieBanner, AssetHelper.imgMoviePoster],
       screenings: [
-        tableScreening[5],
-        tableScreening[2],
+        tableScreening[3],
         tableScreening[1],
-        tableScreening[0],
       ],
     ),
     Movie(
@@ -113,13 +118,8 @@ class TempDB {
       casters: ['Nguyễn Lê Văn', 'Actor 2'],
       trailers: [AssetHelper.imgMoviePoster2, AssetHelper.imgMoviePoster3],
       screenings: [
-        tableScreening[1],
-        tableScreening[2],
-        tableScreening[3],
         tableScreening[0],
-        tableScreening[8],
-        tableScreening[9],
-        tableScreening[10],
+        tableScreening[2],
       ],
     ),
   ];
@@ -154,67 +154,73 @@ class TempDB {
   static List<Screening> tableScreening = [
     Screening(
       auditorium: tableAuditorium[0],
-      date: '2024-05-30',
+      date: '2024-06-04',
       id: 1,
       start: '8:30',
     ),
     Screening(
-      auditorium: tableAuditorium[1],
-      date: '2024-05-30',
+      auditorium: tableAuditorium[6],
+      date: '2024-06-04',
       id: 2,
-      start: '9:30',
+      start: '8:30',
     ),
     Screening(
       auditorium: tableAuditorium[2],
-      date: '2024-05-30',
+      date: '2024-06-04',
       id: 3,
       start: '10:30',
     ),
     Screening(
       auditorium: tableAuditorium[3],
-      date: '2024-05-30',
+      date: '2024-06-04',
       id: 4,
       start: '11:30',
     ),
     Screening(
       auditorium: tableAuditorium[4],
-      date: '2024-05-26',
+      date: '2024-06-04',
       id: 5,
       start: '17:30',
     ),
     Screening(
       auditorium: tableAuditorium[1],
-      date: '2024-05-25',
+      date: '2024-06-04',
       id: 6,
       start: '20:30',
     ),
     Screening(
       auditorium: tableAuditorium[2],
-      date: '2024-05-27',
+      date: '2024-06-04',
       id: 7,
-      start: '9:30',
+      start: '12:30',
     ),
     Screening(
       auditorium: tableAuditorium[5],
-      date: '2024-05-28',
+      date: '2024-06-04',
       id: 8,
       start: '21:30',
     ),
     Screening(
       auditorium: tableAuditorium[1],
-      date: '2024-05-30',
+      date: '2024-06-04',
       id: 9,
-      start: '21:30',
+      start: '22:30',
     ),
     Screening(
       auditorium: tableAuditorium[0],
-      date: '2024-05-30',
+      date: '2024-06-04',
       id: 10,
       start: '21:21',
     ),
     Screening(
       auditorium: tableAuditorium[1],
-      date: '2024-05-30',
+      date: '2024-06-04',
+      id: 11,
+      start: '21:11',
+    ),
+    Screening(
+      auditorium: tableAuditorium[2],
+      date: '2024-06-04',
       id: 11,
       start: '21:11',
     ),
@@ -250,6 +256,11 @@ class TempDB {
       id: 6,
       name: 'C',
       cinema: tableCinema[5],
+    ),
+    Auditorium(
+      id: 7,
+      name: 'C',
+      cinema: tableCinema[0],
     ),
   ];
   static List<Cinema> tableCinema = [
@@ -291,7 +302,12 @@ class TempDB {
   ];
 
   static List<Address> tableAddress = [
-    Address(id: 1, city: 'Cần Thơ', district: 'a', street: 'a', ward: 'a'),
+    Address(
+        id: 1,
+        city: 'Cần Thơ',
+        district: 'Q. Ninh Kiều',
+        street: 'Phan Đình Phùng',
+        ward: '11111111111111111111111111111111111111111111111111111'),
     Address(id: 2, city: 'Hà Nội', district: 'b', street: 'b', ward: 'b'),
     Address(id: 3, city: 'TP.HCM', district: 'c', street: 'c', ward: 'c'),
     Address(id: 4, city: 'Hải Phòng', district: 'd', street: 'd', ward: 'd'),

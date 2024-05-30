@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/screening/select_cinema_page.dart';
+import 'package:movie_ticker_app_flutter/screens/screening/select_screening_by_movie_page.dart';
 
 import '../../../models/movie.dart';
 import '../../../utils/constants.dart';
@@ -30,7 +30,7 @@ class ComingSoon extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).pushNamed(
-                            SelectCinemaPage.routeName,
+                            SelectScreeningByMoviePage.routeName,
                             arguments: e);
                       },
                       child: Container(

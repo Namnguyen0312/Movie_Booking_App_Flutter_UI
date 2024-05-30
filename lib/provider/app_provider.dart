@@ -18,6 +18,9 @@ class AppProvider extends ChangeNotifier {
   DateTime? _selectedDate;
   DateTime? get selectedDate => _selectedDate;
 
+  bool _dateSelected = false;
+  bool get dateSelected => _dateSelected;
+
   Screening? _selectedScreening;
   Screening? get selectedScreening => _selectedScreening;
 
@@ -30,14 +33,17 @@ class AppProvider extends ChangeNotifier {
   List<Movie> _movies = [];
   List<Movie> get movies => _movies;
 
-  List<Movie> _moviesByCinema = [];
-  List<Movie> get moviesByCinema => _moviesByCinema;
+  Movie? _selectedMovie;
+  Movie? get selectedMovie => _selectedMovie;
 
   List<String> _citys = [];
   List<String> get citys => _citys;
 
   List<Cinema> _cinemas = [];
   List<Cinema> get cinemas => _cinemas;
+
+  String? _selectedCinema;
+  String? get selectedCinema => _selectedCinema;
 
   AppProvider() {
     generateDays();
@@ -55,11 +61,6 @@ class AppProvider extends ChangeNotifier {
       days.length,
       (index) => index == selectedIndex ? true : false,
     );
-    notifyListeners();
-  }
-
-  void selectScreening(Screening screening) {
-    _selectedScreening = screening;
     notifyListeners();
   }
 
@@ -97,16 +98,6 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchMoviesByCinema(int cinemaId) async {
-    // try {
-    //   _movies = await ApiService().getMoviesByCinema(cinemaId);
-    //   notifyListeners();
-    // } catch (error) {
-    //   rethrow;
-    // }
-    // _movies = TempDB.ta.map((address) => address.city).toList();
-  }
-
   void reset() {
     _selectedCity = '';
 
@@ -116,10 +107,19 @@ class AppProvider extends ChangeNotifier {
     _selectedDate = null;
     _selectedScreening = null;
     _screenings = [];
-
+    _cinemas = [];
     _citys = [];
 
     _isSelected = List<bool>.generate(days.length, (index) => false);
+    notifyListeners();
+  }
+
+  void resetForCinema() {
+    _isSelected = List<bool>.generate(days.length, (index) => false);
+    _dateSelected = false;
+    _selectedDate = null;
+    screeningsByMovie.clear();
+    _selectedScreening = null;
     notifyListeners();
   }
 
@@ -132,6 +132,29 @@ class AppProvider extends ChangeNotifier {
 
   void selectDate(DateTime date) {
     _selectedDate = date;
+    _dateSelected = true;
+    notifyListeners();
+  }
+
+  void selectScreening(Screening screening) {
+    _selectedScreening = screening;
+    notifyListeners();
+  }
+
+  void selectCinema(String cinemaName) {
+    _selectedCinema = cinemaName;
+    notifyListeners();
+  }
+
+  void checkAndSetSelectMovie() {
+    for (var movie in _movies) {
+      if (movie.screenings.contains(_selectedScreening)) {
+        _selectedMovie = movie;
+        notifyListeners();
+        return;
+      }
+    }
+    _selectedMovie = null;
     notifyListeners();
   }
 
@@ -158,6 +181,25 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> getScreeningsByCinema() async {
+    _screenings = TempDB.tableScreening.where(
+      (screening) {
+        final screeningDate = DateTime.parse(screening.date);
+        return screeningDate.year == _selectedDate!.year &&
+            screeningDate.month == _selectedDate!.month &&
+            screeningDate.day == _selectedDate!.day &&
+            screening.auditorium.cinema.name == _selectedCinema;
+      },
+    ).toList();
+    _screenings.sort((a, b) {
+      final format = DateFormat("yyyy-MM-dd HH:mm");
+      final timeA = format.parse('${a.date} ${a.start}');
+      final timeB = format.parse('${b.date} ${b.start}');
+      return timeA.compareTo(timeB);
+    });
+    notifyListeners();
+  }
+
   Map<String, List<Screening>> get screeningsByCinema {
     Map<String, List<Screening>> groupedScreenings = {};
     for (var screening in screenings) {
@@ -167,6 +209,39 @@ class AppProvider extends ChangeNotifier {
       } else {
         groupedScreenings[cinemaName] = [screening];
       }
+    }
+    return groupedScreenings;
+  }
+
+  Map<String, List<Screening>> get filteredScreeningsByMovie {
+    return Map.fromEntries(
+        screeningsByMovie.entries.where((entry) => entry.value.isNotEmpty));
+  }
+
+  bool get hasScreenings {
+    bool allValuesEmpty =
+        screeningsByMovie.values.every((list) => list.isEmpty);
+    if (!allValuesEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Map<String, List<Screening>> get screeningsByMovie {
+    Map<String, List<Screening>> groupedScreenings = {};
+    for (var movie in _movies) {
+      final movieTitle = movie.title;
+      groupedScreenings[movieTitle] = movie.screenings.where(
+        (screening) {
+          final screeningDate = DateTime.parse(screening.date);
+          return _selectedDate != null &&
+              screeningDate.year == _selectedDate!.year &&
+              screeningDate.month == _selectedDate!.month &&
+              screeningDate.day == _selectedDate!.day &&
+              screening.auditorium.cinema.name == _selectedCinema;
+        },
+      ).toList();
     }
     return groupedScreenings;
   }

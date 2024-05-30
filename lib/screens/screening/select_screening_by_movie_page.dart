@@ -9,16 +9,18 @@ import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 
 import 'package:provider/provider.dart';
 
-class SelectCinemaPage extends StatefulWidget {
+class SelectScreeningByMoviePage extends StatefulWidget {
   static const String routeName = '/select_cinema_page';
 
-  const SelectCinemaPage({super.key});
+  const SelectScreeningByMoviePage({super.key});
 
   @override
-  State<SelectCinemaPage> createState() => _SelectCinemaPageState();
+  State<SelectScreeningByMoviePage> createState() =>
+      _SelectScreeningByMoviePageState();
 }
 
-class _SelectCinemaPageState extends State<SelectCinemaPage> {
+class _SelectScreeningByMoviePageState
+    extends State<SelectScreeningByMoviePage> {
   late List<DateTime> days;
 
   get provider => null;
@@ -61,10 +63,8 @@ class _SelectCinemaPageState extends State<SelectCinemaPage> {
             const SizedBox(
               height: 20,
             ),
-            if (provider.citySelected)
-              SelectScreeningWidget(provider: provider),
-            if (provider.citySelected)
-              SelectNextWidget(provider: provider, movie: movie, size: size),
+            SelectScreeningWidget(provider: provider),
+            SelectNextWidget(provider: provider, movie: movie, size: size),
           ],
         ),
       ),

@@ -22,15 +22,13 @@ class SelectCityWidget extends StatelessWidget {
         padding: const EdgeInsets.only(left: 16.0),
         child: Row(
           children: provider.citys.map((city) {
-            final bool isSelected =
-                city == context.watch<AppProvider>().selectedCity;
+            final bool isSelected = city == provider.selectedCity;
             return Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: GestureDetector(
                 onTap: () async {
                   context.read<AppProvider>().selectCity(city);
                   // context.read<AppProvider>().clearSelection();
-                  await context.read<AppProvider>().fetchCinemasByCity(city);
                   if (!context.mounted) return;
                   await context.read<AppProvider>().getScreeningsByMovieAndCity(
                       movie, provider.selectedCity!, provider.selectedDate!);

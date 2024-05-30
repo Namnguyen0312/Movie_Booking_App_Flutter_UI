@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/cinema/all_cinema.dart';
+import 'package:movie_ticker_app_flutter/screens/cinema/select_cinema_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
@@ -37,7 +37,7 @@ class Menu extends StatelessWidget {
             title: const Text('Rạp phim'),
             onTap: () {
               Navigator.of(context)
-                  .push(Animate.createRoute(const AllCinema()));
+                  .push(Animate.createRoute(const SelectCinemaByCity()));
             },
           ),
           ListTile(
