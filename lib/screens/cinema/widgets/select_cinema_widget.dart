@@ -98,7 +98,7 @@ class SelectCinemaWidget extends StatelessWidget {
                     ],
                   ),
                   onTap: () {
-                    context.read<AppProvider>().selectCinema(cinema.name);
+                    context.read<AppProvider>().selectCinema(cinema);
                     Navigator.of(context).pushNamed(
                       SelectScreeningByCinema.routeName,
                     );

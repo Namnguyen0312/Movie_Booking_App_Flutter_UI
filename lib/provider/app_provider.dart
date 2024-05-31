@@ -42,8 +42,8 @@ class AppProvider extends ChangeNotifier {
   List<Cinema> _cinemas = [];
   List<Cinema> get cinemas => _cinemas;
 
-  String? _selectedCinema;
-  String? get selectedCinema => _selectedCinema;
+  Cinema? _selectedCinema;
+  Cinema? get selectedCinema => _selectedCinema;
 
   AppProvider() {
     generateDays();
@@ -100,7 +100,6 @@ class AppProvider extends ChangeNotifier {
 
   void reset() {
     _selectedCity = '';
-
     _isSelected = [];
     _citySelected = false;
 
@@ -141,9 +140,14 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectCinema(String cinemaName) {
-    _selectedCinema = cinemaName;
+  void selectCinema(Cinema cinema) {
+    _selectedCinema = cinema;
     notifyListeners();
+  }
+
+  void selectMovie(Movie movie) {
+    _selectedMovie = movie;
+    // notifyListeners();
   }
 
   void checkAndSetSelectMovie() {
@@ -181,33 +185,14 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getScreeningsByCinema() async {
-    _screenings = TempDB.tableScreening.where(
-      (screening) {
-        final screeningDate = DateTime.parse(screening.date);
-        return screeningDate.year == _selectedDate!.year &&
-            screeningDate.month == _selectedDate!.month &&
-            screeningDate.day == _selectedDate!.day &&
-            screening.auditorium.cinema.name == _selectedCinema;
-      },
-    ).toList();
-    _screenings.sort((a, b) {
-      final format = DateFormat("yyyy-MM-dd HH:mm");
-      final timeA = format.parse('${a.date} ${a.start}');
-      final timeB = format.parse('${b.date} ${b.start}');
-      return timeA.compareTo(timeB);
-    });
-    notifyListeners();
-  }
-
-  Map<String, List<Screening>> get screeningsByCinema {
-    Map<String, List<Screening>> groupedScreenings = {};
+  Map<Cinema, List<Screening>> get screeningsByCinema {
+    Map<Cinema, List<Screening>> groupedScreenings = {};
     for (var screening in screenings) {
-      final cinemaName = screening.auditorium.cinema.name;
-      if (groupedScreenings.containsKey(cinemaName)) {
-        groupedScreenings[cinemaName]!.add(screening);
+      final cinema = screening.auditorium.cinema;
+      if (groupedScreenings.containsKey(cinema)) {
+        groupedScreenings[cinema]!.add(screening);
       } else {
-        groupedScreenings[cinemaName] = [screening];
+        groupedScreenings[cinema] = [screening];
       }
     }
     return groupedScreenings;
@@ -239,7 +224,7 @@ class AppProvider extends ChangeNotifier {
               screeningDate.year == _selectedDate!.year &&
               screeningDate.month == _selectedDate!.month &&
               screeningDate.day == _selectedDate!.day &&
-              screening.auditorium.cinema.name == _selectedCinema;
+              screening.auditorium.cinema.name == _selectedCinema!.name;
         },
       ).toList();
     }

@@ -14,11 +14,8 @@ class AboutTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        top: kTop32Padding,
-        left: kMediumPadding,
-        bottom: kTopPadding,
-      ),
+      padding: const EdgeInsets.symmetric(
+          vertical: kDefaultPadding, horizontal: kDefaultIconSize),
       child: Text(
         title,
         style: AppStyles.h3,

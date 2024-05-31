@@ -21,13 +21,13 @@ class SelectScreeningWidget extends StatelessWidget {
           : ListView.builder(
               itemCount: provider.screeningsByCinema.length,
               itemBuilder: (context, index) {
-                final cinemaName =
+                final cinema =
                     provider.screeningsByCinema.keys.elementAt(index);
-                final screenings = provider.screeningsByCinema[cinemaName]!;
+                final screenings = provider.screeningsByCinema[cinema]!;
                 return SizedBox(
                   height: 130,
                   child: ListTile(
-                    title: Text(cinemaName, style: AppStyles.h2),
+                    title: Text(cinema.name, style: AppStyles.h2),
                     subtitle: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -47,6 +47,9 @@ class SelectScreeningWidget extends StatelessWidget {
                                     context
                                         .read<AppProvider>()
                                         .selectScreening(screening);
+                                    context
+                                        .read<AppProvider>()
+                                        .selectCinema(cinema);
                                   },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

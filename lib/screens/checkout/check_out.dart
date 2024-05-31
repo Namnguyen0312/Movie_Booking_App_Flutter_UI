@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/build_price_tag.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/widgets/custom_header.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
-import 'package:movie_ticker_app_flutter/utils/helper.dart';
+import 'package:provider/provider.dart';
 
 class CheckOut extends StatefulWidget {
   const CheckOut({super.key});
@@ -22,7 +23,13 @@ class _CheckOutState extends State<CheckOut> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
+    final appProvider = context.watch<AppProvider>();
+    final seatProvider = context.watch<SeatProvider>();
+    String seat =
+        seatProvider.selectedSeats.map((seat) => seat.numberSeat).join(', ');
+
+    String genres =
+        appProvider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -43,8 +50,8 @@ class _CheckOutState extends State<CheckOut> {
                 children: [
                   SizedBox(
                     width: size.width / 4.3,
-                    child: const Image(
-                      image: AssetImage(AssetHelper.imgRalph),
+                    child: Image(
+                      image: AssetImage(appProvider.selectedMovie!.image),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -58,20 +65,21 @@ class _CheckOutState extends State<CheckOut> {
                             margin: const EdgeInsets.symmetric(
                                 vertical: kMinPadding),
                             child: Text(
-                              movie.title.toString(),
+                              appProvider.selectedMovie!.title.toString(),
                               style: AppStyles.h3,
                             ),
                           ),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 vertical: kMinPadding),
-                            child: ListStarWidget(movie: movie),
+                            child: ListStarWidget(
+                                movie: appProvider.selectedMovie!),
                           ),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 vertical: kMinPadding),
                             child: Text(
-                              'Action & adventure, Comedy',
+                              genres,
                               style:
                                   AppStyles.h4.copyWith(color: AppColors.grey),
                             ),
@@ -80,7 +88,7 @@ class _CheckOutState extends State<CheckOut> {
                             margin: const EdgeInsets.symmetric(
                                 vertical: kMinPadding),
                             child: Text(
-                              '1h 41min',
+                              '${appProvider.selectedMovie!.duration} phút',
                               style:
                                   AppStyles.h4.copyWith(color: AppColors.grey),
                             ),
@@ -93,36 +101,40 @@ class _CheckOutState extends State<CheckOut> {
               ),
             ),
             const BuildPriceTag(content: 'ID Order', price: '22081996'),
-            const BuildPriceTag(content: 'Cinema', price: 'FX Sudirman XXI'),
-            const BuildPriceTag(
-                content: 'Date & Time', price: 'Sun May 22,  16:40'),
-            const BuildPriceTag(content: 'Seat Number', price: 'D7,D8,D9'),
-            const BuildPriceTag(content: 'Price', price: 'Rp 50.000 x 3'),
-            Container(
-              padding: const EdgeInsets.only(
-                top: kItemPadding,
-                bottom: kTop32Padding,
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: kMediumPadding),
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: AppColors.white, width: 1),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total',
-                    style: AppStyles.h4.copyWith(color: AppColors.grey),
-                  ),
-                  Text(
-                    'Rp 150.000',
-                    style: AppStyles.h4.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ),
+            BuildPriceTag(
+                content: 'Cinema', price: appProvider.selectedCinema!.name),
+            BuildPriceTag(
+                content: 'Date & Time',
+                price:
+                    '${appProvider.selectedScreening!.date}, ${appProvider.selectedScreening!.start}'),
+            BuildPriceTag(content: 'Seat Number', price: seat),
+            BuildPriceTag(
+                content: 'Price', price: '${seatProvider.totalPrice}'),
+            // Container(
+            //   padding: const EdgeInsets.only(
+            //     top: kItemPadding,
+            //     bottom: kTop32Padding,
+            //   ),
+            //   margin: const EdgeInsets.symmetric(horizontal: kMediumPadding),
+            //   decoration: const BoxDecoration(
+            //     border: Border(
+            //       bottom: BorderSide(color: AppColors.white, width: 1),
+            //     ),
+            //   ),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text(
+            //         'Total',
+            //         style: AppStyles.h4.copyWith(color: AppColors.grey),
+            //       ),
+            //       Text(
+            //         'Rp 150.000',
+            //         style: AppStyles.h4.copyWith(fontWeight: FontWeight.w600),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Container(
               padding: const EdgeInsets.only(
                 top: kMediumPadding,

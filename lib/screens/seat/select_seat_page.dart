@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/arrow_white_back.dart';
-import 'package:movie_ticker_app_flutter/datasource/temp_db.dart';
+import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/models/screening.dart';
 import 'package:movie_ticker_app_flutter/models/seat.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/check_out.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/widgets/built_seat_status_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/widgets/movie_title.dart';
-
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:movie_ticker_app_flutter/utils/helper.dart';
-
-import '../../models/movie.dart';
+import 'package:provider/provider.dart';
 
 class SelectSeatPage extends StatefulWidget {
   static const String routeName = '/select_seat_page';
@@ -24,8 +24,17 @@ class SelectSeatPage extends StatefulWidget {
 }
 
 class _SelectSeatPageState extends State<SelectSeatPage> {
-  List<Seat> selectedSeats = [];
-  int totalPrice = 0;
+  @override
+  void initState() {
+    super.initState();
+    final seatProvider = Provider.of<SeatProvider>(context, listen: false);
+    final appProvider = Provider.of<AppProvider>(context, listen: false);
+    Future.microtask(() {
+      seatProvider.reset();
+      seatProvider
+          .getAllSeatByAuditorium(appProvider.selectedScreening!.auditorium.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,78 +42,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
     final args = ModalRoute.of(context)!.settings.arguments as Map;
     final movie = args['movie'] as Movie;
     final screening = args['screening'] as Screening;
-
-    // Function to handle seat toggle
-    void toggleSeat(Seat seat) {
-      setState(() {
-        if (selectedSeats.contains(seat)) {
-          selectedSeats.remove(seat);
-          totalPrice -= seat.price;
-        } else {
-          selectedSeats.add(seat);
-          totalPrice += seat.price;
-        }
-      });
-    }
-
-    // Build seat widgets using Container and GestureDetector
-    List<Widget> buildSeatWidgets(List<Seat> seats) {
-      return seats.map((seat) {
-        // Check seat status
-        SeatStatus status = seat.status;
-        Color backgroundColor;
-        bool selected = selectedSeats.contains(seat);
-
-        if (status == SeatStatus.available) {
-          backgroundColor = selected ? AppColors.blueMain : AppColors.grey;
-        } else {
-          backgroundColor = AppColors.darkBackground;
-          selected = false;
-        }
-
-        return GestureDetector(
-          onTap: () {
-            if (status == SeatStatus.available) {
-              toggleSeat(seat);
-            }
-          },
-          child: Container(
-            margin: const EdgeInsets.all(1.0),
-            width: size.width / 11.5,
-            height: size.width / 11.5,
-            decoration: BoxDecoration(
-              color: backgroundColor,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              seat.numberSeat,
-              style: const TextStyle(color: Colors.white, fontSize: 12),
-            ),
-          ),
-        );
-      }).toList();
-    }
-
-    // Generate seat grid
-    Widget generateSeatGrid() {
-      List<String> seatRowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-      List<Seat> seats = TempDB.tableSeat
-          .where((seat) => seat.auditorium.id == screening.auditorium.id)
-          .toList();
-
-      return Column(
-        children: seatRowLetters.map((rowLetter) {
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: seats
-                .where((seat) => seat.numberSeat.startsWith(rowLetter))
-                .map((seat) => buildSeatWidgets([seat]))
-                .expand((element) => element)
-                .toList(),
-          );
-        }).toList(),
-      );
-    }
+    final seatProvider = context.watch<SeatProvider>();
 
     return Scaffold(
       body: SafeArea(
@@ -148,9 +86,23 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
               color: AppColors.blueMain,
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(kDefaultPadding),
-                child: generateSeatGrid(),
+              child: Consumer<SeatProvider>(
+                builder: (context, seatProvider, child) {
+                  if (seatProvider.isLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (seatProvider.seats.isEmpty) {
+                    return const Center(
+                      child: Text('Không có ghế'),
+                    );
+                  } else {
+                    return Padding(
+                      padding: const EdgeInsets.all(kDefaultPadding),
+                      child: generateSeatGrid(seatProvider),
+                    );
+                  }
+                },
               ),
             ),
             Padding(
@@ -168,9 +120,13 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                           color: AppColors.grey,
                         ),
                       ),
-                      Text(
-                        'Rp $totalPrice',
-                        style: AppStyles.h3,
+                      Consumer<SeatProvider>(
+                        builder: (context, seatProvider, child) {
+                          return Text(
+                            'Rp ${seatProvider.totalPrice}',
+                            style: AppStyles.h3,
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -180,7 +136,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                         CheckOut.routeName,
                         arguments: {
                           'movie': movie,
-                          'selectedSeats': selectedSeats,
+                          'selectedSeats': seatProvider.selectedSeats,
                         },
                       );
                     },
@@ -205,5 +161,60 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
         ),
       ),
     );
+  }
+
+  Widget generateSeatGrid(SeatProvider seatProvider) {
+    List<String> seatRowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+    return Column(
+      children: seatRowLetters.map((rowLetter) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: seatProvider.seats
+              .where((seat) => seat.numberSeat.startsWith(rowLetter))
+              .map((seat) => buildSeatWidgets(seatProvider, [seat]))
+              .expand((element) => element)
+              .toList(),
+        );
+      }).toList(),
+    );
+  }
+
+  List<Widget> buildSeatWidgets(SeatProvider seatProvider, List<Seat> seats) {
+    final size = MediaQuery.of(context).size;
+
+    return seats.map((seat) {
+      SeatStatus status = seat.status;
+      Color backgroundColor;
+      bool selected = seatProvider.selectedSeats.contains(seat);
+
+      if (status == SeatStatus.available) {
+        backgroundColor = selected ? AppColors.blueMain : AppColors.grey;
+      } else {
+        backgroundColor = AppColors.darkBackground;
+        selected = false;
+      }
+
+      return GestureDetector(
+        onTap: () {
+          if (status == SeatStatus.available) {
+            seatProvider.toggleSeat(seat);
+          }
+        },
+        child: Container(
+          margin: const EdgeInsets.all(1.0),
+          width: size.width / 11.5,
+          height: size.width / 11.5,
+          decoration: BoxDecoration(
+            color: backgroundColor,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            seat.numberSeat,
+            style: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ),
+      );
+    }).toList();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
+import 'package:movie_ticker_app_flutter/screens/profile/profile_page.dart';
 import 'package:movie_ticker_app_flutter/screens/register/register_page.dart';
 import 'package:movie_ticker_app_flutter/utils/animate.dart';
 
@@ -96,6 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   controller: _passController,
                   textAlign: TextAlign.center,
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
                   style: const TextStyle(
                     color: Color(0xFF393939),
                     fontSize: 13,
@@ -135,7 +139,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 329,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(ProfileScreen.routeName);
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF9F7BFF),
                       ),

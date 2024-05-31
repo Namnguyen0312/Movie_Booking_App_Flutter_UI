@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/arrow_white_back.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
-import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/about_text_widget.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/about_title_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/background_widget.dart';
-import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/caster_bar.dart';
-import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/genres_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/trailer_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/select_screening_by_movie_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class MovieDetailPage extends StatefulWidget {
   const MovieDetailPage({super.key});
@@ -40,8 +38,13 @@ class _MovieDetailPageState extends State<MovieDetailPage>
 
   @override
   Widget build(BuildContext context) {
-    Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
     Size size = MediaQuery.of(context).size;
+    final provider = context.watch<AppProvider>();
+
+    String genres =
+        provider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
+    String cast = provider.selectedMovie!.casters.join(', ');
+    String directors = provider.selectedMovie!.director.join(', ');
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -74,11 +77,11 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                   child: Row(
                     children: [
                       Hero(
-                        tag: movie.id,
+                        tag: provider.selectedMovie!.id,
                         child: SizedBox(
                           width: size.width / 2.5,
                           child: Image.asset(
-                            movie.image,
+                            provider.selectedMovie!.image,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -93,7 +96,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                               ),
                               width: size.width,
                               child: Text(
-                                movie.title,
+                                provider.selectedMovie!.title,
                                 style: AppStyles.h2,
                               ),
                             ),
@@ -103,13 +106,16 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                                 bottom: kDefaultPadding,
                               ),
                               width: size.width,
-                              child: ListStarWidget(movie: movie),
+                              child: ListStarWidget(
+                                  movie: provider.selectedMovie!),
                             ),
                             Container(
-                              padding: const EdgeInsets.only(bottom: 20),
-                              width: size.width,
-                              child: GenresBar(movie: movie),
-                            ),
+                                padding: const EdgeInsets.only(
+                                  bottom: kDefaultPadding,
+                                  left: kDefaultPadding,
+                                ),
+                                width: size.width,
+                                child: Text(genres, style: AppStyles.h4)),
                             Container(
                               margin: const EdgeInsets.only(
                                 left: kDefaultPadding,
@@ -117,7 +123,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                               ),
                               width: size.width,
                               child: Text(
-                                'Thời lượng: ${movie.duration} phút',
+                                'Thời lượng: ${provider.selectedMovie!.duration} phút',
                                 style: AppStyles.h4,
                               ),
                             ),
@@ -125,7 +131,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                               onTap: () {
                                 Navigator.of(context).pushNamed(
                                     SelectScreeningByMoviePage.routeName,
-                                    arguments: movie);
+                                    arguments: provider.selectedMovie!);
                               },
                               child: Container(
                                 height: size.height / 15,
@@ -161,17 +167,37 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const AboutTitle(title: 'Mô Tả'),
-                      AboutText(text: movie.description),
+                      Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPadding,
+                              horizontal: kDefaultIconSize),
+                          width: size.width,
+                          child: Text(
+                            provider.selectedMovie!.description,
+                            style: AppStyles.h4.copyWith(color: AppColors.grey),
+                          )),
                       const AboutTitle(title: 'Đạo diễn'),
-                      ListBar(
-                        list: movie.director,
-                      ),
+                      Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPadding,
+                              horizontal: kDefaultIconSize),
+                          width: size.width,
+                          child: Text(
+                            directors,
+                            style: AppStyles.h4.copyWith(color: AppColors.grey),
+                          )),
                       const AboutTitle(title: 'Diễn Viên'),
-                      ListBar(
-                        list: movie.casters,
-                      ),
+                      Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: kDefaultPadding,
+                              horizontal: kDefaultIconSize),
+                          width: size.width,
+                          child: Text(
+                            cast,
+                            style: AppStyles.h4.copyWith(color: AppColors.grey),
+                          )),
                       const AboutTitle(title: 'Trailer and song'),
-                      TrailerBar(movie: movie, size: size),
+                      TrailerBar(movie: provider.selectedMovie!, size: size),
                     ],
                   ),
                 ),

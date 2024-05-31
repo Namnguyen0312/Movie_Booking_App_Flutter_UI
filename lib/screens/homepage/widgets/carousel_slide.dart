@@ -54,9 +54,13 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                       builder: (BuildContext context) {
                         return GestureDetector(
                           onTap: () {
-                            Navigator.of(context).pushNamed(
-                              MovieDetailPage.routeName,
-                              arguments: movie,
+                            context.read<AppProvider>().selectMovie(movie);
+                            print(provider.selectedMovie!.title);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MovieDetailPage(),
+                              ),
                             );
                           },
                           child: Stack(

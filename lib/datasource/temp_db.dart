@@ -154,9 +154,9 @@ class TempDB {
   static List<Screening> tableScreening = [
     Screening(
       auditorium: tableAuditorium[0],
-      date: '2024-06-04',
+      date: '2024-05-31',
       id: 1,
-      start: '8:30',
+      start: '1:30',
     ),
     Screening(
       auditorium: tableAuditorium[6],

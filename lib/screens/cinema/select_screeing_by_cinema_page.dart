@@ -32,7 +32,7 @@ class _SelectScreeningByCinemaState extends State<SelectScreeningByCinema> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(provider.selectedCinema!),
+        title: Text(provider.selectedCinema!.name),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
       ),

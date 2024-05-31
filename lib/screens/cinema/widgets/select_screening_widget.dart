@@ -51,6 +51,7 @@ class SelectScreeningWidget extends StatelessWidget {
                                     context
                                         .read<AppProvider>()
                                         .checkAndSetSelectMovie();
+                                    print(provider.selectedMovie!.title);
                                   },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

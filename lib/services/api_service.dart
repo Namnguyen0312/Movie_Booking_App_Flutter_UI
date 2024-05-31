@@ -4,6 +4,7 @@ import 'package:movie_ticker_app_flutter/models/address.dart';
 import 'package:movie_ticker_app_flutter/models/cinema.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/models/screening.dart';
+import 'package:movie_ticker_app_flutter/models/seat.dart';
 
 class ApiService {
   static const String baseUrl = 'http://yourapiurl.com';
@@ -72,6 +73,17 @@ class ApiService {
       return jsonResponse
           .map((screening) => Screening.fromJson(screening))
           .toList();
+    } else {
+      throw Exception('Failed to load screenings');
+    }
+  }
+
+  Future<List<Seat>> getAllSeatByAuditorium(int auditoriumId) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/auditorium/$auditoriumId/seats'));
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((screening) => Seat.fromJson(screening)).toList();
     } else {
       throw Exception('Failed to load screenings');
     }
