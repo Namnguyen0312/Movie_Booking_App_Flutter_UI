@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
+import 'package:movie_ticker_app_flutter/screens/register/verify_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/utils/animate.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -18,6 +22,74 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _repassController = TextEditingController();
 
+  bool _isLoading = false; // Biến để theo dõi trạng thái load
+
+  void _register() async {
+    setState(() {
+      _isLoading = true; // Bắt đầu hiển thị loading khi đăng ký
+    });
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 50,
+            horizontal: 50,
+          ),
+          content: _isLoading
+              ? const SpinKitCubeGrid(
+                  color: Color(0xFF755DC1),
+                  size: 70.0,
+                )
+              : const Row(
+                  children: [
+                    Icon(Icons.check,
+                        color: Colors.green), // Hiển thị icon check
+                    SizedBox(width: 10),
+                    Text('Đăng ký thành công'),
+                  ],
+                ),
+        );
+      },
+    );
+
+    if (_passController.text != _repassController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Mật khẩu không khớp')),
+      );
+      setState(() {
+        _isLoading = false; // Đóng loading nếu có lỗi
+      });
+      Navigator.pop(context);
+      return;
+    }
+
+    try {
+      await Provider.of<UserProvider>(context, listen: false).createUser(
+        _userNameController.text,
+        _emailController.text,
+        _phoneController.text,
+        _addressController.text,
+        _passController.text,
+      );
+      if (!mounted) return;
+
+      Navigator.pushReplacementNamed(context, VerifyScreen.routeName);
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Đăng ký thất bại')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false; // Đóng loading nếu có lỗi
+      });
+
+      Navigator.pop(context); // Đóng AlertDialog
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +98,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.close), // Biểu tượng "X"
+            icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
                 Animate.createRoute(const HomeScreen()),
@@ -47,9 +119,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 textDirection: TextDirection.ltr,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
+                  const SizedBox(height: 50),
                   const Text(
                     'Đăng ký',
                     style: TextStyle(
@@ -59,9 +129,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   SizedBox(
                     height: 56,
                     child: TextField(
@@ -98,9 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 17,
-                  ),
+                  const SizedBox(height: 17),
                   SizedBox(
                     height: 56,
                     child: TextField(
@@ -137,9 +203,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 17,
-                  ),
+                  const SizedBox(height: 17),
                   SizedBox(
                     height: 56,
                     child: TextField(
@@ -176,9 +240,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 17,
-                  ),
+                  const SizedBox(height: 17),
                   SizedBox(
                     height: 56,
                     child: TextField(
@@ -215,9 +277,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 17,
-                  ),
+                  const SizedBox(height: 17),
                   SizedBox(
                     height: 56,
                     child: TextField(
@@ -257,9 +317,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 17,
-                  ),
+                  const SizedBox(height: 17),
                   SizedBox(
                     height: 56,
                     child: TextField(
@@ -296,16 +354,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 25,
-                  ),
+                  const SizedBox(height: 25),
                   ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                     child: SizedBox(
                       width: 329,
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: _register,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF9F7BFF),
                         ),
@@ -321,9 +377,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                  const SizedBox(height: 15),
                   Row(
                     children: [
                       const Text(
@@ -336,9 +390,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(
-                        width: 2.5,
-                      ),
+                      const SizedBox(width: 2.5),
                       InkWell(
                         onTap: () {
                           Navigator.of(context)

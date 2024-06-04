@@ -19,11 +19,12 @@ class CarouselSliderFirm extends StatefulWidget {
 }
 
 class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
+  late Future<void> _fetchMoviesFuture;
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-        () => Provider.of<AppProvider>(context, listen: false).fetchMovies());
+    _fetchMoviesFuture = context.read<AppProvider>().fetchMovies();
   }
 
   @override
@@ -31,12 +32,14 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
     return Consumer<AppProvider>(
       builder: (context, provider, child) {
         return FutureBuilder(
-          future: provider.fetchMovies(),
+          future: _fetchMoviesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (provider.movies.isEmpty) {
+              return const Center(child: Text('No movies available'));
             } else {
               return Padding(
                 padding: const EdgeInsets.only(top: kDefaultPadding),
@@ -55,7 +58,6 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                         return GestureDetector(
                           onTap: () {
                             context.read<AppProvider>().selectMovie(movie);
-                            print(provider.selectedMovie!.title);
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -65,21 +67,17 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                           },
                           child: Stack(
                             children: [
-                              Hero(
-                                tag: movie.id, // Unique tag for each movie
-                                child: Container(
-                                  width: widget.size.width,
-                                  height: widget.size.height,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.lightBlueNon,
-                                    borderRadius: kBigBorderRadius,
-                                    image: DecorationImage(
+                              Container(
+                                width: widget.size.width,
+                                height: widget.size.height,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                decoration: BoxDecoration(
+                                  color: AppColors.lightBlueNon,
+                                  borderRadius: kBigBorderRadius,
+                                  image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage(movie.image.toString()),
-                                    ),
-                                  ),
+                                      image: NetworkImage(movie.image)),
                                 ),
                               ),
                             ],

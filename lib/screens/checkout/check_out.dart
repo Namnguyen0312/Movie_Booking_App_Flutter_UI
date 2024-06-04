@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
+import 'package:movie_ticker_app_flutter/models/seat.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
@@ -25,8 +26,11 @@ class _CheckOutState extends State<CheckOut> {
     final Size size = MediaQuery.of(context).size;
     final appProvider = context.watch<AppProvider>();
     final seatProvider = context.watch<SeatProvider>();
-    String seat =
-        seatProvider.selectedSeats.map((seat) => seat.numberSeat).join(', ');
+    List<Seat> sortedSeats = seatProvider.getSortedSeats();
+    String seat = sortedSeats
+        .where((seat) => seatProvider.selectedSeatIds.contains(seat.id))
+        .map((seat) => '${seat.rowSeat}${seat.numberSeat}')
+        .join(', ');
 
     String genres =
         appProvider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
@@ -51,7 +55,7 @@ class _CheckOutState extends State<CheckOut> {
                   SizedBox(
                     width: size.width / 4.3,
                     child: Image(
-                      image: AssetImage(appProvider.selectedMovie!.image),
+                      image: NetworkImage(appProvider.selectedMovie!.image),
                       fit: BoxFit.cover,
                     ),
                   ),

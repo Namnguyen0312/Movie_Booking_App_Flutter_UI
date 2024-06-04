@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_ticker_app_flutter/datasource/temp_db.dart';
+import 'package:movie_ticker_app_flutter/models/address.dart';
 import 'package:movie_ticker_app_flutter/models/cinema.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/models/screening.dart';
+import 'package:movie_ticker_app_flutter/services/api_service.dart';
 
 class AppProvider extends ChangeNotifier {
   String? _selectedCity;
@@ -65,24 +67,24 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> getCityToAddress() async {
-    // try {
-    //   final List<Address> address = await ApiService().getAllAddress();
-    //   _citys = address.map((address) => address.city).toList();
-    //    notifyListeners();
-    // } catch (error) {
-    //   rethrow;
-    // }
-    _citys = TempDB.tableAddress.map((address) => address.city).toList();
+    try {
+      final List<Address> addresses = await ApiService().getAllAddress();
+      Set<String> citySet = addresses.map((address) => address.city).toSet();
+      _citys = citySet.toList();
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Future<void> fetchMovies() async {
-    // try {
-    //   _movies = await ApiService().getAllMovie();
-    //    notifyListeners();
-    // } catch (error) {
-    //   rethrow;
-    // }
-    _movies = TempDB.movies;
+    try {
+      _movies = await ApiService().getAllMovie();
+      // notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+    // _movies = TempDB.movies;
   }
 
   Future<void> fetchCinemasByCity(String city) async {
@@ -102,7 +104,7 @@ class AppProvider extends ChangeNotifier {
     _selectedCity = '';
     _isSelected = [];
     _citySelected = false;
-
+    _dateSelected = false;
     _selectedDate = null;
     _selectedScreening = null;
     _screenings = [];
@@ -147,42 +149,40 @@ class AppProvider extends ChangeNotifier {
 
   void selectMovie(Movie movie) {
     _selectedMovie = movie;
-    // notifyListeners();
+    notifyListeners();
   }
 
   void checkAndSetSelectMovie() {
-    for (var movie in _movies) {
-      if (movie.screenings.contains(_selectedScreening)) {
-        _selectedMovie = movie;
-        notifyListeners();
-        return;
-      }
-    }
-    _selectedMovie = null;
+    _selectedMovie = _selectedScreening!.movie;
     notifyListeners();
   }
 
   Future<void> getScreeningsByMovieAndCity(
-    Movie movie,
+    int movieId,
     String city,
     DateTime dateTime,
   ) async {
-    _screenings = movie.screenings.where(
-      (screening) {
-        final screeningDate = DateTime.parse(screening.date);
-        return screeningDate.year == dateTime.year &&
-            screeningDate.month == dateTime.month &&
-            screeningDate.day == dateTime.day &&
-            screening.auditorium.cinema.address.city == city;
-      },
-    ).toList();
-    _screenings.sort((a, b) {
-      final format = DateFormat("yyyy-MM-dd HH:mm");
-      final timeA = format.parse('${a.date} ${a.start}');
-      final timeB = format.parse('${b.date} ${b.start}');
-      return timeA.compareTo(timeB);
-    });
-    notifyListeners();
+    try {
+      final screenings =
+          await ApiService().getScreeningsByMovieAndCity(city, movieId);
+      _screenings = screenings.where(
+        (screening) {
+          final screeningDate = DateTime.parse(screening.date);
+          return screeningDate.year == dateTime.year &&
+              screeningDate.month == dateTime.month &&
+              screeningDate.day == dateTime.day;
+        },
+      ).toList();
+      _screenings.sort((a, b) {
+        final format = DateFormat("yyyy-MM-dd HH:mm");
+        final timeA = format.parse('${a.date} ${a.start}');
+        final timeB = format.parse('${b.date} ${b.start}');
+        return timeA.compareTo(timeB);
+      });
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
   }
 
   Map<Cinema, List<Screening>> get screeningsByCinema {
@@ -215,19 +215,22 @@ class AppProvider extends ChangeNotifier {
 
   Map<String, List<Screening>> get screeningsByMovie {
     Map<String, List<Screening>> groupedScreenings = {};
-    for (var movie in _movies) {
-      final movieTitle = movie.title;
-      groupedScreenings[movieTitle] = movie.screenings.where(
-        (screening) {
-          final screeningDate = DateTime.parse(screening.date);
-          return _selectedDate != null &&
-              screeningDate.year == _selectedDate!.year &&
-              screeningDate.month == _selectedDate!.month &&
-              screeningDate.day == _selectedDate!.day &&
-              screening.auditorium.cinema.name == _selectedCinema!.name;
-        },
-      ).toList();
+    for (var screening in TempDB.tableScreening) {
+      final movieTitle = screening.movie.title;
+      if (selectedDate != null) {
+        final screeningDate = DateTime.parse(screening.date);
+        if (screeningDate.year == selectedDate!.year &&
+            screeningDate.month == selectedDate!.month &&
+            screeningDate.day == selectedDate!.day &&
+            screening.auditorium.cinema.name == selectedCinema!.name) {
+          if (!groupedScreenings.containsKey(movieTitle)) {
+            groupedScreenings[movieTitle] = [];
+          }
+          groupedScreenings[movieTitle]!.add(screening);
+        }
+      }
     }
+
     return groupedScreenings;
   }
 }

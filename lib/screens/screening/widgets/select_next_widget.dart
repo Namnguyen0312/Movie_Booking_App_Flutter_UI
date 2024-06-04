@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/select_seat_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
@@ -9,12 +8,10 @@ class SelectNextWidget extends StatelessWidget {
   const SelectNextWidget({
     super.key,
     required this.provider,
-    required this.movie,
     required this.size,
   });
 
   final AppProvider provider;
-  final Movie movie;
   final Size size;
 
   @override
@@ -27,10 +24,6 @@ class SelectNextWidget extends StatelessWidget {
             ? () {
                 Navigator.of(context).pushNamed(
                   SelectSeatPage.routeName,
-                  arguments: {
-                    'movie': movie,
-                    'screening': provider.selectedScreening,
-                  },
                 );
               }
             : null,

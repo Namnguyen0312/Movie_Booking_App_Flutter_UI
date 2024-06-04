@@ -3,8 +3,6 @@ import 'package:movie_ticker_app_flutter/common/widgets/stateless/arrow_white_ba
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/about_title_widget.dart';
-import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/background_widget.dart';
-import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/trailer_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/select_screening_by_movie_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
@@ -43,15 +41,14 @@ class _MovieDetailPageState extends State<MovieDetailPage>
 
     String genres =
         provider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
-    String cast = provider.selectedMovie!.casters.join(', ');
-    String directors = provider.selectedMovie!.director.join(', ');
+    String cast = provider.selectedMovie!.casts.join(', ');
 
     return Scaffold(
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Stack(
           children: [
-            BackgroundWidget(size: size),
+            // BackgroundWidget(size: size),
             Container(
               height: size.height / 3,
               decoration: const BoxDecoration(
@@ -76,14 +73,11 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                   ),
                   child: Row(
                     children: [
-                      Hero(
-                        tag: provider.selectedMovie!.id,
-                        child: SizedBox(
-                          width: size.width / 2.5,
-                          child: Image.asset(
-                            provider.selectedMovie!.image,
-                            fit: BoxFit.cover,
-                          ),
+                      SizedBox(
+                        width: size.width / 2.5,
+                        child: Image.network(
+                          provider.selectedMovie!.image,
+                          fit: BoxFit.cover,
                         ),
                       ),
                       Expanded(
@@ -183,7 +177,7 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                               horizontal: kDefaultIconSize),
                           width: size.width,
                           child: Text(
-                            directors,
+                            provider.selectedMovie!.director,
                             style: AppStyles.h4.copyWith(color: AppColors.grey),
                           )),
                       const AboutTitle(title: 'Diễn Viên'),
@@ -196,8 +190,8 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                             cast,
                             style: AppStyles.h4.copyWith(color: AppColors.grey),
                           )),
-                      const AboutTitle(title: 'Trailer and song'),
-                      TrailerBar(movie: provider.selectedMovie!, size: size),
+                      // const AboutTitle(title: 'Trailer and song'),
+                      // TrailerBar(movie: provider.selectedMovie!, size: size),
                     ],
                   ),
                 ),

@@ -1,3 +1,5 @@
+import 'package:movie_ticker_app_flutter/models/movie.dart';
+
 import 'auditorium.dart';
 
 class Screening {
@@ -5,12 +7,14 @@ class Screening {
   final String start;
   final String date;
   final Auditorium auditorium;
+  final Movie movie;
 
   Screening({
     required this.id,
     required this.start,
     required this.date,
     required this.auditorium,
+    required this.movie,
   });
 
   factory Screening.fromJson(Map<String, dynamic> json) {
@@ -19,6 +23,7 @@ class Screening {
       start: json['start'],
       date: json['date'],
       auditorium: Auditorium.fromJson(json['auditorium']),
+      movie: Movie.fromJson(json['movie']),
     );
   }
 
@@ -28,6 +33,7 @@ class Screening {
       'start': start,
       'date': date,
       'auditorium': auditorium.toJson(),
+      'movie': movie.toJson(),
     };
   }
 }

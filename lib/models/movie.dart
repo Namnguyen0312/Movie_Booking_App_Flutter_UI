@@ -1,5 +1,4 @@
 import 'package:movie_ticker_app_flutter/models/genre.dart';
-import 'package:movie_ticker_app_flutter/models/screening.dart';
 
 class Movie {
   final int id;
@@ -11,10 +10,9 @@ class Movie {
   final String releaseDate;
   final List<Genre> genres;
   final String description;
-  final List<String> director;
-  final List<String> casters;
-  final List<String> trailers;
-  final List<Screening> screenings;
+  final String director;
+  final List<String> casts;
+  final String trailers;
 
   Movie({
     required this.id,
@@ -27,28 +25,24 @@ class Movie {
     required this.genres,
     required this.description,
     required this.director,
-    required this.casters,
+    required this.casts,
     required this.trailers,
-    required this.screenings,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
     return Movie(
       id: json['id'],
       title: json['title'],
-      duration: json['duration'],
-      image: json['image'],
-      rating: json['rating'],
-      endDate: json['endDate'],
-      releaseDate: json['releaseDate'],
-      genres: (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
       description: json['description'],
-      director: List<String>.from(json['director']),
-      casters: List<String>.from(json['casters']),
-      trailers: List<String>.from(json['trailers']),
-      screenings: (json['screenings'] as List)
-          .map((e) => Screening.fromJson(e))
-          .toList(),
+      image: json['image'],
+      trailers: json['trailer'],
+      director: json['director'],
+      casts: List<String>.from(json['casts']),
+      duration: json['duration'],
+      rating: json['rating'],
+      releaseDate: json['release_date'],
+      endDate: json['end_date'],
+      genres: (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
     );
   }
 
@@ -64,9 +58,8 @@ class Movie {
       'genres': genres.map((e) => e.toJson()).toList(),
       'description': description,
       'director': director,
-      'casters': casters,
+      'casters': casts,
       'trailers': trailers,
-      'screenings': screenings.map((e) => e.toJson()).toList(),
     };
   }
 }

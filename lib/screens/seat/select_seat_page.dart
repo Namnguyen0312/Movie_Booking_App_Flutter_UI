@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/arrow_white_back.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
-import 'package:movie_ticker_app_flutter/models/screening.dart';
 import 'package:movie_ticker_app_flutter/models/seat.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
@@ -39,10 +37,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final args = ModalRoute.of(context)!.settings.arguments as Map;
-    final movie = args['movie'] as Movie;
-    final screening = args['screening'] as Screening;
-    final seatProvider = context.watch<SeatProvider>();
+    final appProvider = context.watch<AppProvider>();
 
     return Scaffold(
       body: SafeArea(
@@ -51,8 +46,8 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
           children: [
             ArrowBackWhite(topPadding: kMinPadding),
             MovieTitle(
-              nameMovie: movie.title.toString(),
-              screening: screening,
+              nameMovie: appProvider.selectedMovie!.title.toString(),
+              screening: appProvider.selectedScreening!,
             ),
             const Padding(
               padding: EdgeInsets.all(kDefaultPadding),
@@ -134,10 +129,6 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                     onTap: () {
                       Navigator.of(context).pushNamed(
                         CheckOut.routeName,
-                        arguments: {
-                          'movie': movie,
-                          'selectedSeats': seatProvider.selectedSeats,
-                        },
                       );
                     },
                     child: Container(
@@ -164,57 +155,50 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
   }
 
   Widget generateSeatGrid(SeatProvider seatProvider) {
-    List<String> seatRowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    List<Seat> sortedSeats = seatProvider.getSortedSeats();
+
+    // Generate row letters based on the sorted seats
+    List<String> seatRowLetters =
+        sortedSeats.map((seat) => seat.rowSeat).toSet().toList()..sort();
 
     return Column(
       children: seatRowLetters.map((rowLetter) {
+        List<Seat> rowSeats =
+            sortedSeats.where((seat) => seat.rowSeat == rowLetter).toList();
+
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: seatProvider.seats
-              .where((seat) => seat.numberSeat.startsWith(rowLetter))
-              .map((seat) => buildSeatWidgets(seatProvider, [seat]))
-              .expand((element) => element)
+          children: rowSeats
+              .map((seat) => buildSeatWidget(seatProvider, seat))
               .toList(),
         );
       }).toList(),
     );
   }
 
-  List<Widget> buildSeatWidgets(SeatProvider seatProvider, List<Seat> seats) {
+  Widget buildSeatWidget(SeatProvider seatProvider, Seat seat) {
     final size = MediaQuery.of(context).size;
+    bool selected = seatProvider.selectedSeatIds.contains(seat.id);
 
-    return seats.map((seat) {
-      SeatStatus status = seat.status;
-      Color backgroundColor;
-      bool selected = seatProvider.selectedSeats.contains(seat);
+    Color backgroundColor = selected ? AppColors.blueMain : AppColors.grey;
 
-      if (status == SeatStatus.available) {
-        backgroundColor = selected ? AppColors.blueMain : AppColors.grey;
-      } else {
-        backgroundColor = AppColors.darkBackground;
-        selected = false;
-      }
-
-      return GestureDetector(
-        onTap: () {
-          if (status == SeatStatus.available) {
-            seatProvider.toggleSeat(seat);
-          }
-        },
-        child: Container(
-          margin: const EdgeInsets.all(1.0),
-          width: size.width / 11.5,
-          height: size.width / 11.5,
-          decoration: BoxDecoration(
-            color: backgroundColor,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            seat.numberSeat,
-            style: const TextStyle(color: Colors.white, fontSize: 12),
-          ),
+    return GestureDetector(
+      onTap: () {
+        seatProvider.toggleSeat(seat);
+      },
+      child: Container(
+        margin: const EdgeInsets.all(1.0),
+        width: size.width / 11.5,
+        height: size.width / 11.5,
+        decoration: BoxDecoration(
+          color: backgroundColor,
         ),
-      );
-    }).toList();
+        alignment: Alignment.center,
+        child: Text(
+          '${seat.rowSeat}${seat.numberSeat}',
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ),
+    );
   }
 }

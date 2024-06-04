@@ -16,7 +16,7 @@ class SelectScreeningWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: provider.screenings.isEmpty
+      child: provider.screenings.isEmpty && provider.dateSelected
           ? const Center(child: Text('Không có suất chiếu'))
           : ListView.builder(
               itemCount: provider.screeningsByCinema.length,

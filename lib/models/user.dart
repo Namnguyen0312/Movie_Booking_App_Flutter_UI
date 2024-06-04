@@ -20,4 +20,30 @@ class User {
     required this.totalSpending,
     required this.membership,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      email: json['email'],
+      role: json['role'],
+      name: json['name'],
+      password: json['password'],
+      phone: json['phone'],
+      totalSpending: json['totalSpending'],
+      membership: json['membership'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'email': email,
+      'role': role,
+      'name': name,
+      'password': password,
+      'phone': phone,
+      'totalSpending': totalSpending,
+      'membership': membership,
+    };
+  }
 }

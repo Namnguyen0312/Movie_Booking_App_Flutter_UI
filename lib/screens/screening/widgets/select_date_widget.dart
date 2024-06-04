@@ -33,7 +33,7 @@ class SelectDateWidget extends StatelessWidget {
                     .updateIsSelected(index, provider.days);
                 context.read<AppProvider>().selectDate(provider.days[index]);
                 await context.read<AppProvider>().getScreeningsByMovieAndCity(
-                    movie, provider.selectedCity!, provider.selectedDate!);
+                    movie.id, provider.selectedCity!, provider.selectedDate!);
               },
               child: Container(
                 height: size.height / 10,

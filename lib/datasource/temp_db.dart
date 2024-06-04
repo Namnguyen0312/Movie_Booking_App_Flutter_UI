@@ -4,7 +4,6 @@ import 'package:movie_ticker_app_flutter/models/cinema.dart';
 import 'package:movie_ticker_app_flutter/models/genre.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/models/screening.dart';
-import 'package:movie_ticker_app_flutter/models/seat.dart';
 import 'package:movie_ticker_app_flutter/utils/helper.dart';
 
 class TempDB {
@@ -19,13 +18,9 @@ class TempDB {
       releaseDate: '2022-01-01',
       genres: [tableGenres[0], tableGenres[1]],
       description: 'A story about training dragons.',
-      director: ['Director 1'],
-      casters: ['Nguyễn Lê Văn', 'Actor 2'],
-      trailers: [AssetHelper.imgTrailer1, AssetHelper.imgTrailer2],
-      screenings: [
-        tableScreening[10],
-        tableScreening[11],
-      ],
+      director: 'Director 1',
+      casts: ['Nguyễn Lê Văn', 'Actor 2'],
+      trailers: AssetHelper.imgTrailer2,
     ),
     Movie(
       id: 2,
@@ -37,13 +32,9 @@ class TempDB {
       releaseDate: '2023-01-01',
       genres: [tableGenres[4], tableGenres[1]],
       description: 'The sequel to Frozen.',
-      director: ['Director 2'],
-      casters: ['Nguyễn Lê Văn', 'Actor 4'],
-      trailers: [AssetHelper.imgMovieBanner, AssetHelper.imgMoviePoster],
-      screenings: [
-        tableScreening[8],
-        tableScreening[9],
-      ],
+      director: 'Director 2',
+      casts: ['Nguyễn Lê Văn', 'Actor 4'],
+      trailers: AssetHelper.imgMoviePoster,
     ),
     Movie(
       id: 3,
@@ -55,13 +46,9 @@ class TempDB {
       releaseDate: '2022-02-01',
       genres: [tableGenres[3], tableGenres[1]],
       description: 'Two elf brothers go on a quest.',
-      director: ['Director 3'],
-      casters: ['Nguyễn Lê Văn', 'Actor 6'],
-      trailers: [AssetHelper.imgMoviePoster2, AssetHelper.imgMoviePoster3],
-      screenings: [
-        tableScreening[6],
-        tableScreening[7],
-      ],
+      director: 'Director 3',
+      casts: ['Nguyễn Lê Văn', 'Actor 6'],
+      trailers: AssetHelper.imgMoviePoster3,
     ),
     Movie(
       id: 4,
@@ -73,13 +60,9 @@ class TempDB {
       releaseDate: '2022-03-01',
       genres: [tableGenres[2], tableGenres[1]],
       description: 'Ralph breaks the internet.',
-      director: ['Director 4'],
-      casters: ['Nguyễn Lê Văn', 'Actor 8'],
-      trailers: [AssetHelper.imgTrailer1, AssetHelper.imgTrailer2],
-      screenings: [
-        tableScreening[4],
-        tableScreening[5],
-      ],
+      director: 'Director 4',
+      casts: ['Nguyễn Lê Văn', 'Actor 8'],
+      trailers: AssetHelper.imgTrailer2,
     ),
     Movie(
       id: 5,
@@ -91,13 +74,9 @@ class TempDB {
       releaseDate: '2022-04-01',
       genres: [tableGenres[0], tableGenres[1]],
       description: 'Scooby-Doo and the gang.',
-      director: ['Director 5'],
-      casters: ['Actor 9', 'Actor 10'],
-      trailers: [AssetHelper.imgMovieBanner, AssetHelper.imgMoviePoster],
-      screenings: [
-        tableScreening[3],
-        tableScreening[1],
-      ],
+      director: 'Director 5',
+      casts: ['Actor 9', 'Actor 10'],
+      trailers: AssetHelper.imgMoviePoster,
     ),
     Movie(
       id: 6,
@@ -114,13 +93,9 @@ class TempDB {
         tableGenres[3],
       ],
       description: 'A fantasy adventure.',
-      director: ['Director 6'],
-      casters: ['Nguyễn Lê Văn', 'Actor 2'],
-      trailers: [AssetHelper.imgMoviePoster2, AssetHelper.imgMoviePoster3],
-      screenings: [
-        tableScreening[0],
-        tableScreening[2],
-      ],
+      director: 'Director 6',
+      casts: ['Nguyễn Lê Văn', 'Actor 2'],
+      trailers: AssetHelper.imgMoviePoster3,
     ),
   ];
 
@@ -154,75 +129,87 @@ class TempDB {
   static List<Screening> tableScreening = [
     Screening(
       auditorium: tableAuditorium[0],
-      date: '2024-05-31',
+      date: '2024-06-04',
       id: 1,
-      start: '1:30',
+      start: '8:30',
+      movie: movies[0],
     ),
     Screening(
       auditorium: tableAuditorium[6],
       date: '2024-06-04',
       id: 2,
       start: '8:30',
+      movie: movies[1],
     ),
     Screening(
       auditorium: tableAuditorium[2],
       date: '2024-06-04',
       id: 3,
       start: '10:30',
+      movie: movies[2],
     ),
     Screening(
       auditorium: tableAuditorium[3],
       date: '2024-06-04',
       id: 4,
       start: '11:30',
+      movie: movies[3],
     ),
     Screening(
       auditorium: tableAuditorium[4],
       date: '2024-06-04',
       id: 5,
       start: '17:30',
+      movie: movies[4],
     ),
     Screening(
       auditorium: tableAuditorium[1],
       date: '2024-06-04',
       id: 6,
       start: '20:30',
+      movie: movies[5],
     ),
     Screening(
       auditorium: tableAuditorium[2],
       date: '2024-06-04',
       id: 7,
       start: '12:30',
+      movie: movies[0],
     ),
     Screening(
       auditorium: tableAuditorium[5],
       date: '2024-06-04',
       id: 8,
       start: '21:30',
+      movie: movies[1],
     ),
     Screening(
       auditorium: tableAuditorium[1],
       date: '2024-06-04',
       id: 9,
       start: '22:30',
+      movie: movies[2],
     ),
     Screening(
       auditorium: tableAuditorium[0],
       date: '2024-06-04',
       id: 10,
       start: '21:21',
+      movie: movies[3],
     ),
     Screening(
       auditorium: tableAuditorium[1],
       date: '2024-06-04',
       id: 11,
       start: '21:11',
+      movie: movies[4],
     ),
     Screening(
       auditorium: tableAuditorium[2],
       date: '2024-06-04',
       id: 11,
       start: '21:11',
+      movie: movies[5],
     ),
   ];
 
@@ -313,74 +300,63 @@ class TempDB {
     Address(id: 4, city: 'Hải Phòng', district: 'd', street: 'd', ward: 'd'),
   ];
 
-  static List<Seat> tableSeat = [
-    Seat(
-        id: 1,
-        numberSeat: 'A1',
-        price: 49000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 2,
-        numberSeat: 'A2',
-        price: 49000,
-        status: SeatStatus.reserved,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 3,
-        numberSeat: 'A3',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 4,
-        numberSeat: 'A4',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 5,
-        numberSeat: 'A5',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 6,
-        numberSeat: 'A6',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 7,
-        numberSeat: 'A7',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 8,
-        numberSeat: 'A8',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 9,
-        numberSeat: 'A9',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 10,
-        numberSeat: 'A10',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-    Seat(
-        id: 11,
-        numberSeat: 'B1',
-        price: 100000,
-        status: SeatStatus.available,
-        auditorium: tableAuditorium[0]),
-  ];
+  // static List<Seat> tableSeat = [
+  //   Seat(
+  //       id: 1,
+  //       numberSeat: 'A1',
+  //       price: 49000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 2,
+  //       numberSeat: 'A2',
+  //       price: 49000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 3,
+  //       numberSeat: 'A3',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 4,
+  //       numberSeat: 'A4',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 5,
+  //       numberSeat: 'A5',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 6,
+  //       numberSeat: 'A6',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 7,
+  //       numberSeat: 'A7',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 8,
+  //       numberSeat: 'A8',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 9,
+  //       numberSeat: 'A9',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 10,
+  //       numberSeat: 'A10',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  //   Seat(
+  //       id: 11,
+  //       numberSeat: 'B1',
+  //       price: 100000,
+  //       auditorium: tableAuditorium[0]),
+  // ];
 
   static List<String> getCity() {
     return tableAddress.map((address) => address.city).toList();

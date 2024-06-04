@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_next_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_screening_widget.dart';
@@ -38,33 +37,32 @@ class _SelectScreeningByMoviePageState
 
   @override
   Widget build(BuildContext context) {
-    Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
     final size = MediaQuery.of(context).size;
     final provider = context.watch<AppProvider>();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(movie.title),
+        title: Text(provider.selectedMovie!.title),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
       ),
       body: SafeArea(
         child: Column(
           children: [
-            SelectCityWidget(provider: provider, movie: movie),
+            SelectCityWidget(provider: provider),
             const SizedBox(
               height: 20,
             ),
             if (provider.citySelected)
               SelectDateWidget(
-                movie: movie,
+                movie: provider.selectedMovie!,
                 provider: provider,
               ),
             const SizedBox(
               height: 20,
             ),
             SelectScreeningWidget(provider: provider),
-            SelectNextWidget(provider: provider, movie: movie, size: size),
+            SelectNextWidget(provider: provider, size: size),
           ],
         ),
       ),
