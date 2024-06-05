@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
@@ -7,19 +6,14 @@ import 'package:provider/provider.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 
 class SelectDateWidget extends StatelessWidget {
-  final Movie movie;
-  final AppProvider provider;
-
   const SelectDateWidget({
     super.key,
-    required this.movie,
-    required this.provider,
   });
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final provider = context.watch<AppProvider>();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
@@ -33,7 +27,10 @@ class SelectDateWidget extends StatelessWidget {
                     .updateIsSelected(index, provider.days);
                 context.read<AppProvider>().selectDate(provider.days[index]);
                 await context.read<AppProvider>().getScreeningsByMovieAndCity(
-                    movie.id, provider.selectedCity!, provider.selectedDate!);
+                      context.read<AppProvider>().selectedMovie!.id,
+                      context.read<AppProvider>().selectedCity!,
+                      provider.days[index],
+                    );
               },
               child: Container(
                 height: size.height / 10,

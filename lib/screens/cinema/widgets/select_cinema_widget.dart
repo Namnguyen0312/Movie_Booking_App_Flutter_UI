@@ -5,16 +5,20 @@ import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:provider/provider.dart';
 
-class SelectCinemaWidget extends StatelessWidget {
+class SelectCinemaWidget extends StatefulWidget {
   const SelectCinemaWidget({
     super.key,
-    required this.provider,
   });
 
-  final AppProvider provider;
+  @override
+  State<SelectCinemaWidget> createState() => _SelectCinemaWidgetState();
+}
 
+class _SelectCinemaWidgetState extends State<SelectCinemaWidget> {
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<AppProvider>();
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,53 +64,57 @@ class SelectCinemaWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: provider.cinemas.length,
-            itemBuilder: (context, index) {
-              final cinema = provider.cinemas[index];
-              final address = cinema.address;
-              return Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        cinema.name,
-                        style: AppStyles.h2,
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            color: AppColors.grey,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              '${address.ward}, ${address.street}, ${address.district}, ${address.city}',
-                              style: AppStyles.h5Light,
-                              softWrap: true,
-                              maxLines: null,
+          provider.isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: provider.cinemas.length,
+                  itemBuilder: (context, index) {
+                    final cinema = provider.cinemas[index];
+                    final address = cinema.address;
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              cinema.name,
+                              style: AppStyles.h2,
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  color: AppColors.grey,
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    '${address.ward}, ${address.street}, ${address.district}, ${address.city}',
+                                    style: AppStyles.h5Light,
+                                    softWrap: true,
+                                    maxLines: null,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          context.read<AppProvider>().selectCinema(cinema);
+                          Navigator.of(context).pushNamed(
+                            SelectScreeningByCinema.routeName,
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                  onTap: () {
-                    context.read<AppProvider>().selectCinema(cinema);
-                    Navigator.of(context).pushNamed(
-                      SelectScreeningByCinema.routeName,
                     );
                   },
                 ),
-              );
-            },
-          ),
         ],
       ),
     );

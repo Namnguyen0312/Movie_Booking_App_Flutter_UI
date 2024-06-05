@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:movie_ticker_app_flutter/datasource/temp_db.dart';
 import 'package:movie_ticker_app_flutter/models/address.dart';
 import 'package:movie_ticker_app_flutter/models/cinema.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
@@ -47,6 +46,9 @@ class AppProvider extends ChangeNotifier {
   Cinema? _selectedCinema;
   Cinema? get selectedCinema => _selectedCinema;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   AppProvider() {
     generateDays();
   }
@@ -84,77 +86,6 @@ class AppProvider extends ChangeNotifier {
     } catch (error) {
       rethrow;
     }
-    // _movies = TempDB.movies;
-  }
-
-  Future<void> fetchCinemasByCity(String city) async {
-    // try {
-    //   _cinemas = await ApiService().getCinemasByCity(city);
-    //    notifyListeners();
-    // } catch (error) {
-    //   rethrow;
-    // }
-    _cinemas = TempDB.tableCinema
-        .where((cinema) => cinema.address.city == city)
-        .toList();
-    notifyListeners();
-  }
-
-  void reset() {
-    _selectedCity = '';
-    _isSelected = [];
-    _citySelected = false;
-    _dateSelected = false;
-    _selectedDate = null;
-    _selectedScreening = null;
-    _screenings = [];
-    _cinemas = [];
-    _citys = [];
-
-    _isSelected = List<bool>.generate(days.length, (index) => false);
-    notifyListeners();
-  }
-
-  void resetForCinema() {
-    _isSelected = List<bool>.generate(days.length, (index) => false);
-    _dateSelected = false;
-    _selectedDate = null;
-    screeningsByMovie.clear();
-    _selectedScreening = null;
-    notifyListeners();
-  }
-
-  void selectCity(String city) {
-    // screeningsByCinema;
-    _selectedCity = city;
-    _citySelected = true;
-    notifyListeners();
-  }
-
-  void selectDate(DateTime date) {
-    _selectedDate = date;
-    _dateSelected = true;
-    notifyListeners();
-  }
-
-  void selectScreening(Screening screening) {
-    _selectedScreening = screening;
-    notifyListeners();
-  }
-
-  void selectCinema(Cinema cinema) {
-    _selectedCinema = cinema;
-    notifyListeners();
-  }
-
-  void selectMovie(Movie movie) {
-    _selectedMovie = movie;
-    notifyListeners();
-  }
-
-  void checkAndSetSelectMovie() {
-    _selectedMovie = _selectedScreening!.movie;
-    notifyListeners();
   }
 
   Future<void> getScreeningsByMovieAndCity(
@@ -183,6 +114,102 @@ class AppProvider extends ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  Future<void> fetchCinemasByCity(String city) async {
+    try {
+      _isLoading = true;
+      _cinemas = await ApiService().getCinemasByCity(city);
+      _isLoading = false;
+      notifyListeners();
+    } catch (error) {
+      _isLoading = true;
+      rethrow;
+    }
+  }
+
+  Future<void> getScreeningsByCinema(
+    int cinemaId,
+    DateTime dateTime,
+  ) async {
+    try {
+      final screenings = await ApiService().getScreeningsByCinema(cinemaId);
+      _screenings = screenings.where(
+        (screening) {
+          final screeningDate = DateTime.parse(screening.date);
+          return screeningDate.year == dateTime.year &&
+              screeningDate.month == dateTime.month &&
+              screeningDate.day == dateTime.day;
+        },
+      ).toList();
+      _screenings.sort((a, b) {
+        final format = DateFormat("yyyy-MM-dd HH:mm");
+        final timeA = format.parse('${a.date} ${a.start}');
+        final timeB = format.parse('${b.date} ${b.start}');
+        return timeA.compareTo(timeB);
+      });
+      notifyListeners();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  void reset() {
+    _selectedCity = '';
+    _isSelected = [];
+    _citySelected = false;
+    _dateSelected = false;
+    _selectedDate = null;
+    _selectedScreening = null;
+    _screenings = [];
+    _cinemas = [];
+    _citys = [];
+
+    _isSelected = List<bool>.generate(days.length, (index) => false);
+    notifyListeners();
+  }
+
+  void resetForCinema() {
+    _isSelected = List<bool>.generate(days.length, (index) => false);
+    _dateSelected = false;
+    _selectedDate = null;
+    screeningsByMovie.clear();
+    _selectedScreening = null;
+    notifyListeners();
+  }
+
+  void selectCity(String city) {
+    _selectedCity = city;
+    _citySelected = true;
+    _selectedScreening = null;
+    notifyListeners();
+  }
+
+  void selectDate(DateTime date) {
+    _selectedDate = date;
+    _dateSelected = true;
+    _selectedScreening = null;
+    notifyListeners();
+  }
+
+  void selectScreening(Screening screening) {
+    _selectedScreening = screening;
+    notifyListeners();
+  }
+
+  void selectCinema(Cinema cinema) {
+    _selectedCinema = cinema;
+    notifyListeners();
+  }
+
+  void selectMovie(Movie movie) {
+    _selectedMovie = movie;
+    notifyListeners();
+  }
+
+  void checkAndSetSelectMovie() {
+    _selectedMovie = _selectedScreening!.movie;
+    notifyListeners();
   }
 
   Map<Cinema, List<Screening>> get screeningsByCinema {
@@ -215,19 +242,13 @@ class AppProvider extends ChangeNotifier {
 
   Map<String, List<Screening>> get screeningsByMovie {
     Map<String, List<Screening>> groupedScreenings = {};
-    for (var screening in TempDB.tableScreening) {
+    for (var screening in _screenings) {
       final movieTitle = screening.movie.title;
       if (selectedDate != null) {
-        final screeningDate = DateTime.parse(screening.date);
-        if (screeningDate.year == selectedDate!.year &&
-            screeningDate.month == selectedDate!.month &&
-            screeningDate.day == selectedDate!.day &&
-            screening.auditorium.cinema.name == selectedCinema!.name) {
-          if (!groupedScreenings.containsKey(movieTitle)) {
-            groupedScreenings[movieTitle] = [];
-          }
-          groupedScreenings[movieTitle]!.add(screening);
+        if (!groupedScreenings.containsKey(movieTitle)) {
+          groupedScreenings[movieTitle] = [];
         }
+        groupedScreenings[movieTitle]!.add(screening);
       }
     }
 

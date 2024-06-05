@@ -26,15 +26,14 @@ class _SelectCinemaByCityState extends State<SelectCinemaByCity> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppProvider>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Đặt vé theo rạp'),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
       ),
-      body: SafeArea(
-        child: SelectCinemaWidget(provider: provider),
+      body: const SafeArea(
+        child: SelectCinemaWidget(),
       ),
     );
   }

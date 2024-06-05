@@ -65,7 +65,8 @@ class ApiService {
   }
 
   Future<List<Cinema>> getCinemasByCity(String city) async {
-    final response = await http.get(Uri.parse('$baseUrl/cinemas?city=$city'));
+    final response = await http
+        .get(Uri.parse('$baseUrl/cinema/get/getCinemasByCity?city=$city'));
     if (response.statusCode == 200) {
       final List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       return jsonResponse.map((cinema) => Cinema.fromJson(cinema)).toList();

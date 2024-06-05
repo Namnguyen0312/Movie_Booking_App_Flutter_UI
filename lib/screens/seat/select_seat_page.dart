@@ -22,15 +22,14 @@ class SelectSeatPage extends StatefulWidget {
 }
 
 class _SelectSeatPageState extends State<SelectSeatPage> {
+  late Future<void> _fetchSeatFuture;
+
   @override
   void initState() {
     super.initState();
-    final seatProvider = Provider.of<SeatProvider>(context, listen: false);
-    final appProvider = Provider.of<AppProvider>(context, listen: false);
-    Future.microtask(() {
-      seatProvider.reset();
-      seatProvider
-          .getAllSeatByAuditorium(appProvider.selectedScreening!.auditorium.id);
+    _fetchSeatFuture = Future.microtask(() {
+      return context.read<SeatProvider>().getAllSeatByAuditorium(
+          context.read<AppProvider>().selectedScreening!.auditorium.id);
     });
   }
 
@@ -81,20 +80,25 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
               color: AppColors.blueMain,
             ),
             Expanded(
-              child: Consumer<SeatProvider>(
-                builder: (context, seatProvider, child) {
-                  if (seatProvider.isLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (seatProvider.seats.isEmpty) {
-                    return const Center(
-                      child: Text('Không có ghế'),
-                    );
+              child: FutureBuilder<void>(
+                future: _fetchSeatFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
                   } else {
-                    return Padding(
-                      padding: const EdgeInsets.all(kDefaultPadding),
-                      child: generateSeatGrid(seatProvider),
+                    return Consumer<SeatProvider>(
+                      builder: (context, seatProvider, child) {
+                        if (seatProvider.seats.isEmpty) {
+                          return const Center(child: Text('Rạp đang bảo trì'));
+                        } else {
+                          return Padding(
+                            padding: const EdgeInsets.all(kDefaultPadding),
+                            child: generateSeatGrid(seatProvider),
+                          );
+                        }
+                      },
                     );
                   }
                 },
@@ -178,27 +182,31 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
 
   Widget buildSeatWidget(SeatProvider seatProvider, Seat seat) {
     final size = MediaQuery.of(context).size;
-    bool selected = seatProvider.selectedSeatIds.contains(seat.id);
 
-    Color backgroundColor = selected ? AppColors.blueMain : AppColors.grey;
+    return Consumer<SeatProvider>(
+      builder: (context, provider, child) {
+        bool selected = provider.selectedSeatIds.contains(seat.id);
+        Color backgroundColor = selected ? AppColors.blueMain : AppColors.grey;
 
-    return GestureDetector(
-      onTap: () {
-        seatProvider.toggleSeat(seat);
+        return GestureDetector(
+          onTap: () {
+            provider.toggleSeat(seat);
+          },
+          child: Container(
+            margin: const EdgeInsets.all(1.0),
+            width: size.width / 11.5,
+            height: size.width / 11.5,
+            decoration: BoxDecoration(
+              color: backgroundColor,
+            ),
+            alignment: Alignment.center,
+            child: Text(
+              '${seat.rowSeat}${seat.numberSeat}',
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        );
       },
-      child: Container(
-        margin: const EdgeInsets.all(1.0),
-        width: size.width / 11.5,
-        height: size.width / 11.5,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          '${seat.rowSeat}${seat.numberSeat}',
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-        ),
-      ),
     );
   }
 }

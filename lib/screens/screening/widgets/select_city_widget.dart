@@ -3,16 +3,22 @@ import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:provider/provider.dart';
 
-class SelectCityWidget extends StatelessWidget {
+class SelectCityWidget extends StatefulWidget {
   const SelectCityWidget({
     super.key,
-    required this.provider,
   });
 
-  final AppProvider provider;
+  @override
+  State<SelectCityWidget> createState() => _SelectCityWidgetState();
+}
+
+class _SelectCityWidgetState extends State<SelectCityWidget> {
+  Future<void>? _future;
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<AppProvider>();
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
@@ -25,13 +31,14 @@ class SelectCityWidget extends StatelessWidget {
               child: GestureDetector(
                 onTap: () async {
                   context.read<AppProvider>().selectCity(city);
-                  // context.read<AppProvider>().clearSelection();
-                  if (!context.mounted) return;
-                  if (provider.selectedDate != null) {
+                  if (provider.dateSelected) {
                     await context
                         .read<AppProvider>()
-                        .getScreeningsByMovieAndCity(provider.selectedMovie!.id,
-                            provider.selectedCity!, provider.selectedDate!);
+                        .getScreeningsByMovieAndCity(
+                          context.read<AppProvider>().selectedMovie!.id,
+                          city,
+                          context.read<AppProvider>().selectedDate!,
+                        );
                   }
                 },
                 child: Chip(
@@ -55,6 +62,41 @@ class SelectCityWidget extends StatelessWidget {
           }).toList(),
         ),
       ),
+    );
+  }
+
+  Widget buildChip(String city, bool isSelected) {
+    return FutureBuilder<void>(
+      future: _future,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return const Chip(
+            label: Text(
+              'Error',
+              style: TextStyle(fontSize: 16),
+            ),
+            backgroundColor: AppColors.darkerBackground,
+          );
+        } else {
+          return Chip(
+            label: Text(
+              city,
+              style: const TextStyle(fontSize: 16),
+            ),
+            backgroundColor:
+                isSelected ? AppColors.blueMain : AppColors.darkerBackground,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              side: isSelected
+                  ? const BorderSide(color: AppColors.blueMain)
+                  : BorderSide.none,
+            ),
+          );
+        }
+      },
     );
   }
 }

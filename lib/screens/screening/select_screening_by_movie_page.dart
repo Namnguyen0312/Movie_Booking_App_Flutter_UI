@@ -22,8 +22,6 @@ class _SelectScreeningByMoviePageState
     extends State<SelectScreeningByMoviePage> {
   late List<DateTime> days;
 
-  get provider => null;
-
   @override
   void initState() {
     super.initState();
@@ -49,20 +47,18 @@ class _SelectScreeningByMoviePageState
       body: SafeArea(
         child: Column(
           children: [
-            SelectCityWidget(provider: provider),
+            const SelectCityWidget(),
             const SizedBox(
               height: 20,
             ),
-            if (provider.citySelected)
-              SelectDateWidget(
-                movie: provider.selectedMovie!,
-                provider: provider,
-              ),
+            if (provider.citySelected) const SelectDateWidget(),
             const SizedBox(
               height: 20,
             ),
-            SelectScreeningWidget(provider: provider),
-            SelectNextWidget(provider: provider, size: size),
+            if (provider.citySelected && provider.dateSelected)
+              const SelectScreeningWidget(),
+            if (provider.selectedScreening != null)
+              SelectNextWidget(size: size),
           ],
         ),
       ),

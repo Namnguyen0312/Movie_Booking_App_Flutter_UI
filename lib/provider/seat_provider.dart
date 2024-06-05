@@ -12,20 +12,14 @@ class SeatProvider with ChangeNotifier {
   double _totalPrice = 0.0;
   double get totalPrice => _totalPrice;
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
-
   Future<void> getAllSeatByAuditorium(int auditoriumId) async {
-    _isLoading = true;
     notifyListeners();
     try {
       final List<Seat> seats =
           await ApiService().getAllSeatByAuditorium(auditoriumId);
       _seats = seats;
-      _isLoading = false;
       notifyListeners();
     } catch (error) {
-      _isLoading = false;
       notifyListeners();
       rethrow;
     }
@@ -34,7 +28,6 @@ class SeatProvider with ChangeNotifier {
   void reset() {
     _selectedSeatIds.clear();
     _seats.clear();
-    _isLoading = false;
     _totalPrice = 0;
     notifyListeners();
   }

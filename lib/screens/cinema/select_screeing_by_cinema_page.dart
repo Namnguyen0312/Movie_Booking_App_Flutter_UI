@@ -46,9 +46,8 @@ class _SelectScreeningByCinemaState extends State<SelectScreeningByCinema> {
             const SizedBox(
               height: 20,
             ),
-            if (provider.dateSelected)
-              SelectScreeningWidget(provider: provider),
-            if (provider.dateSelected)
+            if (provider.dateSelected) const SelectScreeningWidget(),
+            if (provider.selectedScreening != null)
               SelectNextWidget(provider: provider, size: size),
           ],
         ),
