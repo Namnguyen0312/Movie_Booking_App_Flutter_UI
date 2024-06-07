@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:provider/provider.dart';
 
 class SelectScreeningWidget extends StatefulWidget {
@@ -23,9 +23,8 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
     if (provider.selectedCity != null &&
         provider.selectedDate != null &&
         _fetchScreeningsFuture == null) {
-      _fetchScreeningsFuture = provider.getScreeningsByMovieAndCity(
-        provider.selectedMovie!.id,
-        provider.selectedCity!,
+      _fetchScreeningsFuture = provider.getScreeningsByCinema(
+        provider.selectedCinema!.id,
         provider.selectedDate!,
       );
     }
@@ -50,9 +49,15 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
 
   Widget _buildScreeningList() {
     final provider = context.watch<AppProvider>();
-    final screeningsByMovie = provider.filteredScreeningsByMovie;
-    return provider.hasScreenings
-        ? const Center(child: Text('Không có suất chiếu'))
+    final screeningsByMovie = provider.screeningsByMovie;
+    return screeningsByMovie.isEmpty
+        ? Center(
+            child: Text(
+            'Không có suất chiếu',
+            style: GoogleFonts.beVietnamPro(
+              textStyle: Theme.of(context).textTheme.titleMedium,
+            ),
+          ))
         : ListView.builder(
             itemCount: screeningsByMovie.length,
             itemBuilder: (context, index) {
@@ -61,7 +66,12 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
               return SizedBox(
                 height: 130,
                 child: ListTile(
-                  title: Text(movieTitle, style: AppStyles.h2),
+                  title: Text(
+                    movieTitle,
+                    style: GoogleFonts.beVietnamPro(
+                      textStyle: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
                   subtitle: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -82,7 +92,7 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
                                       .selectScreening(screening);
                                   context
                                       .read<AppProvider>()
-                                      .checkAndSetSelectMovie();
+                                      .checkAndSetSelectCinema();
                                 },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -107,8 +117,10 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
                                 ),
                                 child: Text(
                                   screening.start,
-                                  style: const TextStyle(
-                                      fontSize: 16, color: AppColors.white),
+                                  style: GoogleFonts.beVietnamPro(
+                                    textStyle:
+                                        Theme.of(context).textTheme.labelMedium,
+                                  ),
                                 ),
                               ),
                             ),

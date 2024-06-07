@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/select_cinema_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/animate.dart';
 
 class Menu extends StatelessWidget {
@@ -22,19 +22,33 @@ class Menu extends StatelessWidget {
             ),
             child: Text(
               'Đặt Vé Xem\nPhim Online\nMọi Lúc Mọi Nơi',
-              style: AppStyles.h2,
+              style: GoogleFonts.beVietnamPro(
+                textStyle: Theme.of(context).textTheme.titleLarge,
+              ),
             ),
           ),
           ListTile(
             leading: const Icon(Icons.person),
-            title: const Text('Hồ Sơ'),
+            title: Text(
+              'Hồ Sơ',
+              style: GoogleFonts.beVietnamPro(
+                textStyle:
+                    const TextStyle(fontSize: 15, color: AppColors.veryDark),
+              ),
+            ),
             onTap: () {
               Navigator.of(context).pushNamed(LoginScreen.routeName);
             },
           ),
           ListTile(
             leading: const Icon(Icons.movie),
-            title: const Text('Rạp phim'),
+            title: Text(
+              'Rạp phim',
+              style: GoogleFonts.beVietnamPro(
+                textStyle:
+                    const TextStyle(fontSize: 15, color: AppColors.veryDark),
+              ),
+            ),
             onTap: () {
               Navigator.of(context)
                   .push(Animate.createRoute(const SelectCinemaByCity()));
@@ -42,7 +56,13 @@ class Menu extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.monetization_on),
-            title: const Text('Giá vé'),
+            title: Text(
+              'Giá vé',
+              style: GoogleFonts.beVietnamPro(
+                textStyle:
+                    const TextStyle(fontSize: 15, color: AppColors.veryDark),
+              ),
+            ),
             onTap: () {},
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_cinema_widget.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
@@ -26,14 +27,22 @@ class _SelectCinemaByCityState extends State<SelectCinemaByCity> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<AppProvider>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đặt vé theo rạp'),
+        title: Text(
+          'Đặt vé theo rạp',
+          style: GoogleFonts.beVietnamPro(
+            textStyle: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
       ),
-      body: const SafeArea(
-        child: SelectCinemaWidget(),
+      body: SafeArea(
+        child: provider.isCityLoading
+            ? const Center(child: CircularProgressIndicator())
+            : const SelectCinemaWidget(),
       ),
     );
   }

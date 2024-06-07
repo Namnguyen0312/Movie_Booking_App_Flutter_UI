@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../themes/app_styles.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../utils/constants.dart';
 
 class AboutTitle extends StatelessWidget {
@@ -18,7 +17,9 @@ class AboutTitle extends StatelessWidget {
           vertical: kDefaultPadding, horizontal: kDefaultIconSize),
       child: Text(
         title,
-        style: AppStyles.h3,
+        style: GoogleFonts.beVietnamPro(
+          textStyle: Theme.of(context).textTheme.headlineSmall,
+        ),
       ),
     );
   }

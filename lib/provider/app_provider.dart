@@ -49,6 +49,12 @@ class AppProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  bool _isCityLoading = false;
+  bool get isCityLoading => _isCityLoading;
+
+  bool _isScreeningLoading = false;
+  bool get isScreeningLoading => _isScreeningLoading;
+
   AppProvider() {
     generateDays();
   }
@@ -69,20 +75,23 @@ class AppProvider extends ChangeNotifier {
   }
 
   Future<void> getCityToAddress() async {
+    _isCityLoading = true;
+    notifyListeners();
     try {
       final List<Address> addresses = await ApiService().getAllAddress();
       Set<String> citySet = addresses.map((address) => address.city).toSet();
       _citys = citySet.toList();
-      notifyListeners();
     } catch (error) {
       rethrow;
+    } finally {
+      _isCityLoading = false;
+      notifyListeners();
     }
   }
 
   Future<void> fetchMovies() async {
     try {
       _movies = await ApiService().getAllMovie();
-      // notifyListeners();
     } catch (error) {
       rethrow;
     }
@@ -154,9 +163,13 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
+  void onMovieChanged(Movie movie) {
+    _selectedMovie = movie;
+    notifyListeners();
+  }
+
   void reset() {
     _selectedCity = '';
-    _isSelected = [];
     _citySelected = false;
     _dateSelected = false;
     _selectedDate = null;
@@ -164,17 +177,16 @@ class AppProvider extends ChangeNotifier {
     _screenings = [];
     _cinemas = [];
     _citys = [];
-
     _isSelected = List<bool>.generate(days.length, (index) => false);
     notifyListeners();
   }
 
   void resetForCinema() {
-    _isSelected = List<bool>.generate(days.length, (index) => false);
     _dateSelected = false;
     _selectedDate = null;
-    screeningsByMovie.clear();
     _selectedScreening = null;
+    _screenings = [];
+    _isSelected = List<bool>.generate(days.length, (index) => false);
     notifyListeners();
   }
 
@@ -202,6 +214,11 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void checkAndSetSelectCinema() {
+    _selectedCinema = _selectedScreening!.auditorium.cinema;
+    notifyListeners();
+  }
+
   void selectMovie(Movie movie) {
     _selectedMovie = movie;
     notifyListeners();
@@ -212,32 +229,16 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<Cinema, List<Screening>> get screeningsByCinema {
-    Map<Cinema, List<Screening>> groupedScreenings = {};
-    for (var screening in screenings) {
-      final cinema = screening.auditorium.cinema;
-      if (groupedScreenings.containsKey(cinema)) {
-        groupedScreenings[cinema]!.add(screening);
-      } else {
-        groupedScreenings[cinema] = [screening];
+  Map<String, List<Screening>> get screeningsByCinema {
+    Map<String, List<Screening>> groupedScreenings = {};
+    for (var screening in _screenings) {
+      final cinemaName = screening.auditorium.cinema.name;
+      if (!groupedScreenings.containsKey(cinemaName)) {
+        groupedScreenings[cinemaName] = [];
       }
+      groupedScreenings[cinemaName]!.add(screening);
     }
     return groupedScreenings;
-  }
-
-  Map<String, List<Screening>> get filteredScreeningsByMovie {
-    return Map.fromEntries(
-        screeningsByMovie.entries.where((entry) => entry.value.isNotEmpty));
-  }
-
-  bool get hasScreenings {
-    bool allValuesEmpty =
-        screeningsByMovie.values.every((list) => list.isEmpty);
-    if (!allValuesEmpty) {
-      return false;
-    } else {
-      return true;
-    }
   }
 
   Map<String, List<Screening>> get screeningsByMovie {

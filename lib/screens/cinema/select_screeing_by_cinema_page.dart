@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_date_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_next_widget.dart';
@@ -32,17 +33,19 @@ class _SelectScreeningByCinemaState extends State<SelectScreeningByCinema> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(provider.selectedCinema!.name),
+        title: Text(
+          provider.selectedCinema!.name,
+          style: GoogleFonts.beVietnamPro(
+            textStyle: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
       ),
       body: SafeArea(
         child: Column(
           children: [
-            SelectDateWidget(
-              provider: provider,
-              size: size,
-            ),
+            const SelectDateWidget(),
             const SizedBox(
               height: 20,
             ),

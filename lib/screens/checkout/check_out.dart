@@ -1,13 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
 import 'package:movie_ticker_app_flutter/models/seat.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/build_price_tag.dart';
-import 'package:movie_ticker_app_flutter/screens/checkout/widgets/custom_header.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
@@ -35,13 +35,20 @@ class _CheckOutState extends State<CheckOut> {
     String genres =
         appProvider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'Kiểm vé',
+          style: GoogleFonts.beVietnamPro(
+            textStyle: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
+        backgroundColor: AppColors.darkerBackground,
+        foregroundColor: AppColors.white,
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            CustomHeader(
-              size: size,
-              content: 'Kiểm Vé',
-            ),
             Container(
               decoration: const BoxDecoration(
                 border: Border(
@@ -53,9 +60,13 @@ class _CheckOutState extends State<CheckOut> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: size.width / 4.3,
-                    child: Image(
-                      image: NetworkImage(appProvider.selectedMovie!.image),
+                    width: size.width / 3,
+                    child: CachedNetworkImage(
+                      imageUrl: appProvider.selectedMovie!.image,
+                      placeholder: (context, url) =>
+                          const Center(child: CircularProgressIndicator()),
+                      errorWidget: (context, url, error) =>
+                          const Center(child: Icon(Icons.error)),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -69,23 +80,28 @@ class _CheckOutState extends State<CheckOut> {
                             margin: const EdgeInsets.symmetric(
                                 vertical: kMinPadding),
                             child: Text(
-                              appProvider.selectedMovie!.title.toString(),
-                              style: AppStyles.h3,
+                              appProvider.selectedMovie!.title,
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle:
+                                    Theme.of(context).textTheme.titleLarge,
+                              ),
                             ),
                           ),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 vertical: kMinPadding),
                             child: ListStarWidget(
-                                movie: appProvider.selectedMovie!),
+                                rating: appProvider.selectedMovie!.rating),
                           ),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 vertical: kMinPadding),
                             child: Text(
                               genres,
-                              style:
-                                  AppStyles.h4.copyWith(color: AppColors.grey),
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle:
+                                    Theme.of(context).textTheme.bodyMedium,
+                              ),
                             ),
                           ),
                           Container(
@@ -93,8 +109,10 @@ class _CheckOutState extends State<CheckOut> {
                                 vertical: kMinPadding),
                             child: Text(
                               '${appProvider.selectedMovie!.duration} phút',
-                              style:
-                                  AppStyles.h4.copyWith(color: AppColors.grey),
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle:
+                                    Theme.of(context).textTheme.bodyMedium,
+                              ),
                             ),
                           ),
                         ],
@@ -104,79 +122,45 @@ class _CheckOutState extends State<CheckOut> {
                 ],
               ),
             ),
-            const BuildPriceTag(content: 'ID Order', price: '22081996'),
-            BuildPriceTag(
-                content: 'Cinema', price: appProvider.selectedCinema!.name),
-            BuildPriceTag(
-                content: 'Date & Time',
-                price:
-                    '${appProvider.selectedScreening!.date}, ${appProvider.selectedScreening!.start}'),
-            BuildPriceTag(content: 'Seat Number', price: seat),
-            BuildPriceTag(
-                content: 'Price', price: '${seatProvider.totalPrice}'),
-            // Container(
-            //   padding: const EdgeInsets.only(
-            //     top: kItemPadding,
-            //     bottom: kTop32Padding,
-            //   ),
-            //   margin: const EdgeInsets.symmetric(horizontal: kMediumPadding),
-            //   decoration: const BoxDecoration(
-            //     border: Border(
-            //       bottom: BorderSide(color: AppColors.white, width: 1),
-            //     ),
-            //   ),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       Text(
-            //         'Total',
-            //         style: AppStyles.h4.copyWith(color: AppColors.grey),
-            //       ),
-            //       Text(
-            //         'Rp 150.000',
-            //         style: AppStyles.h4.copyWith(fontWeight: FontWeight.w600),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             Container(
-              padding: const EdgeInsets.only(
-                top: kMediumPadding,
-                bottom: kTop32Padding,
-              ),
-              margin: const EdgeInsets.symmetric(horizontal: kMediumPadding),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              margin: EdgeInsets.only(bottom: size.height / 4),
+              child: Column(
                 children: [
-                  Text(
-                    'Your Wallet',
-                    style: AppStyles.h4.copyWith(color: AppColors.grey),
-                  ),
-                  Text(
-                    'IDR 200.000',
-                    style: AppStyles.h4.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.blueMain,
-                    ),
-                  ),
+                  const BuildPriceTag(content: 'ID Order', price: '22081996'),
+                  BuildPriceTag(
+                      content: 'Cinema',
+                      price: appProvider.selectedCinema!.name),
+                  BuildPriceTag(
+                      content: 'Date & Time',
+                      price:
+                          '${appProvider.selectedScreening!.date}, ${appProvider.selectedScreening!.start}'),
+                  BuildPriceTag(content: 'Seat Number', price: seat),
+                  BuildPriceTag(
+                      content: 'Price', price: '${seatProvider.totalPrice}00đ'),
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(MyTicket.routeName);
-              },
-              child: Container(
-                height: 60,
-                width: size.width / 1.5,
-                decoration: const BoxDecoration(
-                  color: AppColors.blueMain,
-                  borderRadius: kDefaultBorderRadius,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  'Thanh Toán',
-                  style: AppStyles.h3,
+            Container(
+              alignment: Alignment.bottomRight,
+              padding: const EdgeInsets.only(right: kDefaultPadding),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(MyTicket.routeName);
+                },
+                child: Container(
+                  height: 46,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: AppColors.blueMain,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Thanh toán',
+                    style: GoogleFonts.beVietnamPro(
+                      textStyle: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
                 ),
               ),
             ),

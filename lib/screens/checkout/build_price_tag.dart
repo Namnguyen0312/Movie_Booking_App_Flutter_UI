@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../../themes/app_colors.dart';
-import '../../themes/app_styles.dart';
 import '../../utils/constants.dart';
 
 class BuildPriceTag extends StatelessWidget {
@@ -24,12 +23,21 @@ class BuildPriceTag extends StatelessWidget {
         children: [
           Text(
             content,
-            style: AppStyles.h4.copyWith(color: AppColors.grey),
+            style: GoogleFonts.beVietnamPro(
+              textStyle: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
-          Text(
-            price,
-            style: AppStyles.h4,
-          )
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 70),
+              child: Text(
+                price,
+                style: GoogleFonts.beVietnamPro(
+                  textStyle: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

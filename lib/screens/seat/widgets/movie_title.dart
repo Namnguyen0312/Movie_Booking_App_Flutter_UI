@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/models/screening.dart';
-import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
+import 'package:provider/provider.dart';
 
 class MovieTitle extends StatelessWidget {
   const MovieTitle({
     super.key,
-    required this.nameMovie,
-    required this.screening,
   });
-
-  final Screening screening;
-  final String nameMovie;
 
   @override
   Widget build(BuildContext context) {
+    final appProvider = context.watch<AppProvider>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           margin: const EdgeInsets.only(left: kMediumPadding),
           child: Text(
-            nameMovie,
-            style: AppStyles.h2,
+            appProvider.selectedScreening!.movie.title,
+            style: GoogleFonts.beVietnamPro(
+              textStyle: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
+        ),
+        const SizedBox(
+          height: kMinPadding,
         ),
         Container(
           margin: const EdgeInsets.only(left: kMediumPadding),
           child: Text(
-            '${screening.auditorium.name} ${screening.start}',
-            style: AppStyles.h4.copyWith(
-              fontWeight: FontWeight.w400,
-              color: AppColors.grey,
+            '${appProvider.selectedScreening!.auditorium.name} ${appProvider.selectedScreening!.start}',
+            style: GoogleFonts.beVietnamPro(
+              textStyle: Theme.of(context).textTheme.titleMedium,
             ),
           ),
         ),

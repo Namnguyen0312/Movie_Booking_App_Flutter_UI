@@ -1,29 +1,49 @@
-import 'package:flutter/cupertino.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
+import 'package:flutter/material.dart';
 
 import '../../../themes/app_styles.dart';
-import 'star_half_widget.dart';
-import 'star_widget.dart';
 
 class ListStarWidget extends StatelessWidget {
-  const ListStarWidget({super.key, required this.movie});
+  const ListStarWidget({super.key, required this.rating});
 
-  final Movie movie;
+  final double rating;
 
   @override
   Widget build(BuildContext context) {
+    // Chia tỷ lệ rating từ 0 đến 10 thành 5 phần
+    double normalizedRating = rating / 2;
+
+    // Tính số sao đầy
+    int fullStars = normalizedRating.floor();
+
+    // Tính nửa sao
+    bool hasHalfStar = (normalizedRating - fullStars) >= 0.5;
+
+    // Tạo danh sách sao
+    List<Widget> stars = List.generate(5, (index) {
+      if (index < fullStars) {
+        return Icon(
+          Icons.star,
+          color: Colors.lime[200],
+        );
+      } else if (hasHalfStar && index == fullStars) {
+        return Icon(
+          Icons.star_half,
+          color: Colors.lime[200],
+        );
+      } else {
+        return Icon(
+          Icons.star_border,
+          color: Colors.lime[200],
+        );
+      }
+    });
+
     return Row(
       children: [
-        if (movie.rating >= 4)
-          ...List.generate(4, (index) => const StarWidget()),
-        if (movie.rating > 4 && movie.rating < 5) const StarHalfWidget(),
-        if (movie.rating == 5)
-          ...List.generate(5, (index) => const StarWidget()),
-        if (movie.rating < 4)
-          ...List.generate(3, (index) => const StarWidget()),
-        if (movie.rating > 3 && movie.rating < 4) const StarHalfWidget(),
+        ...stars,
+        // Hiển thị điểm số
         Text(
-          ' (${movie.rating})',
+          ' ($rating)',
           style: AppStyles.h5,
         ),
       ],

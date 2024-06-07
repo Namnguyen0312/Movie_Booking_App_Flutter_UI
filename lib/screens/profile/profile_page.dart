@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:movie_ticker_app_flutter/common/widgets/stateless/arrow_white_back.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
-import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:movie_ticker_app_flutter/utils/helper.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -23,7 +21,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ArrowBackWhite(topPadding: kMinPadding),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(

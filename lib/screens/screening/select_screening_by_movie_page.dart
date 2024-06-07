@@ -5,7 +5,6 @@ import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_screen
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_date_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_city_widget.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-
 import 'package:provider/provider.dart';
 
 class SelectScreeningByMoviePage extends StatefulWidget {
@@ -20,8 +19,6 @@ class SelectScreeningByMoviePage extends StatefulWidget {
 
 class _SelectScreeningByMoviePageState
     extends State<SelectScreeningByMoviePage> {
-  late List<DateTime> days;
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +44,10 @@ class _SelectScreeningByMoviePageState
       body: SafeArea(
         child: Column(
           children: [
-            const SelectCityWidget(),
+            if (provider.isCityLoading)
+              const Center(child: CircularProgressIndicator())
+            else
+              const SelectCityWidget(),
             const SizedBox(
               height: 20,
             ),

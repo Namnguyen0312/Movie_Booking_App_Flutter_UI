@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 
 class SelectDateWidget extends StatelessWidget {
-  final AppProvider provider;
-  final Size size;
-
   const SelectDateWidget({
     super.key,
-    required this.provider,
-    required this.size,
   });
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final provider = context.watch<AppProvider>();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
@@ -50,16 +47,16 @@ class SelectDateWidget extends StatelessWidget {
                   children: [
                     Text(
                       _formatDay(provider.days[index]),
-                      style: AppStyles.h4.copyWith(
-                        color: AppColors.white,
+                      style: GoogleFonts.beVietnamPro(
+                        textStyle: Theme.of(context).textTheme.labelMedium,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: kMinPadding),
                       child: Text(
                         provider.days[index].day.toString(),
-                        style: AppStyles.h5.copyWith(
-                          color: AppColors.white,
+                        style: GoogleFonts.beVietnamPro(
+                          textStyle: Theme.of(context).textTheme.labelSmall,
                         ),
                       ),
                     ),

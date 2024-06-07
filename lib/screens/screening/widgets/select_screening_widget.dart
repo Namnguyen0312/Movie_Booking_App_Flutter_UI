@@ -60,64 +60,60 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
             itemBuilder: (context, index) {
               final cinema = screeningsByCinema.keys.elementAt(index);
               final screenings = screeningsByCinema[cinema]!;
-              return SizedBox(
-                height: 130,
-                child: ListTile(
-                  title: Text(cinema.name, style: AppStyles.h2),
-                  subtitle: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: screenings.map((screening) {
-                        final format = DateFormat("yyyy-MM-dd HH:mm");
-                        final screeningDateTime = format
-                            .parse('${screening.date} ${screening.start}');
-                        final isPast =
-                            screeningDateTime.isBefore(DateTime.now());
-                        final isSelected =
-                            provider.selectedScreening == screening;
-                        return GestureDetector(
-                          onTap: isPast
-                              ? null
-                              : () {
-                                  context
-                                      .read<AppProvider>()
-                                      .selectScreening(screening);
-                                  context
-                                      .read<AppProvider>()
-                                      .selectCinema(cinema);
-                                },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4.0, vertical: 12),
-                            child: SizedBox(
-                              width: 80,
-                              height: 40,
-                              child: Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
+              return ListTile(
+                title: Text(cinema, style: AppStyles.h2),
+                subtitle: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: screenings.map((screening) {
+                      final format = DateFormat("yyyy-MM-dd HH:mm");
+                      final screeningDateTime =
+                          format.parse('${screening.date} ${screening.start}');
+                      final isPast = screeningDateTime.isBefore(DateTime.now());
+                      final isSelected =
+                          provider.selectedScreening == screening;
+                      return GestureDetector(
+                        onTap: isPast
+                            ? null
+                            : () {
+                                context
+                                    .read<AppProvider>()
+                                    .selectScreening(screening);
+                                context
+                                    .read<AppProvider>()
+                                    .checkAndSetSelectCinema();
+                              },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0, vertical: 12),
+                          child: SizedBox(
+                            width: 80,
+                            height: 40,
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? AppColors.blueMain
+                                    : (isPast
+                                        ? AppColors.grey
+                                        : AppColors.darkerBackground),
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(
                                   color: isSelected
                                       ? AppColors.blueMain
-                                      : (isPast
-                                          ? AppColors.grey
-                                          : AppColors.darkerBackground),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? AppColors.blueMain
-                                        : AppColors.grey,
-                                  ),
+                                      : AppColors.grey,
                                 ),
-                                child: Text(
-                                  screening.start,
-                                  style: const TextStyle(
-                                      fontSize: 16, color: AppColors.white),
-                                ),
+                              ),
+                              child: Text(
+                                screening.start,
+                                style: const TextStyle(
+                                    fontSize: 16, color: AppColors.white),
                               ),
                             ),
                           ),
-                        );
-                      }).toList(),
-                    ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
               );

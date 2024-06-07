@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/select_screeing_by_cinema_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:provider/provider.dart';
 
 class SelectCinemaWidget extends StatefulWidget {
@@ -43,7 +43,9 @@ class _SelectCinemaWidgetState extends State<SelectCinemaWidget> {
                       child: Chip(
                         label: Text(
                           city,
-                          style: const TextStyle(fontSize: 16),
+                          style: GoogleFonts.beVietnamPro(
+                            textStyle: Theme.of(context).textTheme.labelMedium,
+                          ),
                         ),
                         backgroundColor: isSelected
                             ? AppColors.blueMain
@@ -83,7 +85,10 @@ class _SelectCinemaWidgetState extends State<SelectCinemaWidget> {
                           children: [
                             Text(
                               cinema.name,
-                              style: AppStyles.h2,
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle:
+                                    Theme.of(context).textTheme.titleLarge,
+                              ),
                             ),
                             const SizedBox(height: 4),
                             Row(
@@ -96,7 +101,11 @@ class _SelectCinemaWidgetState extends State<SelectCinemaWidget> {
                                 Expanded(
                                   child: Text(
                                     '${address.ward}, ${address.street}, ${address.district}, ${address.city}',
-                                    style: AppStyles.h5Light,
+                                    style: GoogleFonts.beVietnamPro(
+                                      textStyle: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium,
+                                    ),
                                     softWrap: true,
                                     maxLines: null,
                                   ),

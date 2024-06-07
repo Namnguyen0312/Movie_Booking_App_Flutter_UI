@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../utils/constants.dart';
 
@@ -26,7 +27,12 @@ class BuiltSeatStatusBar extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: kTopPadding),
-          child: Text(status),
+          child: Text(
+            status,
+            style: GoogleFonts.beVietnamPro(
+              textStyle: Theme.of(context).textTheme.labelMedium,
+            ),
+          ),
         ),
       ],
     );

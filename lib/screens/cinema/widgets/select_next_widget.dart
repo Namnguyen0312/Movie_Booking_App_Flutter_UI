@@ -22,12 +22,9 @@ class SelectNextWidget extends StatelessWidget {
       child: GestureDetector(
         onTap: provider.selectedScreening != null
             ? () {
+                print(provider.selectedScreening!.movie.title);
                 Navigator.of(context).pushNamed(
                   SelectSeatPage.routeName,
-                  arguments: {
-                    'movie': provider.selectedMovie,
-                    'screening': provider.selectedScreening,
-                  },
                 );
               }
             : null,

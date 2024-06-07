@@ -4,20 +4,20 @@ import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:provider/provider.dart';
 
 class SelectCityWidget extends StatefulWidget {
-  const SelectCityWidget({
-    super.key,
-  });
+  const SelectCityWidget({super.key});
 
   @override
   State<SelectCityWidget> createState() => _SelectCityWidgetState();
 }
 
 class _SelectCityWidgetState extends State<SelectCityWidget> {
-  Future<void>? _future;
-
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AppProvider>();
+
+    if (provider.isCityLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -62,41 +62,6 @@ class _SelectCityWidgetState extends State<SelectCityWidget> {
           }).toList(),
         ),
       ),
-    );
-  }
-
-  Widget buildChip(String city, bool isSelected) {
-    return FutureBuilder<void>(
-      future: _future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return const Chip(
-            label: Text(
-              'Error',
-              style: TextStyle(fontSize: 16),
-            ),
-            backgroundColor: AppColors.darkerBackground,
-          );
-        } else {
-          return Chip(
-            label: Text(
-              city,
-              style: const TextStyle(fontSize: 16),
-            ),
-            backgroundColor:
-                isSelected ? AppColors.blueMain : AppColors.darkerBackground,
-            labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-              side: isSelected
-                  ? const BorderSide(color: AppColors.blueMain)
-                  : BorderSide.none,
-            ),
-          );
-        }
-      },
     );
   }
 }
