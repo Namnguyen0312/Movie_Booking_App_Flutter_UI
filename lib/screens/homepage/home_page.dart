@@ -24,16 +24,31 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<void> _fetchMoviesFuture;
-  String? _currentMovieImage = '';
-  String _currentMovieTitle = '';
-  String _currentMovieGenres = '';
-  String _currentMovieDuration = '';
-  double _currentMovieStar = 0.0;
+  late ValueNotifier<String?> _currentMovieImage;
+  late ValueNotifier<String> _currentMovieTitle;
+  late ValueNotifier<String> _currentMovieGenres;
+  late ValueNotifier<String> _currentMovieDuration;
+  late ValueNotifier<double> _currentMovieStar;
 
   @override
   void initState() {
     super.initState();
     _fetchMoviesFuture = context.read<AppProvider>().fetchMovies();
+    _currentMovieImage = ValueNotifier<String?>(null);
+    _currentMovieTitle = ValueNotifier<String>('');
+    _currentMovieGenres = ValueNotifier<String>('');
+    _currentMovieDuration = ValueNotifier<String>('');
+    _currentMovieStar = ValueNotifier<double>(0.0);
+  }
+
+  @override
+  void dispose() {
+    _currentMovieImage.dispose();
+    _currentMovieTitle.dispose();
+    _currentMovieGenres.dispose();
+    _currentMovieDuration.dispose();
+    _currentMovieStar.dispose();
+    super.dispose();
   }
 
   @override
@@ -78,35 +93,47 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            final List<Movie> movies = context.read<AppProvider>().movies;
-            _currentMovieImage = movies.isNotEmpty ? movies[0].image : null;
-            _currentMovieImage = movies[0].image;
-            _currentMovieTitle = movies[0].title;
-            _currentMovieGenres =
-                movies[0].genres.map((genre) => genre.name).join(', ');
-            _currentMovieDuration = movies[0].duration.toString();
-            _currentMovieStar = movies[0].rating;
+            final List<Movie> movies = context.watch<AppProvider>().movies;
+            if (movies.isNotEmpty) {
+              _currentMovieImage.value = movies[0].image;
+              _currentMovieTitle.value = movies[0].title;
+              _currentMovieGenres.value =
+                  movies[0].genres.map((genre) => genre.name).join(', ');
+              _currentMovieDuration.value = '${movies[0].duration} phút';
+              _currentMovieStar.value = movies[0].rating;
+            }
+
             return Stack(
               children: [
-                _currentMovieImage != null
-                    ? Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image:
-                                CachedNetworkImageProvider(_currentMovieImage!),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                          child: Container(
-                            color: Colors.black.withOpacity(0.4),
-                          ),
-                        ),
-                      )
-                    : const SizedBox(),
+                ValueListenableBuilder<String?>(
+                  valueListenable: _currentMovieImage,
+                  builder: (context, currentMovieImage, child) {
+                    return AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 500),
+                      child: currentMovieImage != null
+                          ? Container(
+                              key: ValueKey<String>(currentMovieImage),
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                      currentMovieImage),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              child: BackdropFilter(
+                                filter:
+                                    ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                                child: Container(
+                                  color: Colors.black.withOpacity(0.4),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
+                    );
+                  },
+                ),
                 Container(
                   alignment: Alignment.center,
                   margin: EdgeInsets.only(top: size.height / 3.5),
@@ -114,38 +141,62 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
-                        child: Text(
-                          _currentMovieTitle,
-                          style: GoogleFonts.beVietnamPro(
-                            textStyle: Theme.of(context).textTheme.titleLarge,
-                          ),
+                        child: ValueListenableBuilder<String>(
+                          valueListenable: _currentMovieTitle,
+                          builder: (context, currentMovieTitle, child) {
+                            return Text(
+                              currentMovieTitle,
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle:
+                                    Theme.of(context).textTheme.titleLarge,
+                              ),
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(
                         height: kDefaultPadding,
                       ),
                       Center(
-                        child: Text(
-                          _currentMovieGenres, // Thể loại bộ phim
-                          style: GoogleFonts.beVietnamPro(
-                            textStyle: Theme.of(context).textTheme.labelLarge,
-                          ),
+                        child: ValueListenableBuilder<String>(
+                          valueListenable: _currentMovieGenres,
+                          builder: (context, currentMovieGenres, child) {
+                            return Text(
+                              currentMovieGenres,
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle:
+                                    Theme.of(context).textTheme.labelLarge,
+                              ),
+                            );
+                          },
                         ),
                       ),
                       Center(
-                        child: Text(
-                          '$_currentMovieDuration phút', // Thể loại bộ phim
-                          style: GoogleFonts.beVietnamPro(
-                            textStyle: Theme.of(context).textTheme.labelMedium,
-                          ),
+                        child: ValueListenableBuilder<String>(
+                          valueListenable: _currentMovieDuration,
+                          builder: (context, currentMovieDuration, child) {
+                            return Text(
+                              currentMovieDuration,
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle:
+                                    Theme.of(context).textTheme.labelMedium,
+                              ),
+                            );
+                          },
                         ),
                       ),
                       Container(
-                          margin: EdgeInsets.only(
-                              left: size.width / 2.8, top: size.height / 120),
-                          child: ListStarWidget(
-                            rating: _currentMovieStar,
-                          )),
+                        margin: EdgeInsets.only(
+                            left: size.width / 2.8, top: size.height / 120),
+                        child: ValueListenableBuilder<double>(
+                          valueListenable: _currentMovieStar,
+                          builder: (context, currentMovieStar, child) {
+                            return ListStarWidget(
+                              rating: currentMovieStar,
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -155,14 +206,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     size: size,
                     movies: movies,
                     onMovieChanged: (movie) {
-                      setState(() {
-                        _currentMovieImage = movie.image;
-                        _currentMovieTitle = movie.title;
-                        _currentMovieGenres =
-                            movie.genres.map((genre) => genre.name).join(', ');
-                        _currentMovieDuration = movie.duration.toString();
-                        _currentMovieStar = movie.rating;
-                      });
+                      _currentMovieImage.value = movie.image;
+                      _currentMovieTitle.value = movie.title;
+                      _currentMovieGenres.value =
+                          movie.genres.map((genre) => genre.name).join(', ');
+                      _currentMovieDuration.value = '${movie.duration} phút';
+                      _currentMovieStar.value = movie.rating;
                     },
                   ),
                 ),

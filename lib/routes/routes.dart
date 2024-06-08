@@ -7,7 +7,6 @@ import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/screens/profile/profile_page.dart';
 import 'package:movie_ticker_app_flutter/screens/register/register_page.dart';
-import 'package:movie_ticker_app_flutter/screens/register/verify_screen.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/select_screening_by_movie_page.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/select_seat_page.dart';
 
@@ -27,5 +26,4 @@ final Map<String, WidgetBuilder> routes = {
   SelectScreeningByCinema.routeName: (context) =>
       const SelectScreeningByCinema(),
   SelectCinemaByCity.routeName: (context) => const SelectCinemaByCity(),
-  VerifyScreen.routeName: (context) => const VerifyScreen(),
 };

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/models/seat.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
@@ -70,69 +71,68 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                 ],
               ),
             ),
-            SizedBox(
-              height: size.height / 1.6,
-              child: Container(
-                margin: EdgeInsets.only(top: size.height / 6),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: size.width,
-                      height: size.height / 10,
-                      child: Image.asset(
-                        AssetHelper.imgSeat,
-                        fit: BoxFit.fill,
+            Expanded(
+              child: SizedBox(
+                height: size.height / 1.6,
+                child: Container(
+                  margin: EdgeInsets.only(top: size.height / 6),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: size.width,
+                        height: size.height / 10,
+                        child: Image.asset(
+                          AssetHelper.imgSeat,
+                          fit: BoxFit.fill,
+                        ),
                       ),
-                    ),
-                    const Divider(
-                      color: AppColors.grey,
-                      thickness: 2,
-                      indent: kDefaultPadding,
-                      endIndent: kDefaultPadding,
-                    ),
-                    Expanded(
-                      child: FutureBuilder<void>(
-                        future: _fetchSeatFuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(
-                                child: Text('Error: ${snapshot.error}'));
-                          } else {
-                            return Consumer<SeatProvider>(
-                              builder: (context, seatProvider, child) {
-                                if (seatProvider.seats.isEmpty) {
-                                  return const Center(
-                                      child: Text('Rạp đang bảo trì'));
-                                } else {
-                                  return Padding(
-                                    padding:
-                                        const EdgeInsets.all(kDefaultPadding),
-                                    child: generateSeatGrid(seatProvider),
-                                  );
-                                }
-                              },
-                            );
-                          }
-                        },
+                      const Divider(
+                        color: AppColors.grey,
+                        thickness: 2,
+                        indent: kDefaultPadding,
+                        endIndent: kDefaultPadding,
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: FutureBuilder<void>(
+                          future: _fetchSeatFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else {
+                              return Consumer<SeatProvider>(
+                                builder: (context, seatProvider, child) {
+                                  if (seatProvider.seats.isEmpty) {
+                                    return const Center(
+                                        child: Text('Rạp đang bảo trì'));
+                                  } else {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.all(kDefaultPadding),
+                                      child: generateSeatGrid(seatProvider),
+                                    );
+                                  }
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: kDefaultPadding,
-                  right: kDefaultPadding,
-                  top: size.height / 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: kDefaultPadding),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -151,15 +151,20 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                       ),
                     ],
                   ),
-                  GestureDetector(
+                ),
+                Container(
+                  margin: const EdgeInsets.only(bottom: kDefaultPadding),
+                  alignment: Alignment.bottomRight,
+                  padding: const EdgeInsets.only(right: kDefaultPadding),
+                  child: GestureDetector(
                     onTap: () {
                       Navigator.of(context).pushNamed(
                         CheckOut.routeName,
                       );
                     },
                     child: Container(
-                      height: 46,
-                      width: 120,
+                      height: size.height / 16,
+                      width: size.width / 3,
                       decoration: BoxDecoration(
                         color: AppColors.blueMain,
                         borderRadius: BorderRadius.circular(8),
@@ -173,8 +178,8 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),

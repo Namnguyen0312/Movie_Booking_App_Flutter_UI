@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
-import 'package:movie_ticker_app_flutter/screens/profile/profile_page.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/register/register_page.dart';
+import 'package:provider/provider.dart';
+import 'package:movie_ticker_app_flutter/models/login_user.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/utils/animate.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
+  Future<void>? _loginFuture;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +63,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 TextField(
                   controller: _emailController,
-                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Color(0xFF393939),
                     fontSize: 13,
@@ -96,7 +98,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 TextField(
                   controller: _passController,
-                  textAlign: TextAlign.center,
                   obscureText: true,
                   enableSuggestions: false,
                   autocorrect: false,
@@ -133,30 +134,55 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 25,
                 ),
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  child: SizedBox(
-                    width: 329,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context)
-                            .pushNamed(ProfileScreen.routeName);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF9F7BFF),
-                      ),
-                      child: const Text(
-                        'Đăng nhập',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
+                FutureBuilder<void>(
+                  future: _loginFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.done) {
+                      if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Error: ${snapshot.error}',
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        );
+                      } else {
+                        return Container();
+                      }
+                    } else {
+                      return ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        child: SizedBox(
+                          width: 329,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                _loginFuture = _loginUser();
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF9F7BFF),
+                            ),
+                            child: const Text(
+                              'Đăng nhập',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
+                      );
+                    }
+                  },
                 ),
                 const SizedBox(
                   height: 15,
@@ -210,5 +236,41 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _loginUser() async {
+    final email = _emailController.text;
+    final password = _passController.text;
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      try {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        final UserLoginRequest user =
+            UserLoginRequest(email: email, password: password);
+        await userProvider.loginUser(user);
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushAndRemoveUntil(
+          Animate.createRoute(const HomeScreen()),
+          (route) => false,
+        );
+      } catch (e) {
+        // Handle login error
+        print('Login error: $e');
+        // Show error message to user
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đăng nhập thất bại. Vui lòng thử lại sau.'),
+          ),
+        );
+      }
+    } else {
+      // Show error message if email or password is empty
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Vui lòng nhập đầy đủ thông tin đăng nhập.'),
+        ),
+      );
+    }
   }
 }

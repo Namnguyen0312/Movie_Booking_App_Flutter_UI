@@ -58,7 +58,7 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                 height: kMinPadding,
               ),
               Text(
-                '${movie.duration} phút', // Thể loại bộ phim
+                '${movie.duration} phút',
                 style: GoogleFonts.beVietnamPro(
                   textStyle: Theme.of(context).textTheme.labelMedium,
                 ),

@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:movie_ticker_app_flutter/models/address.dart';
+import 'package:movie_ticker_app_flutter/models/jwt_response.dart';
 import 'package:movie_ticker_app_flutter/models/cinema.dart';
+import 'package:movie_ticker_app_flutter/models/create_user.dart';
+import 'package:movie_ticker_app_flutter/models/login_user.dart';
 import 'package:movie_ticker_app_flutter/models/movie.dart';
 import 'package:movie_ticker_app_flutter/models/screening.dart';
 import 'package:movie_ticker_app_flutter/models/seat.dart';
@@ -9,33 +12,39 @@ import 'package:movie_ticker_app_flutter/models/seat.dart';
 class ApiService {
   static const String baseUrl = 'http://192.168.56.1:8070';
 
-  Future<void> createUser(String name, String email, String phone,
-      String address, String password) async {
-    final url = Uri.parse('$baseUrl/user/createUser');
-    try {
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'name': name,
-          'email': email,
-          'phone': phone,
-          'password': password,
-          'address': {
-            'addressLine1': address,
-          },
-        }),
-      );
+  Future<void> createUser(UserCreationRequest user) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/createUser'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(user.toJson()),
+    );
 
-      if (response.statusCode == 200) {
-        // Handle success
-        print('User created successfully');
-      } else {
-        // Handle error
-        print('Failed to create user');
-      }
-    } catch (error) {
-      rethrow;
+    if (response.statusCode == 200) {
+      // Handle success response
+      print('User created successfully');
+    } else {
+      // Handle error response
+      throw Exception('Failed to create user');
+    }
+  }
+
+  Future<JwtResponse> loginUser(UserLoginRequest user) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/userLogin'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(user.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(utf8.decode(response.bodyBytes));
+      return JwtResponse.fromJson(responseData);
+    } else {
+      // Handle error response
+      throw Exception('Failed to login user');
     }
   }
 

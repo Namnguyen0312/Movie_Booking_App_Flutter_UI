@@ -1,49 +1,50 @@
+import 'package:movie_ticker_app_flutter/models/address.dart';
 import 'package:movie_ticker_app_flutter/models/membership.dart';
+import 'role_response.dart';
 
 class User {
   final int id;
-  final String email;
-  final String role;
   final String name;
-  final String password;
+  final String email;
   final String phone;
-  final int totalSpending;
+  final Address address;
   final Membership membership;
+  final Set<RoleResponse> roles;
 
   User({
     required this.id,
-    required this.email,
-    required this.role,
     required this.name,
-    required this.password,
+    required this.email,
     required this.phone,
-    required this.totalSpending,
+    required this.address,
     required this.membership,
+    required this.roles,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'],
-      email: json['email'],
-      role: json['role'],
       name: json['name'],
-      password: json['password'],
+      email: json['email'],
       phone: json['phone'],
-      totalSpending: json['totalSpending'],
-      membership: json['membership'],
+      address: Address.fromJson(json['address']),
+      membership: Membership.fromJson(json['membership']),
+      roles: (json['roles'] as List<dynamic>)
+          .map((e) => RoleResponse.fromJson(e))
+          .toSet(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'email': email,
-      'role': role,
       'name': name,
-      'password': password,
+      'email': email,
       'phone': phone,
-      'totalSpending': totalSpending,
-      'membership': membership,
+      // Lưu ý: Không bao gồm trường password trong JSON gửi đi
+      'address': address.toJson(),
+      'membership': membership.toJson(),
+      'roles': roles.map((role) => role.toJson()).toList(),
     };
   }
 }

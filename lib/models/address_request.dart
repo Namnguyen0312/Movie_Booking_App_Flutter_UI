@@ -1,31 +1,27 @@
-class Address {
-  final int id;
+class AddressRequest {
   final String city;
   final String district;
   final String street;
   final String ward;
 
-  Address({
-    required this.id,
+  AddressRequest({
     required this.city,
     required this.district,
     required this.street,
     required this.ward,
   });
 
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
-      id: json['id'],
+  factory AddressRequest.fromJson(Map<String, dynamic> json) {
+    return AddressRequest(
+      city: json['city'],
+      district: json['district'],
       street: json['street'],
       ward: json['ward'],
-      district: json['district'],
-      city: json['city'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'street': street,
       'ward': ward,
       'district': district,

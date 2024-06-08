@@ -16,9 +16,26 @@ class SelectNextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AppProvider>();
-    return Padding(
-      padding:
-          const EdgeInsets.only(bottom: kMediumPadding, top: kMediumPadding),
+    return NextButtonWidget(size: size, provider: provider);
+  }
+}
+
+class NextButtonWidget extends StatelessWidget {
+  const NextButtonWidget({
+    super.key,
+    required this.size,
+    required this.provider,
+  });
+
+  final Size size;
+  final AppProvider provider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: kDefaultPadding),
+      alignment: Alignment.bottomRight,
+      padding: const EdgeInsets.only(right: kDefaultPadding),
       child: GestureDetector(
         onTap: () {
           Navigator.of(context).pushNamed(
@@ -26,12 +43,11 @@ class SelectNextWidget extends StatelessWidget {
           );
         },
         child: Container(
-          height: size.height / 15,
-          width: size.height / 9,
-          decoration: const BoxDecoration(
+          height: size.height / 16,
+          width: size.width / 3,
+          decoration: BoxDecoration(
             color: AppColors.blueMain,
-            borderRadius: kDefaultBorderRadius,
-            border: null,
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Center(
             child: Icon(

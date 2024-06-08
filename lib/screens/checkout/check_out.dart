@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
 import 'package:movie_ticker_app_flutter/models/seat.dart';
@@ -122,25 +123,28 @@ class _CheckOutState extends State<CheckOut> {
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(bottom: size.height / 4),
-              child: Column(
-                children: [
-                  const BuildPriceTag(content: 'ID Order', price: '22081996'),
-                  BuildPriceTag(
-                      content: 'Cinema',
-                      price: appProvider.selectedCinema!.name),
-                  BuildPriceTag(
-                      content: 'Date & Time',
-                      price:
-                          '${appProvider.selectedScreening!.date}, ${appProvider.selectedScreening!.start}'),
-                  BuildPriceTag(content: 'Seat Number', price: seat),
-                  BuildPriceTag(
-                      content: 'Price', price: '${seatProvider.totalPrice}00đ'),
-                ],
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const BuildPriceTag(content: 'ID Order', price: '22081996'),
+                    BuildPriceTag(
+                        content: 'Cinema',
+                        price: appProvider.selectedCinema!.name),
+                    BuildPriceTag(
+                        content: 'Date & Time',
+                        price:
+                            '${appProvider.selectedScreening!.date}, ${appProvider.selectedScreening!.start}'),
+                    BuildPriceTag(content: 'Seat Number', price: seat),
+                    BuildPriceTag(
+                        content: 'Price',
+                        price: '${seatProvider.totalPrice}00đ'),
+                  ],
+                ),
               ),
             ),
             Container(
+              margin: const EdgeInsets.only(bottom: kDefaultPadding),
               alignment: Alignment.bottomRight,
               padding: const EdgeInsets.only(right: kDefaultPadding),
               child: GestureDetector(
@@ -148,8 +152,8 @@ class _CheckOutState extends State<CheckOut> {
                   Navigator.of(context).pushNamed(MyTicket.routeName);
                 },
                 child: Container(
-                  height: 46,
-                  width: 120,
+                  height: size.height / 16,
+                  width: size.width / 3,
                   decoration: BoxDecoration(
                     color: AppColors.blueMain,
                     borderRadius: BorderRadius.circular(8),
@@ -163,7 +167,7 @@ class _CheckOutState extends State<CheckOut> {
                   ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
