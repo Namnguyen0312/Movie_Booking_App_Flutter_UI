@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:movie_ticker_app_flutter/models/address.dart';
-import 'package:movie_ticker_app_flutter/models/cinema.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
-import 'package:movie_ticker_app_flutter/models/screening.dart';
+import 'package:movie_ticker_app_flutter/models/response/address_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/cinema_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/screening_response.dart';
 import 'package:movie_ticker_app_flutter/services/api_service.dart';
 
 class AppProvider extends ChangeNotifier {
   String? _selectedCity;
   String? get selectedCity => _selectedCity;
 
-  List<bool> _isSelected = [];
-  List<bool> get isSelected => _isSelected;
-
   bool _citySelected = false;
   bool get citySelected => _citySelected;
+
+  List<bool> _isSelected = [];
+  List<bool> get isSelected => _isSelected;
 
   DateTime? _selectedDate;
   DateTime? get selectedDate => _selectedDate;
@@ -22,38 +22,35 @@ class AppProvider extends ChangeNotifier {
   bool _dateSelected = false;
   bool get dateSelected => _dateSelected;
 
-  Screening? _selectedScreening;
-  Screening? get selectedScreening => _selectedScreening;
+  ScreeningResponse? _selectedScreening;
+  ScreeningResponse? get selectedScreening => _selectedScreening;
 
-  List<Screening> _screenings = [];
-  List<Screening> get screenings => _screenings;
+  List<ScreeningResponse> _screenings = [];
+  List<ScreeningResponse> get screenings => _screenings;
 
   final List<DateTime> _days = [];
   List<DateTime> get days => _days;
 
-  List<Movie> _movies = [];
-  List<Movie> get movies => _movies;
+  List<MovieResponse> _movies = [];
+  List<MovieResponse> get movies => _movies;
 
-  Movie? _selectedMovie;
-  Movie? get selectedMovie => _selectedMovie;
+  MovieResponse? _selectedMovie;
+  MovieResponse? get selectedMovie => _selectedMovie;
 
   List<String> _citys = [];
   List<String> get citys => _citys;
 
-  List<Cinema> _cinemas = [];
-  List<Cinema> get cinemas => _cinemas;
+  List<CinemaResponse> _cinemas = [];
+  List<CinemaResponse> get cinemas => _cinemas;
 
-  Cinema? _selectedCinema;
-  Cinema? get selectedCinema => _selectedCinema;
+  CinemaResponse? _selectedCinema;
+  CinemaResponse? get selectedCinema => _selectedCinema;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
   bool _isCityLoading = false;
   bool get isCityLoading => _isCityLoading;
-
-  bool _isScreeningLoading = false;
-  bool get isScreeningLoading => _isScreeningLoading;
 
   AppProvider() {
     generateDays();
@@ -78,7 +75,8 @@ class AppProvider extends ChangeNotifier {
     _isCityLoading = true;
     notifyListeners();
     try {
-      final List<Address> addresses = await ApiService().getAllAddress();
+      final List<AddressResponse> addresses =
+          await ApiService().getAllAddress();
       Set<String> citySet = addresses.map((address) => address.city).toSet();
       _citys = citySet.toList();
     } catch (error) {
@@ -163,7 +161,7 @@ class AppProvider extends ChangeNotifier {
     }
   }
 
-  void onMovieChanged(Movie movie) {
+  void onMovieChanged(MovieResponse movie) {
     _selectedMovie = movie;
     notifyListeners();
   }
@@ -204,12 +202,12 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectScreening(Screening screening) {
+  void selectScreening(ScreeningResponse screening) {
     _selectedScreening = screening;
     notifyListeners();
   }
 
-  void selectCinema(Cinema cinema) {
+  void selectCinema(CinemaResponse cinema) {
     _selectedCinema = cinema;
     notifyListeners();
   }
@@ -219,18 +217,13 @@ class AppProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectMovie(Movie movie) {
+  void selectMovie(MovieResponse movie) {
     _selectedMovie = movie;
     notifyListeners();
   }
 
-  void checkAndSetSelectMovie() {
-    _selectedMovie = _selectedScreening!.movie;
-    notifyListeners();
-  }
-
-  Map<String, List<Screening>> get screeningsByCinema {
-    Map<String, List<Screening>> groupedScreenings = {};
+  Map<String, List<ScreeningResponse>> get screeningsByCinema {
+    Map<String, List<ScreeningResponse>> groupedScreenings = {};
     for (var screening in _screenings) {
       final cinemaName = screening.auditorium.cinema.name;
       if (!groupedScreenings.containsKey(cinemaName)) {
@@ -241,8 +234,8 @@ class AppProvider extends ChangeNotifier {
     return groupedScreenings;
   }
 
-  Map<String, List<Screening>> get screeningsByMovie {
-    Map<String, List<Screening>> groupedScreenings = {};
+  Map<String, List<ScreeningResponse>> get screeningsByMovie {
+    Map<String, List<ScreeningResponse>> groupedScreenings = {};
     for (var screening in _screenings) {
       final movieTitle = screening.movie.title;
       if (selectedDate != null) {

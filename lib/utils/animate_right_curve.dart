@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-mixin Animate {
+mixin AnimateRightCurve {
   static Route createRoute(Widget screen) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => screen,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        const begin = Offset(1.0, 0.0);
+        const begin = Offset(-1.0, 0.0);
         const end = Offset.zero;
         const curve = Curves.ease;
 

@@ -1,4 +1,4 @@
-import 'package:movie_ticker_app_flutter/models/address_request.dart';
+import 'package:movie_ticker_app_flutter/models/request/address_request.dart';
 
 class UserCreationRequest {
   final String name;

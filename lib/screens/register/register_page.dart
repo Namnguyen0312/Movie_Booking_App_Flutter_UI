@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:movie_ticker_app_flutter/models/address_request.dart';
-import 'package:movie_ticker_app_flutter/models/create_user.dart';
+import 'package:movie_ticker_app_flutter/models/request/address_request.dart';
+import 'package:movie_ticker_app_flutter/models/request/create_user_request.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
-import 'package:movie_ticker_app_flutter/utils/animate.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -28,27 +28,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _repassController = TextEditingController();
 
   Future<void>? _registrationFuture;
+  bool _allFieldsFilled() {
+    return _userNameController.text.isNotEmpty &&
+        _emailController.text.isNotEmpty &&
+        _phoneController.text.isNotEmpty &&
+        _cityController.text.isNotEmpty &&
+        _wardController.text.isNotEmpty &&
+        _districtController.text.isNotEmpty &&
+        _streetController.text.isNotEmpty &&
+        _passController.text.isNotEmpty &&
+        _repassController.text.isNotEmpty;
+  }
 
   Future<void> _registerUser() async {
-    if (_passController.text != _repassController.text) {
-      throw Exception('Mật khẩu không khớp');
+    if (_allFieldsFilled()) {
+      try {
+        if (_passController.text != _repassController.text) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Mật khẩu không khớp!'),
+            ),
+          );
+        } else {
+          final AddressRequest address = AddressRequest(
+            city: _cityController.text,
+            ward: _wardController.text,
+            district: _districtController.text,
+            street: _streetController.text,
+          );
+
+          final UserCreationRequest user = UserCreationRequest(
+            name: _userNameController.text,
+            email: _emailController.text,
+            phone: _phoneController.text,
+            password: _passController.text,
+            address: address,
+          );
+          await Provider.of<UserProvider>(context, listen: false)
+              .createUser(user);
+          if (!mounted) return;
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Đăng ký thành công'),
+            ),
+          );
+        }
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đăng ký thất bại. Vui lòng thử lại sau.'),
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vui lòng nhập đầy đủ thông tin đăng ký.'),
+        ),
+      );
     }
-    final AddressRequest address = AddressRequest(
-      city: _cityController.text,
-      ward: _wardController.text,
-      district: _districtController.text,
-      street: _streetController.text,
-    );
-
-    final UserCreationRequest user = UserCreationRequest(
-      name: _userNameController.text,
-      email: _emailController.text,
-      phone: _phoneController.text,
-      password: _passController.text,
-      address: address,
-    );
-
-    await Provider.of<UserProvider>(context, listen: false).createUser(user);
   }
 
   @override
@@ -63,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             icon: const Icon(Icons.close),
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
-                Animate.createRoute(const HomeScreen()),
+                AnimateLeftCurve.createRoute(const HomeScreen()),
                 (route) => false,
               );
             },
@@ -81,7 +121,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 textDirection: TextDirection.ltr,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 50),
                   const Text(
                     'Đăng ký',
                     style: TextStyle(
@@ -344,7 +383,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             fontWeight: FontWeight.w400,
                           ),
                           decoration: const InputDecoration(
-                            labelText: 'Số nhà, tên đường',
+                            labelText: 'Số nhà',
                             labelStyle: TextStyle(
                               color: Color(0xFF755DC1),
                               fontSize: 15,
@@ -449,34 +488,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   const SizedBox(height: 40),
+                  // _allFieldsFilled()
+                  //  Future.delayed(Duration.zero, () {})
+                  // else
                   FutureBuilder<void>(
                     future: _registrationFuture,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: SpinKitCircle(
-                            color: Color(0xFF755DC1),
-                            size: 50.0,
-                          ),
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
                       } else if (snapshot.connectionState ==
                           ConnectionState.done) {
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text(
-                              'Error: ${snapshot.error}',
-                              style: TextStyle(color: Colors.red),
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(307, 56),
+                            backgroundColor: const Color(0xFF755DC1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          );
-                        } else {
-                          return Center(
-                            child: Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 50.0,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _registrationFuture = _registerUser();
+                            });
+                          },
+                          child: const Text(
+                            'Đăng ký',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
                             ),
-                          );
-                        }
+                          ),
+                        );
                       } else {
                         return ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -506,7 +552,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   const SizedBox(height: 30),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
                         'Bạn đã có tài khoản? ',
@@ -520,7 +565,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(
-                            Animate.createRoute(const LoginScreen()),
+                            AnimateRightCurve.createRoute(const LoginScreen()),
                           );
                         },
                         child: const Text(

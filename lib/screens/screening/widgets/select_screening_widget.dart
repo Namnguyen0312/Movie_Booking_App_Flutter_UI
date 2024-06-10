@@ -82,6 +82,10 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
                                 context
                                     .read<AppProvider>()
                                     .checkAndSetSelectCinema();
+                                // context
+                                //     .read<AppProvider>()
+                                //     .isSelectedScreening(isSelected);
+                                // print(provider.screeningSelected);
                               },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -105,7 +109,7 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
                                 ),
                               ),
                               child: Text(
-                                screening.start,
+                                '${screeningDateTime.hour}:${screeningDateTime.minute}',
                                 style: const TextStyle(
                                     fontSize: 16, color: AppColors.white),
                               ),

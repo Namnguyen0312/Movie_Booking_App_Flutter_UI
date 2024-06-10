@@ -1,15 +1,15 @@
-import 'package:movie_ticker_app_flutter/models/user.dart';
+import 'package:movie_ticker_app_flutter/models/response/user_response.dart';
 
 class JwtResponse {
   final String token;
-  final User user;
+  final UserResponse user;
 
   JwtResponse({required this.token, required this.user});
 
   factory JwtResponse.fromJson(Map<String, dynamic> json) {
     return JwtResponse(
       token: json['token'],
-      user: User.fromJson(json['user']),
+      user: UserResponse.fromJson(json['user']),
     );
   }
 }

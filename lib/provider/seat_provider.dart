@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/models/seat.dart';
+import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/services/api_service.dart';
 
 class SeatProvider with ChangeNotifier {
-  List<Seat> _seats = [];
-  List<Seat> get seats => _seats;
+  List<SeatResponse> _seats = [];
+  List<SeatResponse> get seats => _seats;
 
   List<int> _selectedSeatIds = [];
   List<int> get selectedSeatIds => _selectedSeatIds;
@@ -15,7 +15,7 @@ class SeatProvider with ChangeNotifier {
   Future<void> getAllSeatByAuditorium(int auditoriumId) async {
     notifyListeners();
     try {
-      final List<Seat> seats =
+      final List<SeatResponse> seats =
           await ApiService().getAllSeatByAuditorium(auditoriumId);
       _seats = seats;
       notifyListeners();
@@ -32,7 +32,7 @@ class SeatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleSeat(Seat seat) {
+  void toggleSeat(SeatResponse seat) {
     if (_selectedSeatIds.contains(seat.id)) {
       _selectedSeatIds.remove(seat.id);
       _totalPrice -= seat.price;
@@ -49,8 +49,8 @@ class SeatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Seat> getSortedSeats() {
-    List<Seat> sortedSeats = _seats.toList()
+  List<SeatResponse> getSortedSeats() {
+    List<SeatResponse> sortedSeats = _seats.toList()
       ..sort((a, b) {
         int rowComparison = a.rowSeat.compareTo(b.rowSeat);
         if (rowComparison != 0) {
@@ -62,15 +62,15 @@ class SeatProvider with ChangeNotifier {
     List<String> seatRowLetters =
         sortedSeats.map((seat) => seat.rowSeat).toSet().toList()..sort();
 
-    List<Seat> modifiedSeats = [];
+    List<SeatResponse> modifiedSeats = [];
     for (String rowLetter in seatRowLetters) {
-      List<Seat> rowSeats =
+      List<SeatResponse> rowSeats =
           sortedSeats.where((seat) => seat.rowSeat == rowLetter).toList();
 
       if (rowLetter != 'A') {
         int currentNumber = 1;
         rowSeats = rowSeats.map((seat) {
-          Seat modifiedSeat = seat.copyWith(numberSeat: currentNumber);
+          SeatResponse modifiedSeat = seat.copyWith(numberSeat: currentNumber);
           currentNumber++;
           return modifiedSeat;
         }).toList();

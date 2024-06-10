@@ -1,11 +1,11 @@
-class Address {
+class AddressResponse {
   final int id;
   final String city;
   final String district;
   final String street;
   final String ward;
 
-  Address({
+  AddressResponse({
     required this.id,
     required this.city,
     required this.district,
@@ -13,8 +13,8 @@ class Address {
     required this.ward,
   });
 
-  factory Address.fromJson(Map<String, dynamic> json) {
-    return Address(
+  factory AddressResponse.fromJson(Map<String, dynamic> json) {
+    return AddressResponse(
       id: json['id'],
       street: json['street'],
       ward: json['ward'],

@@ -3,9 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
+import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 import '../../movieDetail/movie_detail_page.dart';
@@ -19,15 +20,15 @@ class CarouselSliderFirm extends StatefulWidget {
   });
 
   final Size size;
-  final List<Movie> movies;
-  final Function(Movie) onMovieChanged;
+  final List<MovieResponse> movies;
+  final Function(MovieResponse) onMovieChanged;
 
   @override
   State<CarouselSliderFirm> createState() => _CarouselSliderFirmState();
 }
 
 class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
-  void _showMovieDialog(BuildContext context, Movie movie) {
+  void _showMovieDialog(BuildContext context, MovieResponse movie) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -68,7 +69,7 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
               ),
               Container(
                 margin: EdgeInsets.only(
-                  left: widget.size.width / 5,
+                  left: widget.size.width / 4,
                 ),
                 child: ListStarWidget(
                   rating: movie.rating,
@@ -117,11 +118,8 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                 },
                 onTap: () {
                   context.read<AppProvider>().selectMovie(movie);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MovieDetailPage(),
-                    ),
+                  Navigator.of(context).push(
+                    AnimateLeftCurve.createRoute(const MovieDetailPage()),
                   );
                 },
                 child: Container(

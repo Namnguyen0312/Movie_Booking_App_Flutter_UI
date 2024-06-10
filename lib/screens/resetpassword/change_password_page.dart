@@ -1,42 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
-import 'package:movie_ticker_app_flutter/screens/resetpassword/verify_email_page.dart';
-import 'package:movie_ticker_app_flutter/screens/register/register_page.dart';
-import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
-import 'package:provider/provider.dart';
-import 'package:movie_ticker_app_flutter/models/request/login_user_request.dart';
-import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
+import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
+import 'package:provider/provider.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-  static const String routeName = '/login';
+class ChangePasswordPage extends StatefulWidget {
+  const ChangePasswordPage({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passController = TextEditingController();
-  Future<void>? _loginFuture;
+class _ChangePasswordPageState extends State<ChangePasswordPage> {
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _repeatPasswordController =
+      TextEditingController();
+
+  Future<void>? _changePasswordFuture;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close), // Biểu tượng "X"
+        leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                AnimateLeftCurve.createRoute(const HomeScreen()),
-                (route) => false,
-              );
+              Navigator.of(context).pop();
             },
-          ),
-        ],
+            icon: const Icon(Icons.arrow_back)),
       ),
       backgroundColor: Colors.white,
       body: Column(
@@ -49,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Đăng nhập',
+                  'Mật khẩu mới',
                   style: TextStyle(
                     color: Color(0xFF755DC1),
                     fontSize: 27,
@@ -61,45 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 20,
                 ),
                 TextField(
-                  controller: _emailController,
-                  style: const TextStyle(
-                    color: Color(0xFF393939),
-                    fontSize: 13,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: TextStyle(
-                      color: Color(0xFF755DC1),
-                      fontSize: 15,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xFF837E93),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xFF9F7BFF),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                TextField(
-                  controller: _passController,
                   obscureText: true,
                   enableSuggestions: false,
                   autocorrect: false,
+                  controller: _passwordController,
                   style: const TextStyle(
                     color: Color(0xFF393939),
                     fontSize: 13,
@@ -131,10 +87,48 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 25,
+                  height: 30,
+                ),
+                TextField(
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  controller: _repeatPasswordController,
+                  style: const TextStyle(
+                    color: Color(0xFF393939),
+                    fontSize: 13,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w400,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'Nhập lại mật khẩu',
+                    labelStyle: TextStyle(
+                      color: Color(0xFF755DC1),
+                      fontSize: 15,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color(0xFF837E93),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: Color(0xFF9F7BFF),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 FutureBuilder<void>(
-                  future: _loginFuture,
+                  future: _changePasswordFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
@@ -151,11 +145,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: () {
                           setState(() {
-                            _loginFuture = _loginUser();
+                            _changePasswordFuture = _changePassword();
                           });
                         },
                         child: const Text(
-                          'Đăng nhập',
+                          'Xác Nhận',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 17,
@@ -167,54 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   },
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      'Không có tài khoản? ',
-                      style: TextStyle(
-                        color: Color(0xFF232323),
-                        fontSize: 15,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          AnimateRightCurve.createRoute(const SignUpScreen()),
-                        );
-                      },
-                      child: const Text(
-                        'Đăng Ký',
-                        style: TextStyle(
-                          color: Color(0xFF755DC1),
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      AnimateRightCurve.createRoute(const VerifyEmailPage()),
-                    );
-                  },
-                  child: const Text(
-                    'Quên mật khẩu',
-                    style: TextStyle(
-                      color: Color(0xFF755DC1),
-                      fontSize: 15,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -223,33 +169,43 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _loginUser() async {
-    final email = _emailController.text;
-    final password = _passController.text;
+  Future<void> _changePassword() async {
+    final password = _passwordController.text;
+    final repeatPassword = _repeatPasswordController.text;
 
-    if (email.isNotEmpty && password.isNotEmpty) {
-      try {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        final UserLoginRequest user =
-            UserLoginRequest(email: email, password: password);
-        await userProvider.loginUser(user);
-        if (!mounted) return;
-        Navigator.of(context).pushAndRemoveUntil(
-          AnimateLeftCurve.createRoute(userProvider.widget!),
-          (route) => false,
-        );
-      } catch (e) {
-        if (!mounted) return;
+    if (password.isNotEmpty && repeatPassword.isNotEmpty) {
+      if (password == repeatPassword) {
+        try {
+          final userProvider =
+              Provider.of<UserProvider>(context, listen: false);
+          final email = userProvider.email;
+
+          await userProvider.changePassword(email!, repeatPassword);
+          if (!mounted) return;
+          Navigator.of(context).pushAndRemoveUntil(
+            AnimateLeftCurve.createRoute(const LoginScreen()),
+            (route) => false,
+          );
+        } catch (e) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content:
+                  Text('Thay đổi mật khẩu thất bại. Vui lòng thử lại sau.'),
+            ),
+          );
+        }
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Đăng nhập thất bại. Vui lòng thử lại sau.'),
+            content: Text('Mật khẩu không khớp'),
           ),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Vui lòng nhập đầy đủ thông tin đăng nhập.'),
+          content: Text('Vui lòng nhập đầy đủ thông tin.'),
         ),
       );
     }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/screens/movieDetail/movie_detail_page.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_next_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_screening_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_date_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_city_widget.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
 import 'package:provider/provider.dart';
 
 class SelectScreeningByMoviePage extends StatefulWidget {
@@ -40,14 +42,21 @@ class _SelectScreeningByMoviePageState
         title: Text(provider.selectedMovie!.title),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                AnimateRightCurve.createRoute(const MovieDetailPage()),
+                (route) => false,
+              );
+            },
+            icon: const Icon(Icons.arrow_back)),
       ),
       body: SafeArea(
         child: Column(
           children: [
-            if (provider.isCityLoading)
-              const Center(child: CircularProgressIndicator())
-            else
-              const SelectCityWidget(),
+            provider.isCityLoading
+                ? const Center(child: CircularProgressIndicator())
+                : const SelectCityWidget(),
             const SizedBox(
               height: 20,
             ),

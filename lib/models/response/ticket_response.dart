@@ -1,18 +1,18 @@
-import 'package:movie_ticker_app_flutter/models/screening.dart';
-import 'package:movie_ticker_app_flutter/models/seat.dart';
-import 'package:movie_ticker_app_flutter/models/user.dart';
+import 'package:movie_ticker_app_flutter/models/response/screening_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/user_response.dart';
 
-class Ticket {
+class TicketResponse {
   final int id;
   final int total;
   final String orderTime;
   final int status;
   final PaymentMethod paymentMethod;
-  final List<Seat> seats;
-  final Screening screening;
-  final User user;
+  final List<SeatResponse> seats;
+  final ScreeningResponse screening;
+  final UserResponse user;
 
-  Ticket({
+  TicketResponse({
     required this.id,
     required this.total,
     required this.orderTime,
@@ -23,16 +23,17 @@ class Ticket {
     required this.user,
   });
 
-  factory Ticket.fromJson(Map<String, dynamic> json) {
-    return Ticket(
+  factory TicketResponse.fromJson(Map<String, dynamic> json) {
+    return TicketResponse(
       id: json['id'],
       total: json['total'],
       orderTime: json['order_Time'],
       status: json['status'],
       paymentMethod: PaymentMethodExtension.fromString(json['payment_method']),
-      seats: (json['seats'] as List).map((e) => Seat.fromJson(e)).toList(),
-      screening: Screening.fromJson(json['screening']),
-      user: User.fromJson(json['user']),
+      seats:
+          (json['seats'] as List).map((e) => SeatResponse.fromJson(e)).toList(),
+      screening: ScreeningResponse.fromJson(json['screening']),
+      user: UserResponse.fromJson(json['user']),
     );
   }
 

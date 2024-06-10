@@ -1,17 +1,17 @@
-import 'package:movie_ticker_app_flutter/models/address.dart';
-import 'package:movie_ticker_app_flutter/models/membership.dart';
+import 'package:movie_ticker_app_flutter/models/response/address_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/membership_response.dart';
 import 'role_response.dart';
 
-class User {
+class UserResponse {
   final int id;
   final String name;
   final String email;
   final String phone;
-  final Address address;
-  final Membership membership;
+  final AddressResponse address;
+  final MembershipResponse membership;
   final Set<RoleResponse> roles;
 
-  User({
+  UserResponse({
     required this.id,
     required this.name,
     required this.email,
@@ -21,14 +21,14 @@ class User {
     required this.roles,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory UserResponse.fromJson(Map<String, dynamic> json) {
+    return UserResponse(
       id: json['id'],
       name: json['name'],
       email: json['email'],
       phone: json['phone'],
-      address: Address.fromJson(json['address']),
-      membership: Membership.fromJson(json['membership']),
+      address: AddressResponse.fromJson(json['address']),
+      membership: MembershipResponse.fromJson(json['membership']),
       roles: (json['roles'] as List<dynamic>)
           .map((e) => RoleResponse.fromJson(e))
           .toSet(),

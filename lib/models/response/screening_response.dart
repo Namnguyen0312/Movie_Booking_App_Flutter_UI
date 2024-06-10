@@ -1,15 +1,15 @@
-import 'package:movie_ticker_app_flutter/models/movie.dart';
+import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
 
-import 'auditorium.dart';
+import 'auditorium_response.dart';
 
-class Screening {
+class ScreeningResponse {
   final int id;
   final String start;
   final String date;
-  final Auditorium auditorium;
-  final Movie movie;
+  final AuditoriumResponse auditorium;
+  final MovieResponse movie;
 
-  Screening({
+  ScreeningResponse({
     required this.id,
     required this.start,
     required this.date,
@@ -17,13 +17,13 @@ class Screening {
     required this.movie,
   });
 
-  factory Screening.fromJson(Map<String, dynamic> json) {
-    return Screening(
+  factory ScreeningResponse.fromJson(Map<String, dynamic> json) {
+    return ScreeningResponse(
       id: json['id'],
       start: json['start'],
       date: json['date'],
-      auditorium: Auditorium.fromJson(json['auditorium']),
-      movie: Movie.fromJson(json['movie']),
+      auditorium: AuditoriumResponse.fromJson(json['auditorium']),
+      movie: MovieResponse.fromJson(json['movie']),
     );
   }
 

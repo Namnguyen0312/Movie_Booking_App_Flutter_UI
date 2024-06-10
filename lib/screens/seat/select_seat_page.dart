@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:movie_ticker_app_flutter/models/seat.dart';
+import 'package:movie_ticker_app_flutter/common/widgets/stateless/custom_back_arrow.dart';
+import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/check_out.dart';
@@ -9,6 +9,7 @@ import 'package:movie_ticker_app_flutter/screens/seat/widgets/built_seat_status_
 import 'package:movie_ticker_app_flutter/screens/seat/widgets/movie_title.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:movie_ticker_app_flutter/utils/helper.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +33,6 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
     final appProvider = Provider.of<AppProvider>(context, listen: false);
 
     _fetchSeatFuture = Future.microtask(() {
-      seatProvider.reset();
       seatProvider
           .getAllSeatByAuditorium(appProvider.selectedScreening!.auditorium.id);
     });
@@ -41,10 +41,12 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final seatPovider = context.watch<SeatProvider>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
+        leading: const CustomBackArrow(),
       ),
       body: SafeArea(
         child: Column(
@@ -131,7 +133,8 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: kDefaultPadding),
+                  padding: const EdgeInsets.only(
+                      left: kDefaultPadding, bottom: kMediumPadding),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -152,33 +155,34 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(bottom: kDefaultPadding),
-                  alignment: Alignment.bottomRight,
-                  padding: const EdgeInsets.only(right: kDefaultPadding),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                        CheckOut.routeName,
-                      );
-                    },
-                    child: Container(
-                      height: size.height / 16,
-                      width: size.width / 3,
-                      decoration: BoxDecoration(
-                        color: AppColors.blueMain,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Đặt vé',
-                        style: GoogleFonts.beVietnamPro(
-                          textStyle: Theme.of(context).textTheme.titleMedium,
+                if (seatPovider.selectedSeatIds.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: kDefaultPadding),
+                    alignment: Alignment.bottomRight,
+                    padding: const EdgeInsets.only(right: kDefaultPadding),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          AnimateLeftCurve.createRoute(const CheckOut()),
+                        );
+                      },
+                      child: Container(
+                        height: size.height / 16,
+                        width: size.width / 3,
+                        decoration: BoxDecoration(
+                          color: AppColors.blueMain,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Đặt vé',
+                          style: GoogleFonts.beVietnamPro(
+                            textStyle: Theme.of(context).textTheme.titleMedium,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ],
@@ -188,7 +192,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
   }
 
   Widget generateSeatGrid(SeatProvider seatProvider) {
-    List<Seat> sortedSeats = seatProvider.getSortedSeats();
+    List<SeatResponse> sortedSeats = seatProvider.getSortedSeats();
 
     // Generate row letters based on the sorted seats
     List<String> seatRowLetters =
@@ -196,7 +200,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
 
     return Column(
       children: seatRowLetters.map((rowLetter) {
-        List<Seat> rowSeats =
+        List<SeatResponse> rowSeats =
             sortedSeats.where((seat) => seat.rowSeat == rowLetter).toList();
 
         return Row(
@@ -209,7 +213,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
     );
   }
 
-  Widget buildSeatWidget(SeatProvider seatProvider, Seat seat) {
+  Widget buildSeatWidget(SeatProvider seatProvider, SeatResponse seat) {
     final size = MediaQuery.of(context).size;
 
     return Consumer<SeatProvider>(

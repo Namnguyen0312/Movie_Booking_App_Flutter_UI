@@ -1,13 +1,13 @@
-import 'auditorium.dart';
+import 'auditorium_response.dart';
 
-class Seat {
+class SeatResponse {
   final int id;
   final int numberSeat;
   final String rowSeat;
   final double price;
-  final Auditorium auditorium;
+  final AuditoriumResponse auditorium;
 
-  Seat({
+  SeatResponse({
     required this.id,
     required this.numberSeat,
     required this.rowSeat,
@@ -15,13 +15,13 @@ class Seat {
     required this.auditorium,
   });
 
-  factory Seat.fromJson(Map<String, dynamic> json) {
-    return Seat(
+  factory SeatResponse.fromJson(Map<String, dynamic> json) {
+    return SeatResponse(
       id: json['id'],
       numberSeat: json['number_Seat'],
       rowSeat: json['row_Seat'],
       price: json['price'],
-      auditorium: Auditorium.fromJson(json['auditorium']),
+      auditorium: AuditoriumResponse.fromJson(json['auditorium']),
     );
   }
 
@@ -34,13 +34,13 @@ class Seat {
     };
   }
 
-  Seat copyWith({
+  SeatResponse copyWith({
     int? id,
     int? numberSeat,
     String? rowSeat,
     double? price,
   }) {
-    return Seat(
+    return SeatResponse(
       id: id ?? this.id,
       numberSeat: numberSeat ?? this.numberSeat,
       rowSeat: rowSeat ?? this.rowSeat,

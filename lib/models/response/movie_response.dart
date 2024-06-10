@@ -1,6 +1,6 @@
-import 'package:movie_ticker_app_flutter/models/genre.dart';
+import 'package:movie_ticker_app_flutter/models/response/genre_response.dart';
 
-class Movie {
+class MovieResponse {
   final int id;
   final String title;
   final int duration;
@@ -8,13 +8,13 @@ class Movie {
   final double rating;
   final String endDate;
   final String releaseDate;
-  final List<Genre> genres;
+  final List<GenreResponse> genres;
   final String description;
   final String director;
   final List<String> casts;
   final String trailers;
 
-  Movie({
+  MovieResponse({
     required this.id,
     required this.title,
     required this.duration,
@@ -29,8 +29,8 @@ class Movie {
     required this.trailers,
   });
 
-  factory Movie.fromJson(Map<String, dynamic> json) {
-    return Movie(
+  factory MovieResponse.fromJson(Map<String, dynamic> json) {
+    return MovieResponse(
       id: json['id'],
       title: json['title'],
       description: json['description'],
@@ -42,7 +42,9 @@ class Movie {
       rating: json['rating'],
       releaseDate: json['release_date'],
       endDate: json['end_date'],
-      genres: (json['genres'] as List).map((e) => Genre.fromJson(e)).toList(),
+      genres: (json['genres'] as List)
+          .map((e) => GenreResponse.fromJson(e))
+          .toList(),
     );
   }
 

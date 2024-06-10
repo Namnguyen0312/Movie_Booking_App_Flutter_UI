@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/select_seat_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
@@ -38,8 +40,9 @@ class NextButtonWidget extends StatelessWidget {
       padding: const EdgeInsets.only(right: kDefaultPadding),
       child: GestureDetector(
         onTap: () {
-          Navigator.of(context).pushNamed(
-            SelectSeatPage.routeName,
+          context.read<SeatProvider>().reset();
+          Navigator.of(context).push(
+            AnimateLeftCurve.createRoute(const SelectSeatPage()),
           );
         },
         child: Container(

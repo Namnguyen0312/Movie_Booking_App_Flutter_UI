@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/movie_detail_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:provider/provider.dart';
 
 class CustomSearchDelegate extends SearchDelegate {
@@ -92,7 +93,9 @@ class CustomSearchDelegate extends SearchDelegate {
               (movie) => movie.title == result,
             );
             provider.selectMovie(selectedMovie);
-            Navigator.pushNamed(context, MovieDetailPage.routeName);
+            Navigator.of(context).push(
+              AnimateLeftCurve.createRoute(const MovieDetailPage()),
+            );
           },
           child: ListTile(
             title: Text(

@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movie_ticker_app_flutter/common/widgets/stateless/custom_back_arrow.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
-import 'package:movie_ticker_app_flutter/models/seat.dart';
+import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
@@ -27,7 +27,7 @@ class _CheckOutState extends State<CheckOut> {
     final Size size = MediaQuery.of(context).size;
     final appProvider = context.watch<AppProvider>();
     final seatProvider = context.watch<SeatProvider>();
-    List<Seat> sortedSeats = seatProvider.getSortedSeats();
+    List<SeatResponse> sortedSeats = seatProvider.getSortedSeats();
     String seat = sortedSeats
         .where((seat) => seatProvider.selectedSeatIds.contains(seat.id))
         .map((seat) => '${seat.rowSeat}${seat.numberSeat}')
@@ -46,6 +46,7 @@ class _CheckOutState extends State<CheckOut> {
         ),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
+        leading: const CustomBackArrow(),
       ),
       body: SafeArea(
         child: Column(

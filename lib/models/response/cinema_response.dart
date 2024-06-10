@@ -1,20 +1,20 @@
-import 'address.dart';
+import 'address_response.dart';
 
-class Cinema {
+class CinemaResponse {
   final int id;
-  final Address address;
+  final AddressResponse address;
   final String name;
 
-  Cinema({
+  CinemaResponse({
     required this.id,
     required this.address,
     required this.name,
   });
 
-  factory Cinema.fromJson(Map<String, dynamic> json) {
-    return Cinema(
+  factory CinemaResponse.fromJson(Map<String, dynamic> json) {
+    return CinemaResponse(
       id: json['id'],
-      address: Address.fromJson(json['address']),
+      address: AddressResponse.fromJson(json['address']),
       name: json['name'],
     );
   }

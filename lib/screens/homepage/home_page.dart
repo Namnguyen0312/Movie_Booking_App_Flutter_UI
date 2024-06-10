@@ -4,8 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
-import 'package:movie_ticker_app_flutter/models/movie.dart';
+import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/widgets/carousel_slide.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/widgets/custom_serach_delegate.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/widgets/menu.dart';
@@ -54,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final provider = context.watch<UserProvider>();
     return Scaffold(
       drawer: const Menu(),
       appBar: AppBar(
@@ -72,6 +74,15 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         backgroundColor: Colors.transparent,
+        centerTitle: true,
+        title: provider.isLoggedIn
+            ? Text(
+                'Chào, ${provider.user!.name}',
+                style: GoogleFonts.beVietnamPro(
+                  textStyle: Theme.of(context).textTheme.titleMedium,
+                ),
+              )
+            : null,
         leading: Builder(
           builder: (context) {
             return IconButton(
@@ -93,7 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            final List<Movie> movies = context.watch<AppProvider>().movies;
+            final List<MovieResponse> movies =
+                context.watch<AppProvider>().movies;
             if (movies.isNotEmpty) {
               _currentMovieImage.value = movies[0].image;
               _currentMovieTitle.value = movies[0].title;

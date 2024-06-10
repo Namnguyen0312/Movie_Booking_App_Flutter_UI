@@ -1,21 +1,21 @@
-import 'cinema.dart';
+import 'cinema_response.dart';
 
-class Auditorium {
+class AuditoriumResponse {
   final int id;
   final String name;
-  final Cinema cinema;
+  final CinemaResponse cinema;
 
-  Auditorium({
+  AuditoriumResponse({
     required this.id,
     required this.name,
     required this.cinema,
   });
 
-  factory Auditorium.fromJson(Map<String, dynamic> json) {
-    return Auditorium(
+  factory AuditoriumResponse.fromJson(Map<String, dynamic> json) {
+    return AuditoriumResponse(
       id: json['id'],
       name: json['name'],
-      cinema: Cinema.fromJson(json['cinema']),
+      cinema: CinemaResponse.fromJson(json['cinema']),
     );
   }
 

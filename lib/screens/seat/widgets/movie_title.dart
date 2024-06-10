@@ -18,7 +18,7 @@ class MovieTitle extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(left: kMediumPadding),
           child: Text(
-            appProvider.selectedScreening!.movie.title,
+            appProvider.selectedMovie!.title,
             style: GoogleFonts.beVietnamPro(
               textStyle: Theme.of(context).textTheme.titleLarge,
             ),

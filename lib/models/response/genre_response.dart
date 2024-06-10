@@ -1,14 +1,14 @@
-class Genre {
+class GenreResponse {
   final int id;
   final String name;
 
-  Genre({
+  GenreResponse({
     required this.id,
     required this.name,
   });
 
-  factory Genre.fromJson(Map<String, dynamic> json) {
-    return Genre(
+  factory GenreResponse.fromJson(Map<String, dynamic> json) {
+    return GenreResponse(
       id: json['id'],
       name: json['name'],
     );
