@@ -34,6 +34,12 @@ class AppProvider extends ChangeNotifier {
   List<MovieResponse> _movies = [];
   List<MovieResponse> get movies => _movies;
 
+  List<MovieResponse> _currentMovies = [];
+  List<MovieResponse> get currentMovies => _currentMovies;
+
+  List<MovieResponse> _commingSoonMovies = [];
+  List<MovieResponse> get commingSoonMovies => _commingSoonMovies;
+
   MovieResponse? _selectedMovie;
   MovieResponse? get selectedMovie => _selectedMovie;
 
@@ -51,6 +57,12 @@ class AppProvider extends ChangeNotifier {
 
   bool _isCityLoading = false;
   bool get isCityLoading => _isCityLoading;
+
+  Widget? _widget;
+  Widget? get widget => _widget;
+
+  bool _isComingSoon = false;
+  bool get isComingSoon => _isComingSoon;
 
   AppProvider() {
     generateDays();
@@ -159,6 +171,34 @@ class AppProvider extends ChangeNotifier {
     } catch (error) {
       rethrow;
     }
+  }
+
+  void checkComingSoon(MovieResponse movie) {
+    final dateNow = DateTime.now();
+    final releaseDate = DateTime.parse(movie.releaseDate);
+    if (dateNow.isBefore(releaseDate) == true) {
+      _isComingSoon = true;
+    } else {
+      _isComingSoon = false;
+    }
+    print(_isComingSoon);
+  }
+
+  void classifyMovie() {
+    final dateNow = DateTime.now();
+    _commingSoonMovies = _movies.where((movie) {
+      final releaseDate = DateTime.parse(movie.releaseDate);
+      return dateNow.isBefore(releaseDate);
+    }).toList();
+    _currentMovies = _movies.where((movie) {
+      final releaseDate = DateTime.parse(movie.releaseDate);
+      final endDate = DateTime.parse(movie.endDate);
+      return dateNow.isAfter(releaseDate) && dateNow.isBefore(endDate);
+    }).toList();
+  }
+
+  void selectWidget(Widget widget) {
+    _widget = widget;
   }
 
   void onMovieChanged(MovieResponse movie) {

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
+import 'package:movie_ticker_app_flutter/screens/cinema/select_cinema_page.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_date_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_next_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_screening_widget.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
 import 'package:provider/provider.dart';
 
 class SelectScreeningByCinema extends StatefulWidget {
   const SelectScreeningByCinema({super.key});
-  static const String routeName = '/all_screening';
 
   @override
   State<SelectScreeningByCinema> createState() =>
@@ -18,29 +20,29 @@ class SelectScreeningByCinema extends StatefulWidget {
 
 class _SelectScreeningByCinemaState extends State<SelectScreeningByCinema> {
   @override
-  void initState() {
-    super.initState();
-    final appProvider = Provider.of<AppProvider>(context, listen: false);
-    Future.microtask(() {
-      appProvider.resetForCinema();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final provider = context.watch<AppProvider>();
+    final appProvider = context.watch<AppProvider>();
+    final userProvider = context.watch<UserProvider>();
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          provider.selectedCinema!.name,
+          appProvider.selectedCinema!.name,
           style: GoogleFonts.beVietnamPro(
             textStyle: Theme.of(context).textTheme.titleLarge,
           ),
         ),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                AnimateRightCurve.createRoute(const SelectCinemaByCity()),
+                (route) => false,
+              );
+            },
+            icon: const Icon(Icons.arrow_back)),
       ),
       body: SafeArea(
         child: Column(
@@ -49,9 +51,9 @@ class _SelectScreeningByCinemaState extends State<SelectScreeningByCinema> {
             const SizedBox(
               height: 20,
             ),
-            if (provider.dateSelected) const SelectScreeningWidget(),
-            if (provider.selectedScreening != null)
-              SelectNextWidget(provider: provider, size: size),
+            if (appProvider.dateSelected) const SelectScreeningWidget(),
+            if (appProvider.selectedScreening != null)
+              NextButtonWidget(userProvider: userProvider, size: size),
           ],
         ),
       ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/movie_detail_page.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_next_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_screening_widget.dart';
@@ -10,8 +12,6 @@ import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
 import 'package:provider/provider.dart';
 
 class SelectScreeningByMoviePage extends StatefulWidget {
-  static const String routeName = '/select_cinema_page';
-
   const SelectScreeningByMoviePage({super.key});
 
   @override
@@ -27,7 +27,6 @@ class _SelectScreeningByMoviePageState
     final appProvider = Provider.of<AppProvider>(context, listen: false);
 
     Future.microtask(() {
-      appProvider.reset();
       appProvider.getCityToAddress();
     });
   }
@@ -35,11 +34,17 @@ class _SelectScreeningByMoviePageState
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final provider = context.watch<AppProvider>();
+    final appProvider = context.watch<AppProvider>();
+    final userProvider = context.watch<UserProvider>();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(provider.selectedMovie!.title),
+        title: Text(
+          appProvider.selectedMovie!.title,
+          style: GoogleFonts.beVietnamPro(
+            textStyle: Theme.of(context).textTheme.titleLarge,
+          ),
+        ),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
         leading: IconButton(
@@ -54,20 +59,20 @@ class _SelectScreeningByMoviePageState
       body: SafeArea(
         child: Column(
           children: [
-            provider.isCityLoading
+            appProvider.isCityLoading
                 ? const Center(child: CircularProgressIndicator())
                 : const SelectCityWidget(),
             const SizedBox(
               height: 20,
             ),
-            if (provider.citySelected) const SelectDateWidget(),
+            if (appProvider.citySelected) const SelectDateWidget(),
             const SizedBox(
               height: 20,
             ),
-            if (provider.citySelected && provider.dateSelected)
+            if (appProvider.citySelected && appProvider.dateSelected)
               const SelectScreeningWidget(),
-            if (provider.selectedScreening != null)
-              SelectNextWidget(size: size),
+            if (appProvider.selectedScreening != null)
+              NextButtonWidget(size: size, userProvider: userProvider),
           ],
         ),
       ),

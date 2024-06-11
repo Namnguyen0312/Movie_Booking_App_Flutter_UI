@@ -20,7 +20,7 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
   Widget build(BuildContext context) {
     final provider = context.watch<AppProvider>();
 
-    if (provider.selectedCity != null &&
+    if (provider.selectedCinema != null &&
         provider.selectedDate != null &&
         _fetchScreeningsFuture == null) {
       _fetchScreeningsFuture = provider.getScreeningsByCinema(
@@ -50,6 +50,7 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
   Widget _buildScreeningList() {
     final provider = context.watch<AppProvider>();
     final screeningsByMovie = provider.screeningsByMovie;
+
     return screeningsByMovie.isEmpty
         ? Center(
             child: Text(
@@ -63,6 +64,7 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
             itemBuilder: (context, index) {
               final movieTitle = screeningsByMovie.keys.elementAt(index);
               final screenings = screeningsByMovie[movieTitle]!;
+
               return SizedBox(
                 height: 130,
                 child: ListTile(
@@ -81,18 +83,22 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
                             .parse('${screening.date} ${screening.start}');
                         final isPast =
                             screeningDateTime.isBefore(DateTime.now());
-                        final isSelected =
-                            provider.selectedScreening == screening;
+                        bool isSelected =
+                            provider.selectedScreening?.id == screening.id;
+                        List<String> parts = screening.start.split(':');
+                        String start = '${parts[0]}:${parts[1]}';
                         return GestureDetector(
                           onTap: isPast
                               ? null
                               : () {
-                                  context
-                                      .read<AppProvider>()
-                                      .selectScreening(screening);
-                                  context
-                                      .read<AppProvider>()
-                                      .checkAndSetSelectCinema();
+                                  setState(() {
+                                    context
+                                        .read<AppProvider>()
+                                        .selectScreening(screening);
+                                    context
+                                        .read<AppProvider>()
+                                        .selectMovie(screening.movie);
+                                  });
                                 },
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -116,7 +122,7 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
                                   ),
                                 ),
                                 child: Text(
-                                  screening.start,
+                                  start,
                                   style: GoogleFonts.beVietnamPro(
                                     textStyle:
                                         Theme.of(context).textTheme.labelMedium,

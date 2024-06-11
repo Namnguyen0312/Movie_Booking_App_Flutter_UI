@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
@@ -27,8 +27,8 @@ class SelectDateWidget extends StatelessWidget {
                     .updateIsSelected(index, provider.days);
                 context.read<AppProvider>().selectDate(provider.days[index]);
                 await context.read<AppProvider>().getScreeningsByMovieAndCity(
-                      context.read<AppProvider>().selectedMovie!.id,
-                      context.read<AppProvider>().selectedCity!,
+                      provider.selectedMovie!.id,
+                      provider.selectedCity!,
                       provider.days[index],
                     );
               },
@@ -50,16 +50,16 @@ class SelectDateWidget extends StatelessWidget {
                   children: [
                     Text(
                       _formatDay(provider.days[index]),
-                      style: AppStyles.h4.copyWith(
-                        color: AppColors.white,
+                      style: GoogleFonts.beVietnamPro(
+                        textStyle: Theme.of(context).textTheme.labelMedium,
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: kMinPadding),
                       child: Text(
                         provider.days[index].day.toString(),
-                        style: AppStyles.h5.copyWith(
-                          color: AppColors.white,
+                        style: GoogleFonts.beVietnamPro(
+                          textStyle: Theme.of(context).textTheme.labelSmall,
                         ),
                       ),
                     ),

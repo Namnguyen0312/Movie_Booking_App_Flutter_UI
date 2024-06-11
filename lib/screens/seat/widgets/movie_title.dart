@@ -12,6 +12,8 @@ class MovieTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appProvider = context.watch<AppProvider>();
+    List<String> parts = appProvider.selectedScreening!.start.split(':');
+    String start = '${parts[0]}:${parts[1]}';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -30,7 +32,7 @@ class MovieTitle extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(left: kMediumPadding),
           child: Text(
-            '${appProvider.selectedScreening!.auditorium.name} ${appProvider.selectedScreening!.start}',
+            '${appProvider.selectedScreening!.auditorium.name} $start',
             style: GoogleFonts.beVietnamPro(
               textStyle: Theme.of(context).textTheme.titleMedium,
             ),

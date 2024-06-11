@@ -1,36 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
+import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
+import 'package:movie_ticker_app_flutter/screens/screening/select_screening_by_movie_page.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/select_seat_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
-class SelectNextWidget extends StatelessWidget {
-  const SelectNextWidget({
-    super.key,
-    required this.size,
-  });
-
-  final Size size;
-
-  @override
-  Widget build(BuildContext context) {
-    final provider = context.watch<AppProvider>();
-    return NextButtonWidget(size: size, provider: provider);
-  }
-}
-
 class NextButtonWidget extends StatelessWidget {
   const NextButtonWidget({
     super.key,
     required this.size,
-    required this.provider,
+    required this.userProvider,
   });
 
   final Size size;
-  final AppProvider provider;
+  final UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +28,23 @@ class NextButtonWidget extends StatelessWidget {
       padding: const EdgeInsets.only(right: kDefaultPadding),
       child: GestureDetector(
         onTap: () {
-          context.read<SeatProvider>().reset();
-          Navigator.of(context).push(
-            AnimateLeftCurve.createRoute(const SelectSeatPage()),
-          );
+          if (userProvider.isLoggedIn) {
+            context.read<SeatProvider>().reset();
+            context
+                .read<AppProvider>()
+                .selectWidget(const SelectScreeningByMoviePage());
+            Navigator.of(context).push(
+              AnimateLeftCurve.createRoute(const SelectSeatPage()),
+            );
+          } else {
+            context
+                .read<AppProvider>()
+                .selectWidget(const SelectScreeningByMoviePage());
+            context.read<UserProvider>().selectWidget(const SelectSeatPage());
+            Navigator.of(context).push(
+              AnimateLeftCurve.createRoute(const LoginScreen()),
+            );
+          }
         },
         child: Container(
           height: size.height / 16,
@@ -55,7 +56,7 @@ class NextButtonWidget extends StatelessWidget {
           child: Center(
             child: Icon(
               Icons.arrow_forward,
-              color: provider.selectedScreening != null
+              color: context.watch<AppProvider>().selectedScreening != null
                   ? AppColors.white
                   : AppColors.grey,
             ),

@@ -6,8 +6,6 @@ import 'package:movie_ticker_app_flutter/utils/helper.dart';
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
-  static const String routeName = '/profile_screen';
-
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }

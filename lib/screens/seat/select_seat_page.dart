@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:movie_ticker_app_flutter/common/widgets/stateless/custom_back_arrow.dart';
 import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
@@ -10,13 +9,12 @@ import 'package:movie_ticker_app_flutter/screens/seat/widgets/movie_title.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:movie_ticker_app_flutter/utils/helper.dart';
 import 'package:provider/provider.dart';
 
 class SelectSeatPage extends StatefulWidget {
-  static const String routeName = '/select_seat_page';
-
   const SelectSeatPage({super.key});
 
   @override
@@ -42,11 +40,19 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final seatPovider = context.watch<SeatProvider>();
+    final appProvdier = context.watch<AppProvider>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
-        leading: const CustomBackArrow(),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                AnimateRightCurve.createRoute(appProvdier.widget!),
+                (route) => false,
+              );
+            },
+            icon: const Icon(Icons.arrow_back)),
       ),
       body: SafeArea(
         child: Column(
@@ -77,7 +83,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
               child: SizedBox(
                 height: size.height / 1.6,
                 child: Container(
-                  margin: EdgeInsets.only(top: size.height / 6),
+                  margin: EdgeInsets.only(top: size.height / 7),
                   child: Column(
                     children: [
                       SizedBox(
@@ -146,8 +152,11 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                       ),
                       Consumer<SeatProvider>(
                         builder: (context, seatProvider, child) {
+                          final totalPrice = int.parse(
+                                  seatProvider.totalPrice.toStringAsFixed(0)) *
+                              1000;
                           return Text(
-                            '${seatProvider.totalPrice}00đ',
+                            '$totalPriceđ',
                             style: AppStyles.h3,
                           );
                         },

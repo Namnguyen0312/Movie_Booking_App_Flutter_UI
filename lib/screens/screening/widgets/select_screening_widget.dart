@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:provider/provider.dart';
 
 class SelectScreeningWidget extends StatefulWidget {
@@ -54,14 +54,25 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
     final screeningsByCinema = provider.screeningsByCinema;
 
     return screeningsByCinema.isEmpty && provider.dateSelected
-        ? const Center(child: Text('Không có suất chiếu'))
+        ? Center(
+            child: Text(
+            'Không có suất chiếu',
+            style: GoogleFonts.beVietnamPro(
+              textStyle: Theme.of(context).textTheme.titleMedium,
+            ),
+          ))
         : ListView.builder(
             itemCount: screeningsByCinema.length,
             itemBuilder: (context, index) {
               final cinema = screeningsByCinema.keys.elementAt(index);
               final screenings = screeningsByCinema[cinema]!;
               return ListTile(
-                title: Text(cinema, style: AppStyles.h2),
+                title: Text(
+                  cinema,
+                  style: GoogleFonts.beVietnamPro(
+                    textStyle: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
                 subtitle: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -70,22 +81,20 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
                       final screeningDateTime =
                           format.parse('${screening.date} ${screening.start}');
                       final isPast = screeningDateTime.isBefore(DateTime.now());
-                      final isSelected =
-                          provider.selectedScreening == screening;
+                      bool isSelected =
+                          provider.selectedScreening?.id == screening.id;
                       return GestureDetector(
                         onTap: isPast
                             ? null
                             : () {
-                                context
-                                    .read<AppProvider>()
-                                    .selectScreening(screening);
-                                context
-                                    .read<AppProvider>()
-                                    .checkAndSetSelectCinema();
-                                // context
-                                //     .read<AppProvider>()
-                                //     .isSelectedScreening(isSelected);
-                                // print(provider.screeningSelected);
+                                setState(() {
+                                  context
+                                      .read<AppProvider>()
+                                      .selectScreening(screening);
+                                  context
+                                      .read<AppProvider>()
+                                      .checkAndSetSelectCinema();
+                                });
                               },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -110,8 +119,10 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
                               ),
                               child: Text(
                                 '${screeningDateTime.hour}:${screeningDateTime.minute}',
-                                style: const TextStyle(
-                                    fontSize: 16, color: AppColors.white),
+                                style: GoogleFonts.beVietnamPro(
+                                  textStyle:
+                                      Theme.of(context).textTheme.labelMedium,
+                                ),
                               ),
                             ),
                           ),

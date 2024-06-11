@@ -139,7 +139,8 @@ class _CheckOutState extends State<CheckOut> {
                     BuildPriceTag(content: 'Seat Number', price: seat),
                     BuildPriceTag(
                         content: 'Price',
-                        price: '${seatProvider.totalPrice}00đ'),
+                        price:
+                            '${int.parse(seatProvider.totalPrice.toStringAsFixed(0)) * 1000}đ'),
                   ],
                 ),
               ),

@@ -73,7 +73,9 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                       labelColor: Colors.indigo[100],
                       unselectedLabelColor: Colors.white70,
                       tabs: const [
-                        Tab(text: "Mô Tả"),
+                        Tab(
+                          text: "Mô Tả",
+                        ),
                         Tab(text: "Bình Luận"),
                       ],
                     ),

@@ -1,48 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
+import 'package:movie_ticker_app_flutter/screens/cinema/select_screeing_by_cinema_page.dart';
+import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/select_seat_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
+import 'package:provider/provider.dart';
 
-class SelectNextWidget extends StatelessWidget {
-  const SelectNextWidget({
+class NextButtonWidget extends StatelessWidget {
+  const NextButtonWidget({
     super.key,
-    required this.provider,
     required this.size,
+    required this.userProvider,
   });
 
-  final AppProvider provider;
   final Size size;
+  final UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          const EdgeInsets.only(bottom: kMediumPadding, top: kMediumPadding),
+    return Container(
+      margin: const EdgeInsets.only(bottom: kDefaultPadding),
+      alignment: Alignment.bottomRight,
+      padding: const EdgeInsets.only(right: kDefaultPadding),
       child: GestureDetector(
-        onTap: provider.selectedScreening != null
-            ? () {
-                Navigator.of(context).pushNamed(
-                  SelectSeatPage.routeName,
-                );
-              }
-            : null,
+        onTap: () {
+          if (userProvider.isLoggedIn) {
+            context.read<SeatProvider>().reset();
+            context
+                .read<AppProvider>()
+                .selectWidget(const SelectScreeningByCinema());
+            Navigator.of(context).push(
+              AnimateLeftCurve.createRoute(const SelectSeatPage()),
+            );
+          } else {
+            context
+                .read<AppProvider>()
+                .selectWidget(const SelectScreeningByCinema());
+            context.read<UserProvider>().selectWidget(const SelectSeatPage());
+            Navigator.of(context).push(
+              AnimateLeftCurve.createRoute(const LoginScreen()),
+            );
+          }
+        },
         child: Container(
-          height: size.height / 15,
-          width: size.height / 9,
+          height: size.height / 16,
+          width: size.width / 3,
           decoration: BoxDecoration(
-            color: provider.selectedScreening == null
-                ? AppColors.darkerBackground
-                : AppColors.blueMain,
-            borderRadius: kDefaultBorderRadius,
-            border: provider.selectedScreening == null
-                ? Border.all(color: AppColors.grey)
-                : null,
+            color: AppColors.blueMain,
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Center(
             child: Icon(
               Icons.arrow_forward,
-              color: provider.selectedScreening != null
+              color: context.watch<AppProvider>().selectedScreening != null
                   ? AppColors.white
                   : AppColors.grey,
             ),

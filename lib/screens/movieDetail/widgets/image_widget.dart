@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
-import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
-import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/widgets/trailer_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/select_screening_by_movie_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
@@ -82,7 +80,6 @@ class _ImageWidget extends State<ImageWidget>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final appProvider = context.watch<AppProvider>();
-    final userProvider = context.watch<UserProvider>();
 
     String genres =
         appProvider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
@@ -152,44 +149,37 @@ class _ImageWidget extends State<ImageWidget>
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  if (userProvider.isLoggedIn) {
+              if (appProvider.isComingSoon == false)
+                GestureDetector(
+                  onTap: () {
+                    context.read<AppProvider>().reset();
                     Navigator.of(context).push(
                       AnimateLeftCurve.createRoute(
                           const SelectScreeningByMoviePage()),
                     );
-                  } else {
-                    context
-                        .read<UserProvider>()
-                        .selectWidget(const SelectScreeningByMoviePage());
-                    Navigator.of(context).push(
-                      AnimateLeftCurve.createRoute(const LoginScreen()),
-                    );
-                  }
-                },
-                child: Container(
-                  height: size.height / 15,
-                  width: size.height / 4.6,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Gradients.lightBlue1,
-                        Gradients.lightBlue2,
-                      ],
+                  },
+                  child: Container(
+                    height: size.height / 15,
+                    width: size.height / 4.6,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Gradients.lightBlue1,
+                          Gradients.lightBlue2,
+                        ],
+                      ),
+                      borderRadius: kDefaultBorderRadius,
                     ),
-                    borderRadius: kDefaultBorderRadius,
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Đặt vé',
-                      style: GoogleFonts.beVietnamPro(
-                        textStyle: Theme.of(context).textTheme.titleMedium,
+                    child: Center(
+                      child: Text(
+                        'Đặt vé',
+                        style: GoogleFonts.beVietnamPro(
+                          textStyle: Theme.of(context).textTheme.titleMedium,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

@@ -109,7 +109,7 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
             widget.onMovieChanged(widget.movies[index]);
           },
         ),
-        items: context.read<AppProvider>().movies.map((movie) {
+        items: widget.movies.map((movie) {
           return Builder(
             builder: (BuildContext context) {
               return GestureDetector(
@@ -118,6 +118,7 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                 },
                 onTap: () {
                   context.read<AppProvider>().selectMovie(movie);
+                  context.read<AppProvider>().checkComingSoon(movie);
                   Navigator.of(context).push(
                     AnimateLeftCurve.createRoute(const MovieDetailPage()),
                   );

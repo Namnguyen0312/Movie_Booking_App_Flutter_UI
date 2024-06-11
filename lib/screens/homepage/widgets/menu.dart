@@ -45,9 +45,13 @@ class Menu extends StatelessWidget {
             onTap: () {
               if (!isLoggedIn) {
                 context.read<UserProvider>().selectWidget(const HomeScreen());
-                Navigator.of(context).pushNamed(LoginScreen.routeName);
+                Navigator.of(context).push(
+                  AnimateLeftCurve.createRoute(const LoginScreen()),
+                );
               } else {
-                Navigator.of(context).pushNamed(ProfileScreen.routeName);
+                Navigator.of(context).push(
+                  AnimateLeftCurve.createRoute(const ProfileScreen()),
+                );
               }
             },
           ),

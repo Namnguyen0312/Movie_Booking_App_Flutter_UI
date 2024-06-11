@@ -9,8 +9,6 @@ import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
 import 'package:provider/provider.dart';
 
-import 'routes/routes.dart';
-
 void main() async {
   runApp(const MyApp());
 }
@@ -41,7 +39,6 @@ class MyApp extends StatelessWidget {
                   displayColor: AppColors.white,
                 ),
           ),
-          routes: routes,
           home: const HomeScreen(),
         ));
   }

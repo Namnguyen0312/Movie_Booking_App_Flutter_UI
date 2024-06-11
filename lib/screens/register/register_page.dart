@@ -73,6 +73,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               content: Text('Đăng ký thành công'),
             ),
           );
+          Navigator.of(context).push(
+            AnimateRightCurve.createRoute(const LoginScreen()),
+          );
         }
       } catch (e) {
         if (!mounted) return;
