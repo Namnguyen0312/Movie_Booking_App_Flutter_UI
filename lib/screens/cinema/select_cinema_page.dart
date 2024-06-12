@@ -30,10 +30,13 @@ class _SelectCinemaByCityState extends State<SelectCinemaByCity> {
     final provider = context.watch<AppProvider>();
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
           'Đặt vé theo rạp',
           style: GoogleFonts.beVietnamPro(
-            textStyle: Theme.of(context).textTheme.titleLarge,
+            textStyle: const TextStyle(
+              fontSize: 18,
+            ),
           ),
         ),
         backgroundColor: AppColors.darkerBackground,
@@ -45,7 +48,23 @@ class _SelectCinemaByCityState extends State<SelectCinemaByCity> {
                 (route) => false,
               );
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white60,
+            )),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  AnimateRightCurve.createRoute(const HomeScreen()),
+                  (route) => false,
+                );
+              },
+              icon: const Icon(
+                Icons.home,
+                color: Colors.white60,
+              )),
+        ],
       ),
       body: SafeArea(
         child: provider.isCityLoading

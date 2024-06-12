@@ -9,8 +9,6 @@ import '../../utils/constants.dart';
 class MyTicket extends StatefulWidget {
   const MyTicket({super.key});
 
-  static const String routeName = '/my_ticket';
-
   @override
   State<MyTicket> createState() => _MyTicketState();
 }
@@ -58,9 +56,7 @@ class _MyTicketState extends State<MyTicket> {
               Column(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(MyTicket.routeName);
-                    },
+                    onTap: () {},
                     child: Container(
                       height: 60,
                       width: size.width / 1.5,

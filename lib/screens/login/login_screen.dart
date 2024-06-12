@@ -184,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
-                          AnimateRightCurve.createRoute(const SignUpScreen()),
+                          AnimateLeftCurve.createRoute(const SignUpScreen()),
                         );
                       },
                       child: const Text(

@@ -4,6 +4,7 @@ import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/check_out.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/widgets/built_seat_status_bar.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/widgets/movie_title.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
@@ -31,6 +32,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
     final appProvider = Provider.of<AppProvider>(context, listen: false);
 
     _fetchSeatFuture = Future.microtask(() {
+      seatProvider.reset();
       seatProvider
           .getAllSeatByAuditorium(appProvider.selectedScreening!.auditorium.id);
     });
@@ -43,6 +45,15 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
     final appProvdier = context.watch<AppProvider>();
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'Chọn ghế',
+          style: GoogleFonts.beVietnamPro(
+            textStyle: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+        ),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
         leading: IconButton(
@@ -52,7 +63,23 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                 (route) => false,
               );
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white60,
+            )),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  AnimateRightCurve.createRoute(const HomeScreen()),
+                  (route) => false,
+                );
+              },
+              icon: const Icon(
+                Icons.home,
+                color: Colors.white60,
+              )),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -116,7 +143,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                                 builder: (context, seatProvider, child) {
                                   if (seatProvider.seats.isEmpty) {
                                     return const Center(
-                                        child: Text('Rạp đang bảo trì'));
+                                        child: CircularProgressIndicator());
                                   } else {
                                     return Padding(
                                       padding:

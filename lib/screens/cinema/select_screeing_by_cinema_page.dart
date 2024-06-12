@@ -6,6 +6,7 @@ import 'package:movie_ticker_app_flutter/screens/cinema/select_cinema_page.dart'
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_date_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_next_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_screening_widget.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +31,9 @@ class _SelectScreeningByCinemaState extends State<SelectScreeningByCinema> {
         title: Text(
           appProvider.selectedCinema!.name,
           style: GoogleFonts.beVietnamPro(
-            textStyle: Theme.of(context).textTheme.titleLarge,
+            textStyle: const TextStyle(
+              fontSize: 18,
+            ),
           ),
         ),
         backgroundColor: AppColors.darkerBackground,
@@ -42,7 +45,23 @@ class _SelectScreeningByCinemaState extends State<SelectScreeningByCinema> {
                 (route) => false,
               );
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white60,
+            )),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  AnimateRightCurve.createRoute(const HomeScreen()),
+                  (route) => false,
+                );
+              },
+              icon: const Icon(
+                Icons.home,
+                color: Colors.white60,
+              )),
+        ],
       ),
       body: SafeArea(
         child: Column(

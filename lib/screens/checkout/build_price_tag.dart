@@ -16,8 +16,7 @@ class BuildPriceTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-          vertical: kItemPadding, horizontal: kMediumPadding),
+      padding: const EdgeInsets.symmetric(vertical: kItemPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

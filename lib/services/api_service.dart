@@ -48,6 +48,36 @@ class ApiService {
   }
 
   //*POST
+
+  Future<String> submitOrder(
+    int orderTotal,
+    String seatNumber,
+    String movieName,
+    String cinema,
+    String showTime,
+  ) async {
+    final response = await http.post(
+      Uri.parse(
+          '$baseUrl/submitOrder?amount=$orderTotal&seatNumber=$seatNumber&movieName=$movieName&cinema=$cinema&showTime=$showTime'),
+    );
+
+    // Kiểm tra mã trạng thái của phản hồi
+    if (response.statusCode == 302) {
+      // Lấy URL chuyển hướng từ Header Location
+      final redirectUrl = response.headers['location'];
+      // Gửi yêu cầu mới đến URL đã chuyển hướng
+      final newResponse = await http.get(Uri.parse(redirectUrl!));
+      // Trả về nội dung của phản hồi mới
+      return newResponse.body;
+    } else if (response.statusCode == 200) {
+      // Nếu không có chuyển hướng, trả về nội dung của phản hồi ban đầu
+      return response.body;
+    } else {
+      // Xử lý lỗi
+      throw Exception('Failed to create review');
+    }
+  }
+
   Future<void> verifyMail(String email) async {
     final response = await http.post(
       Uri.parse('$baseUrl/forget/verifyMail?email=$email'),

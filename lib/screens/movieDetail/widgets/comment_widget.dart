@@ -302,11 +302,14 @@ class _CommentWidgetState extends State<CommentWidget> {
                               padding: const EdgeInsets.all(kMinPadding),
                               decoration: BoxDecoration(
                                   color: isUserComment
-                                      ? Colors.green
+                                      ? Colors.indigo.shade300
                                       : Colors.transparent,
                                   borderRadius: kMinBorderRadius,
                                   border: Border.all(
-                                      color: Colors.white, width: 2.0)),
+                                      color: isUserComment
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                      width: 2.0)),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/review_provider.dart';
@@ -43,6 +44,15 @@ class _MovieDetailPageState extends State<MovieDetailPage>
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'Thông tin phim',
+          style: GoogleFonts.beVietnamPro(
+            textStyle: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+        ),
         backgroundColor: AppColors.darkerBackground,
         foregroundColor: AppColors.white,
         leading: IconButton(
@@ -52,7 +62,10 @@ class _MovieDetailPageState extends State<MovieDetailPage>
                 (route) => false,
               );
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white60,
+            )),
       ),
       body: SingleChildScrollView(
         child: Column(

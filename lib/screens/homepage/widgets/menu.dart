@@ -69,17 +69,6 @@ class Menu extends StatelessWidget {
                   AnimateLeftCurve.createRoute(const SelectCinemaByCity()));
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.monetization_on),
-            title: Text(
-              'Giá vé',
-              style: GoogleFonts.beVietnamPro(
-                textStyle:
-                    const TextStyle(fontSize: 15, color: AppColors.veryDark),
-              ),
-            ),
-            onTap: () {},
-          ),
           if (isLoggedIn)
             ListTile(
               leading: const Icon(Icons.logout),

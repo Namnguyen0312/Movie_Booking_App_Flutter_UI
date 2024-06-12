@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/movieDetail/movie_detail_page.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_next_widget.dart';
 import 'package:movie_ticker_app_flutter/screens/screening/widgets/select_screening_widget.dart';
@@ -42,7 +43,9 @@ class _SelectScreeningByMoviePageState
         title: Text(
           appProvider.selectedMovie!.title,
           style: GoogleFonts.beVietnamPro(
-            textStyle: Theme.of(context).textTheme.titleLarge,
+            textStyle: const TextStyle(
+              fontSize: 18,
+            ),
           ),
         ),
         backgroundColor: AppColors.darkerBackground,
@@ -54,7 +57,23 @@ class _SelectScreeningByMoviePageState
                 (route) => false,
               );
             },
-            icon: const Icon(Icons.arrow_back)),
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.white60,
+            )),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  AnimateRightCurve.createRoute(const HomeScreen()),
+                  (route) => false,
+                );
+              },
+              icon: const Icon(
+                Icons.home,
+                color: Colors.white60,
+              )),
+        ],
       ),
       body: SafeArea(
         child: Column(
