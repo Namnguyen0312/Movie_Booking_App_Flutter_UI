@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:movie_ticker_app_flutter/models/request/address_request.dart';
 import 'package:movie_ticker_app_flutter/models/request/create_user_request.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
@@ -6,10 +8,10 @@ import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
-import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({Key? key});
+
   static const String routeName = '/register';
 
   @override
@@ -20,24 +22,116 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _wardController = TextEditingController();
-  final TextEditingController _districtController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _repassController = TextEditingController();
 
+  String? _selectedProvinceId;
+  String? _selectedDistrictId;
+  String? _selectedWardId;
+
+  String? _selectedProvince;
+  String? _selectedDistrict;
+  String? _selectedWard;
+
+  bool isProvinceSelected = false;
+  bool isDistrictSelected = false;
+  bool isWardSelected = false;
+
+  bool _loadingProvinces = false;
+  bool _loadingDistricts = false;
+  bool _loadingWards = false;
   Future<void>? _registrationFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadProvinces();
+    });
+  }
+
+  void _loadProvinces() async {
+    setState(() {
+      _loadingProvinces = true;
+    });
+    await Provider.of<UserProvider>(context, listen: false).getAllProvince();
+    setState(() {
+      _loadingProvinces = false;
+    });
+  }
+
+  void _loadDistricts(String? provinceId) async {
+    setState(() {
+      _loadingDistricts = true;
+    });
+    await Provider.of<UserProvider>(context, listen: false)
+        .getAllDistrictByProvinceId(provinceId!);
+    setState(() {
+      _loadingDistricts = false;
+    });
+  }
+
+  void _loadWards(String? districtId) async {
+    setState(() {
+      _loadingWards = true;
+    });
+    await Provider.of<UserProvider>(context, listen: false)
+        .getAllWardByDistrictId(districtId!);
+    setState(() {
+      _loadingWards = false;
+    });
+  }
+
+  void selectProvince(String? provinceId, String? provinceName) {
+    setState(() {
+      _selectedProvinceId = provinceId;
+      _selectedProvince = provinceName;
+      _selectedDistrictId = null;
+      _selectedDistrict = null;
+      _selectedWardId = null;
+      _selectedWard = null;
+      isProvinceSelected = true;
+      isDistrictSelected = false;
+      isWardSelected = false;
+    });
+    _loadDistricts(provinceId);
+  }
+
+  void selectDistrict(String? districtId, String? districtName) {
+    if (isProvinceSelected) {
+      setState(() {
+        _selectedDistrictId = districtId;
+        _selectedDistrict = districtName;
+        _selectedWardId = null;
+        _selectedWard = null;
+        isDistrictSelected = true;
+        isWardSelected = false;
+      });
+      _loadWards(districtId);
+    }
+  }
+
+  void selectWard(String? wardId, String? wardName) {
+    if (isDistrictSelected) {
+      setState(() {
+        _selectedWardId = wardId;
+        _selectedWard = wardName;
+        isWardSelected = true;
+      });
+    }
+  }
+
   bool _allFieldsFilled() {
     return _userNameController.text.isNotEmpty &&
         _emailController.text.isNotEmpty &&
         _phoneController.text.isNotEmpty &&
-        _cityController.text.isNotEmpty &&
-        _wardController.text.isNotEmpty &&
-        _districtController.text.isNotEmpty &&
         _streetController.text.isNotEmpty &&
         _passController.text.isNotEmpty &&
-        _repassController.text.isNotEmpty;
+        _repassController.text.isNotEmpty &&
+        _selectedProvince != null &&
+        _selectedDistrict != null &&
+        _selectedWard != null;
   }
 
   Future<void> _registerUser() async {
@@ -51,9 +145,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           );
         } else {
           final AddressRequest address = AddressRequest(
-            city: _cityController.text,
-            ward: _wardController.text,
-            district: _districtController.text,
+            city: _selectedProvince!,
+            ward: _selectedDistrict!,
+            district: _selectedWard!,
             street: _streetController.text,
           );
 
@@ -94,9 +188,100 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    bool obscureText = false,
+  }) {
+    return TextField(
+      style: const TextStyle(
+        color: Color(0xFF393939),
+        fontSize: 13,
+        fontFamily: 'Poppins',
+        fontWeight: FontWeight.w400,
+      ),
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(
+          color: Color(0xFF755DC1),
+          fontSize: 15,
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.w600,
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(width: 1, color: Color(0xFF837E93)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide(width: 1, color: Color(0xFF9F7BFF)),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownButtonFormField({
+    required String? value,
+    required List<DropdownMenuItem<String>> items,
+    required String label,
+    required ValueChanged<String?> onChanged,
+    bool isLoading = false,
+  }) {
+    return Stack(
+      children: [
+        AbsorbPointer(
+          absorbing: isLoading,
+          child: DropdownButtonFormField<String>(
+            value: value,
+            items: items,
+            onChanged: onChanged,
+            decoration: InputDecoration(
+              labelText: label,
+              labelStyle: const TextStyle(
+                color: Color(0xFF755DC1),
+                fontSize: 15,
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+              ),
+              enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide(width: 1, color: Color(0xFF837E93)),
+              ),
+              focusedBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide(width: 1, color: Color(0xFF9F7BFF)),
+              ),
+            ),
+          ),
+        ),
+        if (isLoading)
+          Positioned.fill(
+            child: Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only(right: 10),
+              child: const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final provinces = Provider.of<UserProvider>(context).province;
+    final districts = Provider.of<UserProvider>(context).district;
+    final wards = Provider.of<UserProvider>(context).ward;
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -115,478 +300,219 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
-              child: Column(
-                textDirection: TextDirection.ltr,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Đăng ký',
-                    style: TextStyle(
-                      color: Color(0xFF755DC1),
-                      fontSize: 27,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 56,
-                    child: TextField(
-                      controller: _userNameController,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Color(0xFF393939),
-                        fontSize: 13,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: 'Họ và tên',
-                        labelStyle: TextStyle(
-                          color: Color(0xFF755DC1),
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF837E93),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 50),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Đăng ký',
+                style: TextStyle(
+                  color: Color(0xFF755DC1),
+                  fontSize: 27,
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(
+                controller: _userNameController,
+                label: 'Họ và tên',
+              ),
+              const SizedBox(height: 17),
+              _buildTextField(
+                controller: _emailController,
+                label: 'Email',
+              ),
+              const SizedBox(height: 17),
+              _buildTextField(
+                controller: _phoneController,
+                label: 'Điện thoại',
+              ),
+              const SizedBox(height: 17),
+              _buildDropdownButtonFormField(
+                value: _selectedProvinceId,
+                items: provinces?.map((province) {
+                      return DropdownMenuItem<String>(
+                        value: province.provinceId,
+                        child: Text(
+                          province.provinceName ?? '',
+                          style: GoogleFonts.beVietnamPro(
+                            textStyle: const TextStyle(color: Colors.black),
                           ),
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF9F7BFF),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 17),
-                  SizedBox(
-                    height: 56,
-                    child: TextField(
-                      controller: _emailController,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Color(0xFF393939),
-                        fontSize: 13,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(
-                          color: Color(0xFF755DC1),
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF837E93),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF9F7BFF),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 17),
-                  SizedBox(
-                    height: 56,
-                    child: TextField(
-                      controller: _phoneController,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Color(0xFF393939),
-                        fontSize: 13,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: 'Điện thoại',
-                        labelStyle: TextStyle(
-                          color: Color(0xFF755DC1),
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF837E93),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF9F7BFF),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 17),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        height: 56,
-                        width: size.width / 2.7,
-                        child: TextField(
-                          controller: _cityController,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            color: Color(0xFF393939),
-                            fontSize: 13,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Thành phố',
-                            labelStyle: TextStyle(
-                              color: Color(0xFF755DC1),
-                              fontSize: 15,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFF837E93),
+                      );
+                    }).toList() ??
+                    [],
+                label: 'Thành phố',
+                isLoading: _loadingProvinces,
+                onChanged: (String? newValue) {
+                  final selectedProvince = provinces?.firstWhere(
+                      (province) => province.provinceId == newValue);
+                  selectProvince(newValue, selectedProvince?.provinceName);
+                },
+              ),
+              const SizedBox(height: 17),
+              _buildDropdownButtonFormField(
+                value: _selectedDistrictId,
+                items: isProvinceSelected
+                    ? districts?.map((district) {
+                          return DropdownMenuItem<String>(
+                            value: district.districtId,
+                            child: Text(
+                              district.districtName ?? '',
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle: const TextStyle(color: Colors.black),
                               ),
                             ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFF9F7BFF),
+                          );
+                        }).toList() ??
+                        []
+                    : [],
+                label: 'Quận/Huyện',
+                isLoading: _loadingDistricts,
+                onChanged: (String? newValue) {
+                  final selectedDistrict = districts?.firstWhere(
+                      (district) => district.districtId == newValue);
+                  selectDistrict(newValue, selectedDistrict?.districtName);
+                },
+              ),
+              const SizedBox(height: 17),
+              _buildDropdownButtonFormField(
+                value: _selectedWardId,
+                isLoading: _loadingWards,
+                items: isDistrictSelected
+                    ? wards?.map((ward) {
+                          return DropdownMenuItem<String>(
+                            value: ward.wardId,
+                            child: Text(
+                              ward.wardName ?? '',
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle: const TextStyle(color: Colors.black),
                               ),
                             ),
-                          ),
+                          );
+                        }).toList() ??
+                        []
+                    : [],
+                label: 'Phường/Xã/Thị Trấn',
+                onChanged: (String? newValue) {
+                  final selectedWard =
+                      wards?.firstWhere((ward) => ward.wardId == newValue);
+                  selectWard(newValue, selectedWard?.wardName);
+                },
+              ),
+              const SizedBox(height: 17),
+              _buildTextField(
+                controller: _streetController,
+                label: 'Đường',
+              ),
+              const SizedBox(height: 17),
+              _buildTextField(
+                controller: _passController,
+                label: 'Mật khẩu',
+                obscureText: true,
+              ),
+              const SizedBox(height: 17),
+              _buildTextField(
+                controller: _repassController,
+                label: 'Nhập lại mật khẩu',
+                obscureText: true,
+              ),
+              const SizedBox(height: 17),
+              FutureBuilder<void>(
+                future: _registrationFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(307, 56),
+                        backgroundColor: const Color(0xFF755DC1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      SizedBox(
-                        height: 56,
-                        width: size.width / 2.7,
-                        child: TextField(
-                          controller: _districtController,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            color: Color(0xFF393939),
-                            fontSize: 13,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Quận',
-                            labelStyle: TextStyle(
-                              color: Color(0xFF755DC1),
-                              fontSize: 15,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFF837E93),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFF9F7BFF),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 17),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(
-                        height: 56,
-                        width: size.width / 2.7,
-                        child: TextField(
-                          controller: _wardController,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            color: Color(0xFF393939),
-                            fontSize: 13,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Phường',
-                            labelStyle: TextStyle(
-                              color: Color(0xFF755DC1),
-                              fontSize: 15,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFF837E93),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFF9F7BFF),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 56,
-                        width: size.width / 2.7,
-                        child: TextField(
-                          controller: _streetController,
-                          textAlign: TextAlign.start,
-                          style: const TextStyle(
-                            color: Color(0xFF393939),
-                            fontSize: 13,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w400,
-                          ),
-                          decoration: const InputDecoration(
-                            labelText: 'Số nhà',
-                            labelStyle: TextStyle(
-                              color: Color(0xFF755DC1),
-                              fontSize: 15,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w600,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFF837E93),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(
-                                width: 1,
-                                color: Color(0xFF9F7BFF),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 17),
-                  SizedBox(
-                    height: 56,
-                    child: TextField(
-                      controller: _passController,
-                      obscureText: true,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Color(0xFF393939),
-                        fontSize: 13,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: 'Mật khẩu',
-                        labelStyle: TextStyle(
-                          color: Color(0xFF755DC1),
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF837E93),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF9F7BFF),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 17),
-                  SizedBox(
-                    height: 56,
-                    child: TextField(
-                      controller: _repassController,
-                      obscureText: true,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                        color: Color(0xFF393939),
-                        fontSize: 13,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                      ),
-                      decoration: const InputDecoration(
-                        labelText: 'Nhập lại mật khẩu',
-                        labelStyle: TextStyle(
-                          color: Color(0xFF755DC1),
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF837E93),
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(
-                            width: 1,
-                            color: Color(0xFF9F7BFF),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  // _allFieldsFilled()
-                  //  Future.delayed(Duration.zero, () {})
-                  // else
-                  FutureBuilder<void>(
-                    future: _registrationFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.done) {
-                        return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(307, 56),
-                            backgroundColor: const Color(0xFF755DC1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _registrationFuture = _registerUser();
-                            });
-                          },
-                          child: const Text(
-                            'Đăng ký',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      } else {
-                        return ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(307, 56),
-                            backgroundColor: const Color(0xFF755DC1),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _registrationFuture = _registerUser();
-                            });
-                          },
-                          child: const Text(
-                            'Đăng ký',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 17,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    children: [
-                      const Text(
-                        'Bạn đã có tài khoản? ',
+                      onPressed: () {
+                        setState(() {
+                          _registrationFuture = _registerUser();
+                        });
+                      },
+                      child: const Text(
+                        'Đăng ký',
                         style: TextStyle(
-                          color: Color(0xFF232323),
-                          fontSize: 15,
+                          color: Colors.white,
+                          fontSize: 17,
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            AnimateRightCurve.createRoute(const LoginScreen()),
-                          );
-                        },
-                        child: const Text(
-                          'Đăng nhập',
-                          style: TextStyle(
-                            color: Color(0xFF755DC1),
-                            fontSize: 15,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                          ),
+                    );
+                  } else {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(307, 56),
+                        backgroundColor: const Color(0xFF755DC1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                    ],
-                  ),
-                ],
+                      onPressed: () {
+                        setState(() {
+                          _registrationFuture = _registerUser();
+                        });
+                      },
+                      child: const Text(
+                        'Đăng ký',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 30),
+              Align(
+                alignment: Alignment.center,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      AnimateRightCurve.createRoute(const LoginScreen()),
+                    );
+                  },
+                  child: RichText(
+                    text: const TextSpan(
+                      text: 'Đã có tài khoản? ',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xFF837E93),
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Đăng nhập ngay',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF755DC1),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

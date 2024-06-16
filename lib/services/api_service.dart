@@ -7,9 +7,14 @@ import 'package:movie_ticker_app_flutter/models/request/create_user_request.dart
 import 'package:movie_ticker_app_flutter/models/request/login_user_request.dart';
 import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
 import 'package:movie_ticker_app_flutter/models/request/review_request.dart';
+import 'package:movie_ticker_app_flutter/models/response/province_district_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/province_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/province_ward_response.dart';
+
 import 'package:movie_ticker_app_flutter/models/response/review_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/screening_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/ticket_response.dart';
 
 class ApiService {
   static const String baseUrl = 'http://192.168.56.1:8070';
@@ -51,30 +56,33 @@ class ApiService {
 
   Future<String> submitOrder(
     int orderTotal,
-    String seatNumber,
-    String movieName,
-    String cinema,
-    String showTime,
+    List<int> seatIds,
+    int screeningId,
+    int userId,
+    int movieId,
   ) async {
+    final url = Uri.parse('$baseUrl/submitOrder');
     final response = await http.post(
-      Uri.parse(
-          '$baseUrl/submitOrder?amount=$orderTotal&seatNumber=$seatNumber&movieName=$movieName&cinema=$cinema&showTime=$showTime'),
+      url,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        'amount': orderTotal.toString(),
+        'seatIds': seatIds.join(','),
+        'screeningId': screeningId.toString(),
+        'userId': userId.toString(),
+        'movieId': movieId.toString(),
+      },
     );
+    // In ra toàn bộ phản hồi để kiểm tra
 
     // Kiểm tra mã trạng thái của phản hồi
-    if (response.statusCode == 302) {
-      // Lấy URL chuyển hướng từ Header Location
-      final redirectUrl = response.headers['location'];
-      // Gửi yêu cầu mới đến URL đã chuyển hướng
-      final newResponse = await http.get(Uri.parse(redirectUrl!));
-      // Trả về nội dung của phản hồi mới
-      return newResponse.body;
-    } else if (response.statusCode == 200) {
-      // Nếu không có chuyển hướng, trả về nội dung của phản hồi ban đầu
+    if (response.statusCode == 200) {
+      // Assuming the API returns a redirect URL
       return response.body;
     } else {
-      // Xử lý lỗi
-      throw Exception('Failed to create review');
+      throw Exception('Failed to submit order: ${response.reasonPhrase}');
     }
   }
 
@@ -163,6 +171,73 @@ class ApiService {
   }
 
   //*GET
+
+  Future<List<ProvinceResponse>> getAllProvince() async {
+    final response =
+        await http.get(Uri.parse('https://vapi.vnappmob.com/api/province'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      final List<dynamic> results = jsonResponse['results'];
+
+      final provinces = results.map((province) {
+        return ProvinceResponse.fromJson(province);
+      }).toList();
+
+      return provinces;
+    } else {
+      throw Exception('Failed to load provinces');
+    }
+  }
+
+  Future<List<ProvinceDistrictResponse>> getAllDistrictByProvinceId(
+      String provinceId) async {
+    final response = await http.get(Uri.parse(
+        'https://vapi.vnappmob.com/api/province/district/$provinceId'));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      final List<dynamic> results = jsonResponse['results'];
+      final districts = results.map((district) {
+        return ProvinceDistrictResponse.fromJson(district);
+      }).toList();
+      return districts;
+    } else {
+      throw Exception('Failed to load district');
+    }
+  }
+
+  Future<List<ProvinceWardResponse>> getAllWardByDistrictId(
+      String districtId) async {
+    final response = await http.get(
+        Uri.parse('https://vapi.vnappmob.com/api/province/ward/$districtId'));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse =
+          json.decode(utf8.decode(response.bodyBytes));
+      final List<dynamic> results = jsonResponse['results'];
+      final wards = results.map((ward) {
+        return ProvinceWardResponse.fromJson(ward);
+      }).toList();
+      return wards;
+    } else {
+      throw Exception('Failed to load ward');
+    }
+  }
+
+  Future<List<TicketResponse>> getAllTicketByUserId(int userId) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/getticketbyusser?userid=$userId'));
+    if (response.statusCode == 200) {
+      final List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      final tickets = jsonResponse.map((ticket) {
+        return TicketResponse.fromJson(ticket);
+      }).toList();
+      return tickets;
+    } else {
+      throw Exception('Failed to load tickets');
+    }
+  }
 
   Future<List<ReviewResponse>> getAllReview(int movieId) async {
     final response =

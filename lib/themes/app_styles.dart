@@ -16,7 +16,10 @@ class AppStyles {
   static TextStyle h5 = const TextStyle(
       fontFamily: FontFamily.mont, fontSize: 13.28, color: Colors.white);
   static TextStyle h5Light = const TextStyle(
-      fontFamily: FontFamily.mont, fontSize: 12, color: Colors.white70, fontWeight: FontWeight.normal);
+      fontFamily: FontFamily.mont,
+      fontSize: 12,
+      color: Colors.white70,
+      fontWeight: FontWeight.normal);
   static TextStyle h6 = const TextStyle(
       fontFamily: FontFamily.mont, fontSize: 10.72, color: Colors.white);
 }

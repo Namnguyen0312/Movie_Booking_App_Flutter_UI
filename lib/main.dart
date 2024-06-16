@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => SeatProvider()),
           ChangeNotifierProvider(create: (context) => UserProvider()),
           ChangeNotifierProvider(create: (context) => ReviewProvider()),
-          ChangeNotifierProvider(create: (context) => VNPayProvider()),
+          ChangeNotifierProvider(create: (context) => TicketProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

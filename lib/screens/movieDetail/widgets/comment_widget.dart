@@ -104,88 +104,92 @@ class _CommentWidgetState extends State<CommentWidget> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 18),
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 18),
+                          child: Text(
+                            'Chỉnh sửa bình luận',
+                            style: GoogleFonts.beVietnamPro(
+                              textStyle: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: kDefaultPadding),
+                          child: TextField(
+                            controller: commentController,
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              labelText: 'Bình luận',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            maxLines: 2,
+                            style: GoogleFonts.beVietnamPro(
+                              textStyle: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        for (int i = 0; i < 5; i++)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: kDefaultPadding),
+                            child: CheckboxListTile(
+                              title: Text('${i + 1} sao'),
+                              value: selectedStars == i + 1,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value != null && value) {
+                                    selectedStars = i + 1;
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _updateReview(
+                            reviewId, commentController.text, selectedStars);
+                      },
                       child: Text(
-                        'Chỉnh sửa bình luận',
+                        'Lưu',
                         style: GoogleFonts.beVietnamPro(
                           textStyle: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
+                            fontSize: 16,
+                            color: Colors.blue,
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: kDefaultPadding),
-                      child: TextField(
-                        controller: commentController,
-                        autofocus: true,
-                        decoration: InputDecoration(
-                          labelText: 'Bình luận',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        maxLines: 2,
-                        style: GoogleFonts.beVietnamPro(
-                          textStyle: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    for (int i = 0; i < 5; i++)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: kDefaultPadding),
-                        child: CheckboxListTile(
-                          title: Text('${i + 1} sao'),
-                          value: selectedStars == i + 1,
-                          onChanged: (value) {
-                            setState(() {
-                              if (value != null && value) {
-                                selectedStars = i + 1;
-                              }
-                            });
-                          },
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _updateReview(
-                        reviewId, commentController.text, selectedStars);
-                  },
-                  child: Text(
-                    'Lưu',
-                    style: GoogleFonts.beVietnamPro(
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
                       ),
                     ),
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         );
       },

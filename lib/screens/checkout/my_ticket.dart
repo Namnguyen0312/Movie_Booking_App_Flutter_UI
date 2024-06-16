@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
+import 'package:movie_ticker_app_flutter/screens/myticket/my_ticket_page.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/helper.dart';
 
 import '../../themes/app_colors.dart';
@@ -56,7 +58,11 @@ class _MyTicketState extends State<MyTicket> {
               Column(
                 children: [
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        AnimateLeftCurve.createRoute(const MyTicketPage()),
+                      );
+                    },
                     child: Container(
                       height: 60,
                       width: size.width / 1.5,
@@ -83,8 +89,9 @@ class _MyTicketState extends State<MyTicket> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamedAndRemoveUntil(
-                              HomeScreen.routeName, (route) => false);
+                          Navigator.of(context).push(
+                            AnimateLeftCurve.createRoute(const HomeScreen()),
+                          );
                         },
                         child: Text(
                           'Back to home',

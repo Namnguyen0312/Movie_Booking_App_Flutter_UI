@@ -115,7 +115,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                     children: [
                       SizedBox(
                         width: size.width,
-                        height: size.height / 10,
+                        height: size.height / 11,
                         child: Image.asset(
                           AssetHelper.imgSeat,
                           fit: BoxFit.fill,

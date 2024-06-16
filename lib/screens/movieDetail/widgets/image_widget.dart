@@ -85,19 +85,33 @@ class _ImageWidget extends State<ImageWidget>
         appProvider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
     return Row(
       children: [
-        GestureDetector(
-          onTap: _showVideoDialog,
-          child: SizedBox(
-            height: size.height / 3.5,
-            child: CachedNetworkImage(
-              imageUrl: appProvider.selectedMovie!.image,
-              placeholder: (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
-              errorWidget: (context, url, error) =>
-                  const Center(child: Icon(Icons.error)),
-              fit: BoxFit.cover,
+        Stack(
+          children: [
+            SizedBox(
+              height: size.height / 3.5,
+              child: CachedNetworkImage(
+                imageUrl: appProvider.selectedMovie!.image,
+                placeholder: (context, url) =>
+                    const Center(child: CircularProgressIndicator()),
+                errorWidget: (context, url, error) =>
+                    const Center(child: Icon(Icons.error)),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
+            Positioned.fill(
+              child: Align(
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  onTap: _showVideoDialog,
+                  child: Icon(
+                    Icons.play_circle_outline,
+                    color: Colors.deepPurple[200],
+                    size: 60.0,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         Expanded(
           child: Column(

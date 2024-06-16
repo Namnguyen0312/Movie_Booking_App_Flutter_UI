@@ -4,6 +4,7 @@ import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/select_cinema_page.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
+import 'package:movie_ticker_app_flutter/screens/myticket/my_ticket_page.dart';
 import 'package:movie_ticker_app_flutter/screens/profile/profile_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
@@ -69,6 +70,21 @@ class Menu extends StatelessWidget {
                   AnimateLeftCurve.createRoute(const SelectCinemaByCity()));
             },
           ),
+          if (isLoggedIn)
+            ListTile(
+              leading: const Icon(Icons.local_movies_rounded),
+              title: Text(
+                'Vé của tôi',
+                style: GoogleFonts.beVietnamPro(
+                  textStyle:
+                      const TextStyle(fontSize: 15, color: AppColors.veryDark),
+                ),
+              ),
+              onTap: () {
+                Navigator.of(context)
+                    .push(AnimateLeftCurve.createRoute(const MyTicketPage()));
+              },
+            ),
           if (isLoggedIn)
             ListTile(
               leading: const Icon(Icons.logout),

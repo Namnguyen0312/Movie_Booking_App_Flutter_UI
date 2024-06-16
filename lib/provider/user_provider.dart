@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/models/request/create_user_request.dart';
 import 'package:movie_ticker_app_flutter/models/request/login_user_request.dart';
+import 'package:movie_ticker_app_flutter/models/response/province_district_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/province_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/province_ward_response.dart';
+
 import 'package:movie_ticker_app_flutter/models/response/user_response.dart';
 import 'package:movie_ticker_app_flutter/services/api_service.dart';
 
 class UserProvider with ChangeNotifier {
   String? _token;
   String? get token => _token;
+
+  List<ProvinceResponse>? _province;
+  List<ProvinceResponse>? get province => _province;
+
+  List<ProvinceDistrictResponse>? _district;
+  List<ProvinceDistrictResponse>? get district => _district;
+
+  List<ProvinceWardResponse>? _ward;
+  List<ProvinceWardResponse>? get ward => _ward;
 
   UserResponse? _user;
   UserResponse? get user => _user;
@@ -19,6 +32,33 @@ class UserProvider with ChangeNotifier {
 
   Widget? _widget;
   Widget? get widget => _widget;
+
+  Future<void> getAllProvince() async {
+    try {
+      _province = await ApiService().getAllProvince();
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getAllDistrictByProvinceId(String provinceId) async {
+    try {
+      _district = await ApiService().getAllDistrictByProvinceId(provinceId);
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getAllWardByDistrictId(String districtId) async {
+    try {
+      _ward = await ApiService().getAllWardByDistrictId(districtId);
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Future<void> verifyEmail(String email) async {
     try {

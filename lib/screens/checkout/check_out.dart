@@ -9,15 +9,14 @@ import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/ticket_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/build_price_tag.dart';
+import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/payment/payment_page.dart';
-import 'package:movie_ticker_app_flutter/services/api_service.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class CheckOut extends StatefulWidget {
   const CheckOut({super.key});
@@ -33,9 +32,10 @@ class _CheckOutState extends State<CheckOut> {
     final appProvider = context.watch<AppProvider>();
     final seatProvider = context.watch<SeatProvider>();
     final userProvider = context.watch<UserProvider>();
-    final ticketProvider = context.watch<VNPayProvider>();
+    final ticketProvider = context.watch<TicketProvider>();
 
     List<SeatResponse> sortedSeats = seatProvider.getSortedSeats();
+
     String seat = sortedSeats
         .where((seat) => seatProvider.selectedSeatIds.contains(seat.id))
         .map((seat) => '${seat.rowSeat}${seat.numberSeat}')
@@ -49,7 +49,7 @@ class _CheckOutState extends State<CheckOut> {
 
     int price = int.parse(seatProvider.totalPrice.toStringAsFixed(0)) * 1000;
     int sale = int.parse(seatProvider.totalPrice.toStringAsFixed(0)) * 1000;
-    int totalPrice = price - sale;
+    int totalPrice = price - 0;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -239,11 +239,11 @@ class _CheckOutState extends State<CheckOut> {
                                     GestureDetector(
                                       onTap: () async {
                                         await ticketProvider.submitOrder(
-                                          1200000,
-                                          seat,
-                                          appProvider.selectedMovie!.title,
-                                          appProvider.selectedCinema!.name,
-                                          '${appProvider.selectedScreening!.date}, ${appProvider.selectedScreening!.start}',
+                                          price,
+                                          seatProvider.selectedSeatIds,
+                                          appProvider.selectedScreening!.id,
+                                          userProvider.user!.id,
+                                          appProvider.selectedMovie!.id,
                                         );
 
                                         if (ticketProvider.url!.isNotEmpty) {
