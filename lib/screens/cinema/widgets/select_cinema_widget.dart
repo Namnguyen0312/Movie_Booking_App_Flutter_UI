@@ -18,9 +18,34 @@ class SelectCinemaWidget extends StatefulWidget {
 
 class _SelectCinemaWidgetState extends State<SelectCinemaWidget> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _preselectUserCity();
+    });
+  }
+
+  void _preselectUserCity() {
+    final appProvider = context.read<AppProvider>();
+    final userProvider = context.read<UserProvider>();
+    if (appProvider.selectedCity!.isEmpty) {
+      if (userProvider.isLoggedIn) {
+        final userCity = userProvider.user!.address.city;
+        final matchingCity = appProvider.citys.firstWhere(
+          (city) => userCity.contains(city),
+          orElse: () => '',
+        );
+        if (matchingCity.isNotEmpty) {
+          appProvider.selectCity(matchingCity);
+          appProvider.fetchCinemasByCity(matchingCity);
+        }
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final appProvider = context.watch<AppProvider>();
-    final userProvider = context.watch<UserProvider>();
 
     return SingleChildScrollView(
       child: Column(
@@ -67,36 +92,6 @@ class _SelectCinemaWidgetState extends State<SelectCinemaWidget> {
                                     : BorderSide.none,
                               ),
                             ),
-                            if (userProvider.isLoggedIn)
-                              if (userProvider.user!.address.city
-                                  .contains(city))
-                                Positioned(
-                                  top: 4,
-                                  right: -8,
-                                  child: Transform.rotate(
-                                    angle: 0.6, // Rotate -45 degrees
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0,
-                                        vertical: 2.0,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.green,
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                      child: Text(
-                                        'Gần',
-                                        style: GoogleFonts.beVietnamPro(
-                                          textStyle: Theme.of(context)
-                                              .textTheme
-                                              .labelSmall
-                                              ?.copyWith(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
                           ],
                         )),
                   );

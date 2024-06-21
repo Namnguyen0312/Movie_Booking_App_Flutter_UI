@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/select_cinema_page.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
@@ -68,6 +69,7 @@ class Menu extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                   AnimateLeftCurve.createRoute(const SelectCinemaByCity()));
+              context.read<AppProvider>().reset();
             },
           ),
           if (isLoggedIn)

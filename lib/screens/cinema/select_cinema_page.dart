@@ -20,7 +20,6 @@ class _SelectCinemaByCityState extends State<SelectCinemaByCity> {
     super.initState();
     final appProvider = Provider.of<AppProvider>(context, listen: false);
     Future.microtask(() {
-      appProvider.reset();
       appProvider.getCityToAddress();
     });
   }

@@ -5,15 +5,52 @@ import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 
-class SelectDateWidget extends StatelessWidget {
-  const SelectDateWidget({
-    super.key,
-  });
+class SelectDateWidget extends StatefulWidget {
+  const SelectDateWidget({super.key});
+
+  @override
+  State<SelectDateWidget> createState() => _SelectDateWidgetState();
+}
+
+class _SelectDateWidgetState extends State<SelectDateWidget> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _selectCurrentDate();
+    });
+  }
+
+  void _selectCurrentDate() {
+    final appProvider = context.read<AppProvider>();
+
+    final today = DateTime.now();
+    final currentDate = DateTime(today.year, today.month, today.day);
+
+    final index = appProvider.days.indexWhere(
+      (date) =>
+          date.year == currentDate.year &&
+          date.month == currentDate.month &&
+          date.day == currentDate.day,
+    );
+    if (appProvider.selectedDate == null) {
+      if (index != -1) {
+        appProvider.updateIsSelected(index, appProvider.days);
+        appProvider.selectDate(appProvider.days[index]);
+        appProvider.getScreeningsByMovieAndCity(
+          appProvider.selectedMovie!.id,
+          appProvider.selectedCity!,
+          appProvider.days[index],
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final provider = context.watch<AppProvider>();
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(

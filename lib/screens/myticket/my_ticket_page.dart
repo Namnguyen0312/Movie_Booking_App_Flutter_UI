@@ -10,7 +10,7 @@ import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class MyTicketPage extends StatefulWidget {
-  const MyTicketPage({Key? key}) : super(key: key);
+  const MyTicketPage({super.key});
 
   @override
   State<MyTicketPage> createState() => _MyTicketPageState();
@@ -37,6 +37,7 @@ class _MyTicketPageState extends State<MyTicketPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -81,78 +82,85 @@ class _MyTicketPageState extends State<MyTicketPage> {
                   itemCount: ticketProvider.tickets!.length,
                   itemBuilder: (context, index) {
                     final ticket = ticketProvider.tickets![index];
-                    return Container(
-                      margin: const EdgeInsets.all(kDefaultPadding),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        elevation: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.all(kDefaultPadding),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                ticket.movieTitle,
-                                style: GoogleFonts.beVietnamPro(
-                                  textStyle: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                    return Row(
+                      children: [
+                        SizedBox(
+                          width: size.width / 1.15,
+                          height: size.height / 5,
+                          child: Card(
+                            color: Colors.green.shade200,
+                            child: Padding(
+                              padding: const EdgeInsets.all(kDefaultPadding),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    ticket.movieTitle,
+                                    style: GoogleFonts.beVietnamPro(
+                                      textStyle: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Người dùng: ${ticket.userName}',
-                                style: GoogleFonts.beVietnamPro(
-                                  textStyle: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Người dùng: ${ticket.userName}',
+                                    style: GoogleFonts.beVietnamPro(
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Text(
-                                'Ngày: ${ticket.screeningDate}',
-                                style: GoogleFonts.beVietnamPro(
-                                  textStyle: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
+                                  Text(
+                                    'Ngày: ${ticket.screeningDate}',
+                                    style: GoogleFonts.beVietnamPro(
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Text(
-                                'Giờ bắt đầu: ${ticket.screeningStartTime}',
-                                style: GoogleFonts.beVietnamPro(
-                                  textStyle: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
+                                  Text(
+                                    'Giờ bắt đầu: ${ticket.screeningStartTime}',
+                                    style: GoogleFonts.beVietnamPro(
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Text(
-                                'Phòng chiếu: ${ticket.auditoriumName}',
-                                style: GoogleFonts.beVietnamPro(
-                                  textStyle: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
+                                  Text(
+                                    'Phòng chiếu: ${ticket.auditoriumName}',
+                                    style: GoogleFonts.beVietnamPro(
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Text(
-                                'Ghế: ${ticket.rowSeat} ${ticket.numberSeat}',
-                                style: GoogleFonts.beVietnamPro(
-                                  textStyle: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
+                                  Text(
+                                    'Ghế: ${ticket.rowSeat} ${ticket.numberSeat}',
+                                    style: GoogleFonts.beVietnamPro(
+                                      textStyle: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                        Container(
+                          color: Colors.amber,
+                          width: size.width / 8,
+                          height: size.height / 5.3,
+                        )
+                      ],
                     );
                   },
                 );

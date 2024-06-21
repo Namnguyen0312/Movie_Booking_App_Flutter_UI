@@ -12,9 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class ImageWidget extends StatefulWidget {
-  const ImageWidget({
-    super.key,
-  });
+  const ImageWidget({super.key});
 
   @override
   State<ImageWidget> createState() => _ImageWidget();
@@ -23,56 +21,69 @@ class ImageWidget extends StatefulWidget {
 class _ImageWidget extends State<ImageWidget>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late VideoPlayerController _controller;
+  VideoPlayerController? _controller;
+  bool _isVideoLoading = false; // Để theo dõi trạng thái tải video
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
-    final appProvider = Provider.of<AppProvider>(context, listen: false);
-    final selectedMovie = appProvider.selectedMovie!;
-
-    // Initialize video player controller
-    _controller =
-        VideoPlayerController.networkUrl(Uri.parse(selectedMovie.trailers));
-    _controller.initialize().then((_) {
-      setState(() {}); // Update state after video is initialized
-    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _controller.dispose(); // Dispose video player controller
+    _controller?.dispose(); // Dispose video player controller
     super.dispose();
   }
 
   void _showVideoDialog() {
-    showDialog(
-      barrierColor: Colors.black87,
-      context: context,
-      barrierDismissible: true, // Allow dismiss by tapping outside
-      builder: (BuildContext context) {
-        return Dialog(
-          surfaceTintColor: Colors.transparent,
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.all(0),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: CustomVideoPlayer(
-                controller: _controller,
+    // Khởi tạo video player controller và bắt đầu tải video khi nhấn vào nút play
+    final appProvider = Provider.of<AppProvider>(context, listen: false);
+    final selectedMovie = appProvider.selectedMovie!;
+    _controller =
+        VideoPlayerController.networkUrl(Uri.parse(selectedMovie.trailers));
+
+    setState(() {
+      _isVideoLoading = true;
+    });
+
+    _controller!.initialize().then((_) {
+      setState(() {
+        _isVideoLoading = false;
+      });
+      showDialog(
+        barrierColor: Colors.black87,
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.all(0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: AspectRatio(
+                aspectRatio: _controller!.value.aspectRatio,
+                child: CustomVideoPlayer(
+                  controller: _controller!,
+                ),
               ),
             ),
-          ),
-        );
-      },
-    ).then((_) {
-      _controller.pause();
-      _controller.seekTo(Duration.zero);
+          );
+        },
+      ).then((_) {
+        _controller!.pause();
+        _controller!.seekTo(Duration.zero);
+        _controller!.dispose();
+        _controller = null;
+      });
+    }).catchError((error) {
+      print('Error initializing video: $error');
+      setState(() {
+        _isVideoLoading = false;
+      });
     });
   }
 
@@ -83,6 +94,7 @@ class _ImageWidget extends State<ImageWidget>
 
     String genres =
         appProvider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
+
     return Row(
       children: [
         Stack(
@@ -125,7 +137,7 @@ class _ImageWidget extends State<ImageWidget>
                 child: Text(
                   appProvider.selectedMovie!.title,
                   style: GoogleFonts.beVietnamPro(
-                    textStyle: Theme.of(context).textTheme.titleLarge,
+                    textStyle: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
               ),
@@ -139,17 +151,18 @@ class _ImageWidget extends State<ImageWidget>
                     ListStarWidget(rating: appProvider.selectedMovie!.rating),
               ),
               Container(
-                  padding: const EdgeInsets.only(
-                    bottom: kDefaultPadding,
-                    left: kDefaultPadding,
+                padding: const EdgeInsets.only(
+                  bottom: kDefaultPadding,
+                  left: kDefaultPadding,
+                ),
+                width: size.width,
+                child: Text(
+                  genres,
+                  style: GoogleFonts.beVietnamPro(
+                    textStyle: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  width: size.width,
-                  child: Text(
-                    genres,
-                    style: GoogleFonts.beVietnamPro(
-                      textStyle: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  )),
+                ),
+              ),
               Container(
                 margin: const EdgeInsets.only(
                   left: kDefaultPadding,
@@ -163,13 +176,14 @@ class _ImageWidget extends State<ImageWidget>
                   ),
                 ),
               ),
-              if (appProvider.isComingSoon == false)
+              if (!appProvider.isComingSoon)
                 GestureDetector(
                   onTap: () {
                     context.read<AppProvider>().reset();
                     Navigator.of(context).push(
                       AnimateLeftCurve.createRoute(
-                          const SelectScreeningByMoviePage()),
+                        const SelectScreeningByMoviePage(),
+                      ),
                     );
                   },
                   child: Container(
@@ -188,7 +202,7 @@ class _ImageWidget extends State<ImageWidget>
                       child: Text(
                         'Đặt vé',
                         style: GoogleFonts.beVietnamPro(
-                          textStyle: Theme.of(context).textTheme.titleMedium,
+                          textStyle: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                     ),

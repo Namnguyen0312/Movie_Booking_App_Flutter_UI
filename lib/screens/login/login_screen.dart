@@ -23,8 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
@@ -39,186 +42,190 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
-            child: Column(
-              textDirection: TextDirection.ltr,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Đăng nhập',
-                  style: TextStyle(
-                    color: Color(0xFF755DC1),
-                    fontSize: 27,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  controller: _emailController,
-                  style: const TextStyle(
-                    color: Color(0xFF393939),
-                    fontSize: 13,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: TextStyle(
-                      color: Color(0xFF755DC1),
-                      fontSize: 15,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xFF837E93),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xFF9F7BFF),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                TextField(
-                  controller: _passController,
-                  obscureText: true,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  style: const TextStyle(
-                    color: Color(0xFF393939),
-                    fontSize: 13,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                  ),
-                  decoration: const InputDecoration(
-                    labelText: 'Mật khẩu',
-                    labelStyle: TextStyle(
-                      color: Color(0xFF755DC1),
-                      fontSize: 15,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xFF837E93),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide(
-                        width: 1,
-                        color: Color(0xFF9F7BFF),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                FutureBuilder<void>(
-                  future: _loginFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(307, 56),
-                          backgroundColor: const Color(0xFF755DC1),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _loginFuture = _loginUser();
-                          });
-                        },
-                        child: const Text(
-                          'Đăng nhập',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      'Không có tài khoản? ',
-                      style: TextStyle(
-                        color: Color(0xFF232323),
-                        fontSize: 15,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          AnimateLeftCurve.createRoute(const SignUpScreen()),
-                        );
-                      },
-                      child: const Text(
-                        'Đăng Ký',
-                        style: TextStyle(
-                          color: Color(0xFF755DC1),
-                          fontSize: 15,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      AnimateRightCurve.createRoute(const VerifyEmailPage()),
-                    );
-                  },
-                  child: const Text(
-                    'Quên mật khẩu',
+      extendBodyBehindAppBar: true,
+      body: Padding(
+        padding: EdgeInsets.only(top: size.height / 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50),
+              child: Column(
+                textDirection: TextDirection.ltr,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Đăng nhập',
                     style: TextStyle(
                       color: Color(0xFF755DC1),
-                      fontSize: 15,
+                      fontSize: 27,
                       fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: _emailController,
+                    style: const TextStyle(
+                      color: Color(0xFF393939),
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF837E93),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF9F7BFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  TextField(
+                    controller: _passController,
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    style: const TextStyle(
+                      color: Color(0xFF393939),
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w400,
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Mật khẩu',
+                      labelStyle: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF837E93),
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(
+                          width: 1,
+                          color: Color(0xFF9F7BFF),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  FutureBuilder<void>(
+                    future: _loginFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(307, 56),
+                            backgroundColor: const Color(0xFF755DC1),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _loginFuture = _loginUser();
+                            });
+                          },
+                          child: const Text(
+                            'Đăng nhập',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Không có tài khoản? ',
+                        style: TextStyle(
+                          color: Color(0xFF232323),
+                          fontSize: 15,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            AnimateLeftCurve.createRoute(const SignUpScreen()),
+                          );
+                        },
+                        child: const Text(
+                          'Đăng Ký',
+                          style: TextStyle(
+                            color: Color(0xFF755DC1),
+                            fontSize: 15,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        AnimateRightCurve.createRoute(const VerifyEmailPage()),
+                      );
+                    },
+                    child: const Text(
+                      'Quên mật khẩu',
+                      style: TextStyle(
+                        color: Color(0xFF755DC1),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -239,6 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
           (route) => false,
         );
       } catch (e) {
+        print(e);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

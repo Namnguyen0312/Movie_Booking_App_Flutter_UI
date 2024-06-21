@@ -10,7 +10,7 @@ import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key});
+  const SignUpScreen({super.key});
 
   static const String routeName = '/register';
 
@@ -277,13 +277,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final provinces = Provider.of<UserProvider>(context).province;
     final districts = Provider.of<UserProvider>(context).district;
     final wards = Provider.of<UserProvider>(context).ward;
-
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
         automaticallyImplyLeading: false,
         actions: [
@@ -299,219 +299,223 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ],
       ),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Đăng ký',
-                style: TextStyle(
-                  color: Color(0xFF755DC1),
-                  fontSize: 27,
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
+      extendBodyBehindAppBar: true,
+      body: Padding(
+        padding: EdgeInsets.only(top: size.height / 12),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Đăng ký',
+                  style: TextStyle(
+                    color: Color(0xFF755DC1),
+                    fontSize: 27,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                controller: _userNameController,
-                label: 'Họ và tên',
-              ),
-              const SizedBox(height: 17),
-              _buildTextField(
-                controller: _emailController,
-                label: 'Email',
-              ),
-              const SizedBox(height: 17),
-              _buildTextField(
-                controller: _phoneController,
-                label: 'Điện thoại',
-              ),
-              const SizedBox(height: 17),
-              _buildDropdownButtonFormField(
-                value: _selectedProvinceId,
-                items: provinces?.map((province) {
-                      return DropdownMenuItem<String>(
-                        value: province.provinceId,
-                        child: Text(
-                          province.provinceName ?? '',
-                          style: GoogleFonts.beVietnamPro(
-                            textStyle: const TextStyle(color: Colors.black),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  controller: _userNameController,
+                  label: 'Họ và tên',
+                ),
+                const SizedBox(height: 17),
+                _buildTextField(
+                  controller: _emailController,
+                  label: 'Email',
+                ),
+                const SizedBox(height: 17),
+                _buildTextField(
+                  controller: _phoneController,
+                  label: 'Điện thoại',
+                ),
+                const SizedBox(height: 17),
+                _buildDropdownButtonFormField(
+                  value: _selectedProvinceId,
+                  items: provinces?.map((province) {
+                        return DropdownMenuItem<String>(
+                          value: province.provinceId,
+                          child: Text(
+                            province.provinceName ?? '',
+                            style: GoogleFonts.beVietnamPro(
+                              textStyle: const TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        );
+                      }).toList() ??
+                      [],
+                  label: 'Thành phố',
+                  isLoading: _loadingProvinces,
+                  onChanged: (String? newValue) {
+                    final selectedProvince = provinces?.firstWhere(
+                        (province) => province.provinceId == newValue);
+                    selectProvince(newValue, selectedProvince?.provinceName);
+                  },
+                ),
+                const SizedBox(height: 17),
+                _buildDropdownButtonFormField(
+                  value: _selectedDistrictId,
+                  items: isProvinceSelected
+                      ? districts?.map((district) {
+                            return DropdownMenuItem<String>(
+                              value: district.districtId,
+                              child: Text(
+                                district.districtName ?? '',
+                                style: GoogleFonts.beVietnamPro(
+                                  textStyle:
+                                      const TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            );
+                          }).toList() ??
+                          []
+                      : [],
+                  label: 'Quận/Huyện',
+                  isLoading: _loadingDistricts,
+                  onChanged: (String? newValue) {
+                    final selectedDistrict = districts?.firstWhere(
+                        (district) => district.districtId == newValue);
+                    selectDistrict(newValue, selectedDistrict?.districtName);
+                  },
+                ),
+                const SizedBox(height: 17),
+                _buildDropdownButtonFormField(
+                  value: _selectedWardId,
+                  isLoading: _loadingWards,
+                  items: isDistrictSelected
+                      ? wards?.map((ward) {
+                            return DropdownMenuItem<String>(
+                              value: ward.wardId,
+                              child: Text(
+                                ward.wardName ?? '',
+                                style: GoogleFonts.beVietnamPro(
+                                  textStyle:
+                                      const TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            );
+                          }).toList() ??
+                          []
+                      : [],
+                  label: 'Phường/Xã/Thị Trấn',
+                  onChanged: (String? newValue) {
+                    final selectedWard =
+                        wards?.firstWhere((ward) => ward.wardId == newValue);
+                    selectWard(newValue, selectedWard?.wardName);
+                  },
+                ),
+                const SizedBox(height: 17),
+                _buildTextField(
+                  controller: _streetController,
+                  label: 'Đường',
+                ),
+                const SizedBox(height: 17),
+                _buildTextField(
+                  controller: _passController,
+                  label: 'Mật khẩu',
+                  obscureText: true,
+                ),
+                const SizedBox(height: 17),
+                _buildTextField(
+                  controller: _repassController,
+                  label: 'Nhập lại mật khẩu',
+                  obscureText: true,
+                ),
+                const SizedBox(height: 17),
+                FutureBuilder<void>(
+                  future: _registrationFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.done) {
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(307, 56),
+                          backgroundColor: const Color(0xFF755DC1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _registrationFuture = _registerUser();
+                          });
+                        },
+                        child: const Text(
+                          'Đăng ký',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       );
-                    }).toList() ??
-                    [],
-                label: 'Thành phố',
-                isLoading: _loadingProvinces,
-                onChanged: (String? newValue) {
-                  final selectedProvince = provinces?.firstWhere(
-                      (province) => province.provinceId == newValue);
-                  selectProvince(newValue, selectedProvince?.provinceName);
-                },
-              ),
-              const SizedBox(height: 17),
-              _buildDropdownButtonFormField(
-                value: _selectedDistrictId,
-                items: isProvinceSelected
-                    ? districts?.map((district) {
-                          return DropdownMenuItem<String>(
-                            value: district.districtId,
-                            child: Text(
-                              district.districtName ?? '',
-                              style: GoogleFonts.beVietnamPro(
-                                textStyle: const TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          );
-                        }).toList() ??
-                        []
-                    : [],
-                label: 'Quận/Huyện',
-                isLoading: _loadingDistricts,
-                onChanged: (String? newValue) {
-                  final selectedDistrict = districts?.firstWhere(
-                      (district) => district.districtId == newValue);
-                  selectDistrict(newValue, selectedDistrict?.districtName);
-                },
-              ),
-              const SizedBox(height: 17),
-              _buildDropdownButtonFormField(
-                value: _selectedWardId,
-                isLoading: _loadingWards,
-                items: isDistrictSelected
-                    ? wards?.map((ward) {
-                          return DropdownMenuItem<String>(
-                            value: ward.wardId,
-                            child: Text(
-                              ward.wardName ?? '',
-                              style: GoogleFonts.beVietnamPro(
-                                textStyle: const TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          );
-                        }).toList() ??
-                        []
-                    : [],
-                label: 'Phường/Xã/Thị Trấn',
-                onChanged: (String? newValue) {
-                  final selectedWard =
-                      wards?.firstWhere((ward) => ward.wardId == newValue);
-                  selectWard(newValue, selectedWard?.wardName);
-                },
-              ),
-              const SizedBox(height: 17),
-              _buildTextField(
-                controller: _streetController,
-                label: 'Đường',
-              ),
-              const SizedBox(height: 17),
-              _buildTextField(
-                controller: _passController,
-                label: 'Mật khẩu',
-                obscureText: true,
-              ),
-              const SizedBox(height: 17),
-              _buildTextField(
-                controller: _repassController,
-                label: 'Nhập lại mật khẩu',
-                obscureText: true,
-              ),
-              const SizedBox(height: 17),
-              FutureBuilder<void>(
-                future: _registrationFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.connectionState == ConnectionState.done) {
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(307, 56),
-                        backgroundColor: const Color(0xFF755DC1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _registrationFuture = _registerUser();
-                        });
-                      },
-                      child: const Text(
-                        'Đăng ký',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    );
-                  } else {
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(307, 56),
-                        backgroundColor: const Color(0xFF755DC1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _registrationFuture = _registerUser();
-                        });
-                      },
-                      child: const Text(
-                        'Đăng ký',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: 30),
-              Align(
-                alignment: Alignment.center,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      AnimateRightCurve.createRoute(const LoginScreen()),
-                    );
-                  },
-                  child: RichText(
-                    text: const TextSpan(
-                      text: 'Đã có tài khoản? ',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF837E93),
-                      ),
-                      children: [
-                        TextSpan(
-                          text: 'Đăng nhập ngay',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF755DC1),
+                    } else {
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(307, 56),
+                          backgroundColor: const Color(0xFF755DC1),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
+                        onPressed: () {
+                          setState(() {
+                            _registrationFuture = _registerUser();
+                          });
+                        },
+                        child: const Text(
+                          'Đăng ký',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
-              ),
-            ],
+                const SizedBox(height: 30),
+                Row(
+                  children: [
+                    const Text(
+                      'Không có tài khoản? ',
+                      style: TextStyle(
+                        color: Color(0xFF232323),
+                        fontSize: 15,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          AnimateLeftCurve.createRoute(const LoginScreen()),
+                        );
+                      },
+                      child: const Text(
+                        'Đăng Ký',
+                        style: TextStyle(
+                          color: Color(0xFF755DC1),
+                          fontSize: 15,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

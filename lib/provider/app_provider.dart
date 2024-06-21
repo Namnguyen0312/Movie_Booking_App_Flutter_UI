@@ -181,7 +181,6 @@ class AppProvider extends ChangeNotifier {
     } else {
       _isComingSoon = false;
     }
-    print(_isComingSoon);
   }
 
   void classifyMovie() {

@@ -163,7 +163,6 @@ class _VerifyOtpPageState extends State<VerifyOtpPage> {
       try {
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         final email = userProvider.email;
-        print(int.tryParse(otp));
         await userProvider.verifyOtp(int.tryParse(otp)!, email!);
         if (!mounted) return;
         Navigator.of(context).push(

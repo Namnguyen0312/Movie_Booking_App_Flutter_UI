@@ -60,12 +60,16 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   }
 
   void _toggleControls() {
+    if (!mounted) return; // Check if the state object is still mounted
+
     setState(() {
       _showControls = !_showControls;
     });
+
     if (_showControls) {
       Future.delayed(const Duration(seconds: 3), () {
-        if (_showControls) {
+        if (mounted && _showControls) {
+          // Check mounted before setState
           setState(() {
             _showControls = false;
           });

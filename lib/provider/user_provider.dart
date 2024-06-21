@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/models/request/create_user_request.dart';
 import 'package:movie_ticker_app_flutter/models/request/login_user_request.dart';
 import 'package:movie_ticker_app_flutter/models/response/province_district_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/province_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/province_ward_response.dart';
-
 import 'package:movie_ticker_app_flutter/models/response/user_response.dart';
 import 'package:movie_ticker_app_flutter/services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider with ChangeNotifier {
   String? _token;
@@ -32,6 +34,10 @@ class UserProvider with ChangeNotifier {
 
   Widget? _widget;
   Widget? get widget => _widget;
+
+  UserProvider() {
+    _loadUserData();
+  }
 
   Future<void> getAllProvince() async {
     try {
@@ -99,6 +105,7 @@ class UserProvider with ChangeNotifier {
       _token = response.token;
       _user = response.user;
       _isLoggedIn = true;
+      await _saveUserData();
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -109,10 +116,39 @@ class UserProvider with ChangeNotifier {
     _token = null;
     _user = null;
     _isLoggedIn = false;
+    await _removeUserData();
     notifyListeners();
   }
 
   void selectWidget(Widget widget) {
     _widget = widget;
+  }
+
+  Future<void> _saveUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_token != null) {
+      await prefs.setString('user_token', _token!);
+    }
+    if (_user != null) {
+      await prefs.setString('user_data', json.encode(_user!.toJson()));
+    }
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('user_token');
+    final userData = prefs.getString('user_data');
+    if (token != null && userData != null) {
+      _token = token;
+      _user = UserResponse.fromJson(json.decode(userData));
+      _isLoggedIn = true;
+      notifyListeners();
+    }
+  }
+
+  Future<void> _removeUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_token');
+    await prefs.remove('user_data');
   }
 }

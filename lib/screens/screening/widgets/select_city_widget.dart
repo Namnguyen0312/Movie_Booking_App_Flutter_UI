@@ -14,9 +14,41 @@ class SelectCityWidget extends StatefulWidget {
 
 class _SelectCityWidgetState extends State<SelectCityWidget> {
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _selectUserCity();
+    });
+  }
+
+  void _selectUserCity() {
+    final appProvider = context.read<AppProvider>();
+    final userProvider = context.read<UserProvider>();
+    if (appProvider.selectedCity!.isEmpty) {
+      if (userProvider.isLoggedIn) {
+        final userCity = userProvider.user!.address.city;
+        final matchingCity = appProvider.citys.firstWhere(
+          (city) => userCity.contains(city),
+          orElse: () => '',
+        );
+        if (matchingCity.isNotEmpty) {
+          appProvider.selectCity(matchingCity);
+          if (appProvider.dateSelected) {
+            appProvider.getScreeningsByMovieAndCity(
+              appProvider.selectedMovie!.id,
+              matchingCity,
+              appProvider.selectedDate!,
+            );
+          }
+        }
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final appProvider = context.watch<AppProvider>();
-    final userProvider = context.watch<UserProvider>();
 
     if (appProvider.isCityLoading) {
       return const Center(child: CircularProgressIndicator());
@@ -30,73 +62,40 @@ class _SelectCityWidgetState extends State<SelectCityWidget> {
           children: appProvider.citys.map((city) {
             final bool isSelected = city == appProvider.selectedCity;
             return Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: GestureDetector(
-                    onTap: () async {
-                      context.read<AppProvider>().selectCity(city);
-                      if (appProvider.dateSelected) {
-                        await context
-                            .read<AppProvider>()
-                            .getScreeningsByMovieAndCity(
-                              context.read<AppProvider>().selectedMovie!.id,
-                              city,
-                              context.read<AppProvider>().selectedDate!,
-                            );
-                      }
-                    },
-                    child: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Chip(
-                          label: Text(
-                            city,
-                            style: GoogleFonts.beVietnamPro(
-                              textStyle:
-                                  Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ),
-                          backgroundColor: isSelected
-                              ? AppColors.blueMain
-                              : AppColors.darkerBackground,
-                          labelPadding:
-                              const EdgeInsets.symmetric(horizontal: 8.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            side: isSelected
-                                ? const BorderSide(color: AppColors.blueMain)
-                                : BorderSide.none,
-                          ),
-                        ),
-                        if (userProvider.isLoggedIn)
-                          if (userProvider.user!.address.city.contains(city))
-                            Positioned(
-                              top: 2,
-                              right: -8,
-                              child: Transform.rotate(
-                                angle: 0.5, // Rotate -45 degrees
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0,
-                                    vertical: 1.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: Text(
-                                    'Gần',
-                                    style: GoogleFonts.beVietnamPro(
-                                      textStyle: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall
-                                          ?.copyWith(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                      ],
-                    )));
+              padding: const EdgeInsets.only(right: 8.0),
+              child: GestureDetector(
+                onTap: () async {
+                  context.read<AppProvider>().selectCity(city);
+                  if (appProvider.dateSelected) {
+                    await context
+                        .read<AppProvider>()
+                        .getScreeningsByMovieAndCity(
+                          context.read<AppProvider>().selectedMovie!.id,
+                          city,
+                          context.read<AppProvider>().selectedDate!,
+                        );
+                  }
+                },
+                child: Chip(
+                  label: Text(
+                    city,
+                    style: GoogleFonts.beVietnamPro(
+                      textStyle: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ),
+                  backgroundColor: isSelected
+                      ? AppColors.blueMain
+                      : AppColors.darkerBackground,
+                  labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: isSelected
+                        ? const BorderSide(color: AppColors.blueMain)
+                        : BorderSide.none,
+                  ),
+                ),
+              ),
+            );
           }).toList(),
         ),
       ),

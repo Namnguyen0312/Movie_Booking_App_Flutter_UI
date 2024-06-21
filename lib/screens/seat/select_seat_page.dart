@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
@@ -62,6 +63,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                 AnimateRightCurve.createRoute(appProvdier.widget!),
                 (route) => false,
               );
+              // context.read<AppProvider>().reset();
             },
             icon: const Icon(
               Icons.arrow_back,

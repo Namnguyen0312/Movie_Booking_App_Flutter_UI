@@ -9,7 +9,6 @@ import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/ticket_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/build_price_tag.dart';
-import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/payment/payment_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
