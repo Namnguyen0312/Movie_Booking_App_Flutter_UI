@@ -22,7 +22,7 @@ class _ImageWidget extends State<ImageWidget>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   VideoPlayerController? _controller;
-  bool _isVideoLoading = false; // Để theo dõi trạng thái tải video
+  bool _isVideoLoading = false;
 
   @override
   void initState() {

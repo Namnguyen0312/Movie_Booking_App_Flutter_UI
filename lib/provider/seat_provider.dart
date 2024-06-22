@@ -34,11 +34,27 @@ class SeatProvider with ChangeNotifier {
 
   void toggleSeat(SeatResponse seat) {
     if (_selectedSeatIds.contains(seat.id)) {
-      _selectedSeatIds.remove(seat.id);
-      _totalPrice -= seat.price;
+      if (seat.seatType == 'sweetBox') {
+        _selectedSeatIds.remove(seat.id);
+        seat.numberSeat.isEven
+            ? _selectedSeatIds.remove(seat.id - 1)
+            : _selectedSeatIds.remove(seat.id + 1);
+        _totalPrice -= seat.price * 2;
+      } else {
+        _selectedSeatIds.remove(seat.id);
+        _totalPrice -= seat.price;
+      }
     } else {
-      _selectedSeatIds.add(seat.id);
-      _totalPrice += seat.price;
+      if (seat.seatType == 'sweetBox') {
+        _selectedSeatIds.add(seat.id);
+        seat.numberSeat.isEven
+            ? _selectedSeatIds.add(seat.id - 1)
+            : _selectedSeatIds.add(seat.id + 1);
+        _totalPrice += seat.price * 2;
+      } else {
+        _selectedSeatIds.add(seat.id);
+        _totalPrice += seat.price;
+      }
     }
     notifyListeners();
   }

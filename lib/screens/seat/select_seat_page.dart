@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
@@ -7,6 +6,7 @@ import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/check_out.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/widgets/built_seat_status_bar.dart';
+import 'package:movie_ticker_app_flutter/screens/seat/widgets/built_seat_type.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/widgets/movie_title.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
@@ -88,79 +88,100 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const MovieTitle(),
-            const Padding(
-              padding: EdgeInsets.all(kDefaultPadding),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Padding(
+              padding: const EdgeInsets.all(kDefaultPadding),
+              child: Column(
                 children: [
-                  BuiltSeatStatusBar(
-                    color: AppColors.grey,
-                    status: 'Có sẵn',
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      BuiltSeatStatusBar(
+                        color: AppColors.grey,
+                        status: 'Có sẵn',
+                      ),
+                      BuiltSeatStatusBar(
+                        color: AppColors.darkBackground,
+                        status: 'Đã hết',
+                      ),
+                      BuiltSeatStatusBar(
+                        color: AppColors.blueMain,
+                        status: 'Ghế của bạn',
+                      ),
+                    ],
                   ),
-                  BuiltSeatStatusBar(
-                    color: AppColors.darkBackground,
-                    status: 'Đã hết',
+                  const SizedBox(
+                    height: 20,
                   ),
-                  BuiltSeatStatusBar(
-                    color: AppColors.blueMain,
-                    status: 'Ghế của bạn',
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const BuiltSeatType(
+                        color: Colors.green,
+                        status: 'Thường',
+                      ),
+                      const BuiltSeatType(
+                        color: Colors.red,
+                        status: 'Vip',
+                      ),
+                      BuiltSeatStatusBar(
+                        color: Colors.pink[200],
+                        status: 'SweetBox',
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
             Expanded(
               child: SizedBox(
                 height: size.height / 1.6,
-                child: Container(
-                  margin: EdgeInsets.only(top: size.height / 7),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: size.width,
-                        height: size.height / 11,
-                        child: Image.asset(
-                          AssetHelper.imgSeat,
-                          fit: BoxFit.fill,
-                        ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: size.width,
+                      height: size.height / 11,
+                      child: Image.asset(
+                        AssetHelper.imgSeat,
+                        fit: BoxFit.fill,
                       ),
-                      const Divider(
-                        color: AppColors.grey,
-                        thickness: 2,
-                        indent: kDefaultPadding,
-                        endIndent: kDefaultPadding,
+                    ),
+                    const Divider(
+                      color: AppColors.grey,
+                      thickness: 2,
+                      indent: kDefaultPadding,
+                      endIndent: kDefaultPadding,
+                    ),
+                    Expanded(
+                      child: FutureBuilder<void>(
+                        future: _fetchSeatFuture,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else {
+                            return Consumer<SeatProvider>(
+                              builder: (context, seatProvider, child) {
+                                if (seatProvider.seats.isEmpty) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.all(kDefaultPadding),
+                                    child: generateSeatGrid(seatProvider),
+                                  );
+                                }
+                              },
+                            );
+                          }
+                        },
                       ),
-                      Expanded(
-                        child: FutureBuilder<void>(
-                          future: _fetchSeatFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              return Center(
-                                  child: Text('Error: ${snapshot.error}'));
-                            } else {
-                              return Consumer<SeatProvider>(
-                                builder: (context, seatProvider, child) {
-                                  if (seatProvider.seats.isEmpty) {
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  } else {
-                                    return Padding(
-                                      padding:
-                                          const EdgeInsets.all(kDefaultPadding),
-                                      child: generateSeatGrid(seatProvider),
-                                    );
-                                  }
-                                },
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -257,7 +278,20 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
     return Consumer<SeatProvider>(
       builder: (context, provider, child) {
         bool selected = provider.selectedSeatIds.contains(seat.id);
-        Color backgroundColor = selected ? AppColors.blueMain : AppColors.grey;
+        Color backgroundColor = Colors.transparent;
+        if (seat.seatType == 'sweetBox' && !selected) {
+          backgroundColor = Colors.pink[200]!;
+        } else if (selected) {
+          backgroundColor = AppColors.blueMain;
+        }
+        Color borderColor = Colors.transparent;
+        if (selected) {
+          borderColor = Colors.transparent;
+        } else if (seat.seatType == 'normal') {
+          borderColor = Colors.green;
+        } else if (seat.seatType == 'vip') {
+          borderColor = Colors.red;
+        }
 
         return GestureDetector(
           onTap: () {
@@ -269,6 +303,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
             height: size.width / 11.5,
             decoration: BoxDecoration(
               color: backgroundColor,
+              border: Border.all(color: borderColor),
             ),
             alignment: Alignment.center,
             child: Text(

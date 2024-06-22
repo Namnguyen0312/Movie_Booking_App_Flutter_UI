@@ -20,11 +20,10 @@ class _PaymentPageState extends State<PaymentPage> {
   void initState() {
     super.initState();
     ticketProvider = Provider.of<TicketProvider>(context, listen: false);
-    print(ticketProvider.url!);
 
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(ticketProvider.url!))
+      ..loadRequest(Uri.parse(ticketProvider.url!.url))
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {

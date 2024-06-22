@@ -3,14 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../utils/constants.dart';
 
-class BuiltSeatStatusBar extends StatelessWidget {
-  const BuiltSeatStatusBar({
+class BuiltSeatType extends StatelessWidget {
+  const BuiltSeatType({
     super.key,
     required this.color,
     required this.status,
   });
 
-  final Color? color;
+  final Color color;
   final String status;
 
   @override
@@ -21,9 +21,7 @@ class BuiltSeatStatusBar extends StatelessWidget {
           height: kMediumPadding,
           width: kMediumPadding,
           decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4),
-          ),
+              color: Colors.transparent, border: Border.all(color: color)),
         ),
         Padding(
           padding: const EdgeInsets.only(left: kTopPadding),

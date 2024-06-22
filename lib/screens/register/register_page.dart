@@ -503,7 +503,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         );
                       },
                       child: const Text(
-                        'Đăng Ký',
+                        'Đăng Nhập',
                         style: TextStyle(
                           color: Color(0xFF755DC1),
                           fontSize: 15,

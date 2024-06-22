@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:movie_ticker_app_flutter/models/response/url_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/address_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/jwt_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/cinema_response.dart';
@@ -54,7 +55,7 @@ class ApiService {
 
   //*POST
 
-  Future<String> submitOrder(
+  Future<UrlResponse> submitOrder(
     int orderTotal,
     List<int> seatIds,
     int screeningId,
@@ -75,12 +76,9 @@ class ApiService {
         'movieId': movieId.toString(),
       },
     );
-    // In ra toàn bộ phản hồi để kiểm tra
-
-    // Kiểm tra mã trạng thái của phản hồi
     if (response.statusCode == 200) {
-      // Assuming the API returns a redirect URL
-      return response.body;
+      final responseData = json.decode(utf8.decode(response.bodyBytes));
+      return UrlResponse.fromJson(responseData);
     } else {
       throw Exception('Failed to submit order: ${response.reasonPhrase}');
     }

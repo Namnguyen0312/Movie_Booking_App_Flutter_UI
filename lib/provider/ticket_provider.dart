@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:movie_ticker_app_flutter/models/response/url_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/ticket_response.dart';
 import 'package:movie_ticker_app_flutter/services/api_service.dart';
 
 class TicketProvider with ChangeNotifier {
-  String? _url;
-  String? get url => _url;
+  UrlResponse? _url;
+  UrlResponse? get url => _url;
 
   List<TicketResponse>? _tickets;
   List<TicketResponse>? get tickets => _tickets;

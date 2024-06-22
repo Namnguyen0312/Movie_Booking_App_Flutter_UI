@@ -245,7 +245,7 @@ class _CheckOutState extends State<CheckOut> {
                                           appProvider.selectedMovie!.id,
                                         );
 
-                                        if (ticketProvider.url!.isNotEmpty) {
+                                        if (ticketProvider.url!.url != '') {
                                           if (!context.mounted) return;
                                           Navigator.of(context).push(
                                             AnimateLeftCurve.createRoute(
