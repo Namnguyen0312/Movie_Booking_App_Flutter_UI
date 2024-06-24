@@ -23,7 +23,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadRequest(Uri.parse(ticketProvider.url!.url))
+      ..loadRequest(Uri.parse(ticketProvider.url!))
       ..setNavigationDelegate(
         NavigationDelegate(
           onPageStarted: (url) {

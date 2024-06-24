@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:movie_ticker_app_flutter/models/response/url_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/ticket_response.dart';
 import 'package:movie_ticker_app_flutter/services/api_service.dart';
 
 class TicketProvider with ChangeNotifier {
-  UrlResponse? _url;
-  UrlResponse? get url => _url;
+  String? _url;
+  String? get url => _url;
+
+  List<TicketResponse>? _ticketsByUser;
+  List<TicketResponse>? get ticketsByUser => _ticketsByUser;
 
   List<TicketResponse>? _tickets;
   List<TicketResponse>? get tickets => _tickets;
@@ -33,12 +35,49 @@ class TicketProvider with ChangeNotifier {
     _isLoading = true;
     notifyListeners();
     try {
-      _tickets = await ApiService().getAllTicketByUserId(userId);
+      _ticketsByUser = await ApiService().getAllTicketByUserId(userId);
     } catch (error) {
       rethrow;
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> getAllTicket() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      _tickets = await ApiService().getAllTicket();
+    } catch (error) {
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  bool checkSeat(int seatId, int screeningId) {
+    return _tickets!.any(
+      (ticket) {
+        return ticket.seats.any(
+              (seatTicket) {
+                return seatTicket.id == seatId;
+              },
+            ) &&
+            ticket.screening.id == screeningId;
+      },
+    );
+  }
+
+  bool checkSeatByUser(int seatId, String userName) {
+    return _tickets!.any((ticket) {
+      return ticket.userName == userName &&
+          ticket.seats.any(
+            (seatTicket) {
+              return seatTicket.id == seatId;
+            },
+          );
+    });
   }
 }

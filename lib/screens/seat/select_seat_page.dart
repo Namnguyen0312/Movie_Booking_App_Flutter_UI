@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/ticket_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/check_out.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/seat/widgets/built_seat_status_bar.dart';
@@ -31,8 +33,10 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
     super.initState();
     final seatProvider = Provider.of<SeatProvider>(context, listen: false);
     final appProvider = Provider.of<AppProvider>(context, listen: false);
+    final ticketProvider = Provider.of<TicketProvider>(context, listen: false);
 
     _fetchSeatFuture = Future.microtask(() {
+      ticketProvider.getAllTicket();
       seatProvider.reset();
       seatProvider
           .getAllSeatByAuditorium(appProvider.selectedScreening!.auditorium.id);
@@ -43,7 +47,10 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final seatPovider = context.watch<SeatProvider>();
-    final appProvdier = context.watch<AppProvider>();
+    final appProvider = context.watch<AppProvider>();
+    final ticketProvider = context.watch<TicketProvider>();
+    final userProvider = context.watch<UserProvider>();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -60,7 +67,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
-                AnimateRightCurve.createRoute(appProvdier.widget!),
+                AnimateRightCurve.createRoute(appProvider.widget!),
                 (route) => false,
               );
               // context.read<AppProvider>().reset();
@@ -92,18 +99,18 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
               padding: const EdgeInsets.all(kDefaultPadding),
               child: Column(
                 children: [
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      BuiltSeatStatusBar(
+                      const BuiltSeatStatusBar(
                         color: AppColors.grey,
                         status: 'Có sẵn',
                       ),
                       BuiltSeatStatusBar(
-                        color: AppColors.darkBackground,
+                        color: Colors.grey[850],
                         status: 'Đã hết',
                       ),
-                      BuiltSeatStatusBar(
+                      const BuiltSeatStatusBar(
                         color: AppColors.blueMain,
                         status: 'Ghế của bạn',
                       ),
@@ -172,7 +179,11 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                                   return Padding(
                                     padding:
                                         const EdgeInsets.all(kDefaultPadding),
-                                    child: generateSeatGrid(seatProvider),
+                                    child: generateSeatGrid(
+                                        seatProvider,
+                                        appProvider,
+                                        ticketProvider,
+                                        userProvider),
                                   );
                                 }
                               },
@@ -250,7 +261,8 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
     );
   }
 
-  Widget generateSeatGrid(SeatProvider seatProvider) {
+  Widget generateSeatGrid(SeatProvider seatProvider, AppProvider appProvider,
+      TicketProvider ticketProvider, UserProvider userProvider) {
     List<SeatResponse> sortedSeats = seatProvider.getSortedSeats();
 
     // Generate row letters based on the sorted seats
@@ -265,37 +277,70 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: rowSeats
-              .map((seat) => buildSeatWidget(seatProvider, seat))
+              .map((seat) => buildSeatWidget(seatProvider, appProvider,
+                  ticketProvider, userProvider, seat))
               .toList(),
         );
       }).toList(),
     );
   }
 
-  Widget buildSeatWidget(SeatProvider seatProvider, SeatResponse seat) {
+  Widget buildSeatWidget(
+      SeatProvider seatProvider,
+      AppProvider appProvider,
+      TicketProvider ticketProvider,
+      UserProvider userProvider,
+      SeatResponse seat) {
     final size = MediaQuery.of(context).size;
+    bool seatAvailable = true;
+    if (ticketProvider.tickets != null &&
+        ticketProvider.checkSeat(seat.id, appProvider.selectedScreening!.id)) {
+      seatAvailable = false;
+    }
+    bool seatByUser = false;
+    if (ticketProvider.checkSeatByUser(seat.id, userProvider.user!.name)) {
+      seatByUser = true;
+    }
 
     return Consumer<SeatProvider>(
       builder: (context, provider, child) {
         bool selected = provider.selectedSeatIds.contains(seat.id);
         Color backgroundColor = Colors.transparent;
-        if (seat.seatType == 'sweetBox' && !selected) {
-          backgroundColor = Colors.pink[200]!;
-        } else if (selected) {
-          backgroundColor = AppColors.blueMain;
+        if (!seatAvailable) {
+          if (seatByUser) {
+            backgroundColor = AppColors.blueMain;
+          } else {
+            backgroundColor = Colors.grey[850]!;
+          }
+        } else {
+          if (seat.seatType == 'sweetBox' && !selected) {
+            backgroundColor = Colors.pink[200]!;
+          } else if (selected) {
+            backgroundColor = AppColors.blueMain;
+          }
         }
         Color borderColor = Colors.transparent;
-        if (selected) {
-          borderColor = Colors.transparent;
-        } else if (seat.seatType == 'normal') {
-          borderColor = Colors.green;
-        } else if (seat.seatType == 'vip') {
-          borderColor = Colors.red;
+        if (!seatAvailable) {
+          if (seatByUser) {
+            borderColor = AppColors.blueMain;
+          } else {
+            borderColor = Colors.grey[850]!;
+          }
+        } else {
+          if (selected) {
+            borderColor = Colors.transparent;
+          } else if (seat.seatType == 'normal') {
+            borderColor = Colors.green;
+          } else if (seat.seatType == 'vip') {
+            borderColor = Colors.red;
+          }
         }
 
         return GestureDetector(
           onTap: () {
-            provider.toggleSeat(seat);
+            if (seatAvailable) {
+              provider.toggleSeat(seat);
+            }
           },
           child: Container(
             margin: const EdgeInsets.all(1.0),

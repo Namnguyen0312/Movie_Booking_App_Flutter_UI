@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:movie_ticker_app_flutter/models/response/url_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/address_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/jwt_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/cinema_response.dart';
@@ -55,7 +54,7 @@ class ApiService {
 
   //*POST
 
-  Future<UrlResponse> submitOrder(
+  Future<String> submitOrder(
     int orderTotal,
     List<int> seatIds,
     int screeningId,
@@ -77,8 +76,7 @@ class ApiService {
       },
     );
     if (response.statusCode == 200) {
-      final responseData = json.decode(utf8.decode(response.bodyBytes));
-      return UrlResponse.fromJson(responseData);
+      return response.body;
     } else {
       throw Exception('Failed to submit order: ${response.reasonPhrase}');
     }
@@ -225,7 +223,20 @@ class ApiService {
 
   Future<List<TicketResponse>> getAllTicketByUserId(int userId) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/getticketbyusser?userid=$userId'));
+        await http.get(Uri.parse('$baseUrl/TicketbyUserID/$userId'));
+    if (response.statusCode == 200) {
+      final List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      final tickets = jsonResponse.map((ticket) {
+        return TicketResponse.fromJson(ticket);
+      }).toList();
+      return tickets;
+    } else {
+      throw Exception('Failed to load tickets');
+    }
+  }
+
+  Future<List<TicketResponse>> getAllTicket() async {
+    final response = await http.get(Uri.parse('$baseUrl/tickets/GetAll'));
     if (response.statusCode == 200) {
       final List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
       final tickets = jsonResponse.map((ticket) {

@@ -18,6 +18,7 @@ class MyTicketPage extends StatefulWidget {
 
 class _MyTicketPageState extends State<MyTicketPage> {
   bool _isLoading = true;
+  bool _isAmberExpanded = false;
 
   @override
   void initState() {
@@ -38,6 +39,16 @@ class _MyTicketPageState extends State<MyTicketPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final ticketProvider = context.watch<TicketProvider>();
+    String seats = '';
+    if (ticketProvider.ticketsByUser != null) {
+      seats = ticketProvider.ticketsByUser!
+          .map((ticket) => ticket.seats.map(
+                (seat) => '${seat.rowSeat}${seat.numberSeat}',
+              ))
+          .join(', ');
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -73,93 +84,142 @@ class _MyTicketPageState extends State<MyTicketPage> {
             )
           : Consumer<TicketProvider>(
               builder: (context, ticketProvider, child) {
-                if (ticketProvider.tickets!.isEmpty) {
+                if (ticketProvider.ticketsByUser!.isEmpty) {
                   return const Center(
                     child: Text('Không có vé nào'),
                   );
                 }
                 return ListView.builder(
-                  itemCount: ticketProvider.tickets!.length,
+                  itemCount: ticketProvider.ticketsByUser!.length,
                   itemBuilder: (context, index) {
-                    final ticket = ticketProvider.tickets![index];
+                    final ticket = ticketProvider.ticketsByUser![index];
                     return Row(
                       children: [
-                        SizedBox(
-                          width: size.width / 1.15,
-                          height: size.height / 5,
-                          child: Card(
-                            color: Colors.green.shade200,
-                            child: Padding(
-                              padding: const EdgeInsets.all(kDefaultPadding),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    ticket.movieTitle,
-                                    style: GoogleFonts.beVietnamPro(
-                                      textStyle: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.black,
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isAmberExpanded = false;
+                            });
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: _isAmberExpanded
+                                ? size.width / 8
+                                : size.width / 1.15,
+                            height: _isAmberExpanded
+                                ? size.height / 5.3
+                                : size.height / 5,
+                            child: Card(
+                              color: Colors.green.shade200,
+                              child: Padding(
+                                padding: const EdgeInsets.all(kDefaultPadding),
+                                child: Opacity(
+                                  opacity: _isAmberExpanded ? 0 : 1,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          ticket.movieTitle,
+                                          style: GoogleFonts.beVietnamPro(
+                                            textStyle: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    'Người dùng: ${ticket.userName}',
-                                    style: GoogleFonts.beVietnamPro(
-                                      textStyle: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
+                                      const SizedBox(height: 10),
+                                      Flexible(
+                                        child: Text(
+                                          'Người dùng: ${ticket.userName}',
+                                          style: GoogleFonts.beVietnamPro(
+                                            textStyle: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Ngày: ${ticket.screeningDate}',
-                                    style: GoogleFonts.beVietnamPro(
-                                      textStyle: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
+                                      Flexible(
+                                        child: Text(
+                                          'Ngày: ${ticket.screeningDate}',
+                                          style: GoogleFonts.beVietnamPro(
+                                            textStyle: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Giờ bắt đầu: ${ticket.screeningStartTime}',
-                                    style: GoogleFonts.beVietnamPro(
-                                      textStyle: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
+                                      Flexible(
+                                        child: Text(
+                                          'Giờ bắt đầu: ${ticket.screeningStartTime}',
+                                          style: GoogleFonts.beVietnamPro(
+                                            textStyle: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Phòng chiếu: ${ticket.auditoriumName}',
-                                    style: GoogleFonts.beVietnamPro(
-                                      textStyle: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
+                                      Flexible(
+                                        child: Text(
+                                          'Phòng chiếu: ${ticket.auditoriumName}',
+                                          style: GoogleFonts.beVietnamPro(
+                                            textStyle: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  Text(
-                                    'Ghế: ${ticket.rowSeat} ${ticket.numberSeat}',
-                                    style: GoogleFonts.beVietnamPro(
-                                      textStyle: const TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black54,
+                                      Flexible(
+                                        child: Text(
+                                          'Ghế: $seats',
+                                          style: GoogleFonts.beVietnamPro(
+                                            textStyle: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        Container(
-                          color: Colors.amber,
-                          width: size.width / 8,
-                          height: size.height / 5.3,
-                        )
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isAmberExpanded = true;
+                            });
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: _isAmberExpanded
+                                ? size.width / 1.15
+                                : size.width / 8,
+                            height: size.height / 5.2,
+                            child: Card(
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.all(kDefaultPadding),
+                                child: Opacity(
+                                    opacity: _isAmberExpanded ? 1 : 0,
+                                    child: Image.network(
+                                      ticket.qrcode,
+                                      fit: BoxFit.scaleDown,
+                                    )),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   },

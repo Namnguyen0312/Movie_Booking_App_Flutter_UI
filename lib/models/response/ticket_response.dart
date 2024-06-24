@@ -1,63 +1,55 @@
+import 'package:movie_ticker_app_flutter/models/response/screening_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
+
 class TicketResponse {
   final String userName;
-  final int movieId;
   final String movieTitle;
-  final String? qrcode;
-  final int screeningId;
+  final String qrcode;
   final String screeningDate;
   final String screeningStartTime;
-  final int auditoriumId;
   final String auditoriumName;
   final int total;
-  final String rowSeat;
-  final int numberSeat;
+  final List<SeatResponse> seats;
+  final ScreeningResponse screening;
 
   TicketResponse({
     required this.userName,
-    required this.movieId,
     required this.movieTitle,
     required this.qrcode,
-    required this.screeningId,
     required this.screeningDate,
     required this.screeningStartTime,
-    required this.auditoriumId,
     required this.auditoriumName,
     required this.total,
-    required this.rowSeat,
-    required this.numberSeat,
+    required this.seats,
+    required this.screening,
   });
 
   factory TicketResponse.fromJson(Map<String, dynamic> json) {
     return TicketResponse(
-      userName: json['userName'],
-      movieId: json['movieId'],
-      movieTitle: json['movieTitle'],
-      qrcode: json['qrcode'],
-      screeningId: json['screeningId'],
-      screeningDate: json['screeningDate'],
-      screeningStartTime: json['screeningStartTime'],
-      auditoriumId: json['auditoriumId'],
-      auditoriumName: json['auditoriumName'],
-      total: json['total'],
-      rowSeat: json['rowSeat'],
-      numberSeat: json['numberSeat'],
-    );
+        userName: json['userName'],
+        movieTitle: json['movieTitle'],
+        qrcode: json['qrcode'],
+        screeningDate: json['screeningDate'],
+        screeningStartTime: json['screeningStartTime'],
+        auditoriumName: json['auditoriumName'],
+        total: json['total'],
+        seats: (json['seats'] as List)
+            .map((e) => SeatResponse.fromJson(e))
+            .toList(),
+        screening: ScreeningResponse.fromJson(json['screening']));
   }
 
   Map<String, dynamic> toJson() {
     return {
       'userName': userName,
-      'movieId': movieId,
       'movieTitle': movieTitle,
       'qrcode': qrcode,
-      'screeningId': screeningId,
       'screeningDate': screeningDate,
       'screeningStartTime': screeningStartTime,
-      'auditoriumId': auditoriumId,
       'auditoriumName': auditoriumName,
       'total': total,
-      'rowSeat': rowSeat,
-      'numberSeat': numberSeat,
+      'seats': seats.map((e) => e.toJson()).toList(),
+      'screening': screening.toJson(),
     };
   }
 }

@@ -246,7 +246,6 @@ class _LoginScreenState extends State<LoginScreen> {
           (route) => false,
         );
       } catch (e) {
-        print(e);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

@@ -6,7 +6,6 @@ class SeatResponse {
   final String rowSeat;
   final double price;
   final AuditoriumResponse auditorium;
-  final int seatStatus;
   final String seatType;
 
   SeatResponse({
@@ -15,7 +14,6 @@ class SeatResponse {
     required this.rowSeat,
     required this.price,
     required this.auditorium,
-    required this.seatStatus,
     required this.seatType,
   });
 
@@ -26,7 +24,6 @@ class SeatResponse {
       rowSeat: json['row_Seat'],
       price: json['price'],
       auditorium: AuditoriumResponse.fromJson(json['auditorium']),
-      seatStatus: json['seatstatus'],
       seatType: json['seatType'],
     );
   }
@@ -38,7 +35,6 @@ class SeatResponse {
       'row_Seat': rowSeat,
       'price': price,
       'auditorium': auditorium.toJson(),
-      'seatstatus': seatStatus,
       'seatType': seatType,
     };
   }
@@ -57,7 +53,6 @@ class SeatResponse {
       rowSeat: rowSeat ?? this.rowSeat,
       price: price ?? this.price,
       auditorium: auditorium,
-      seatStatus: seatStatus ?? this.seatStatus,
       seatType: seatType ?? this.seatType,
     );
   }
