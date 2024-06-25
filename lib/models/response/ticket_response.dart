@@ -11,6 +11,8 @@ class TicketResponse {
   final int total;
   final List<SeatResponse> seats;
   final ScreeningResponse screening;
+  final String orderTime;
+  final int userId;
 
   TicketResponse({
     required this.userName,
@@ -22,6 +24,8 @@ class TicketResponse {
     required this.total,
     required this.seats,
     required this.screening,
+    required this.orderTime,
+    required this.userId,
   });
 
   factory TicketResponse.fromJson(Map<String, dynamic> json) {
@@ -36,7 +40,9 @@ class TicketResponse {
         seats: (json['seats'] as List)
             .map((e) => SeatResponse.fromJson(e))
             .toList(),
-        screening: ScreeningResponse.fromJson(json['screening']));
+        screening: ScreeningResponse.fromJson(json['screening']),
+        orderTime: json['orderTime'],
+        userId: json['userid']);
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +56,8 @@ class TicketResponse {
       'total': total,
       'seats': seats.map((e) => e.toJson()).toList(),
       'screening': screening.toJson(),
+      'orderTime': orderTime,
+      'userid': userId,
     };
   }
 }

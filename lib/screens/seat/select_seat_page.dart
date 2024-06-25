@@ -298,7 +298,7 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
       seatAvailable = false;
     }
     bool seatByUser = false;
-    if (ticketProvider.checkSeatByUser(seat.id, userProvider.user!.name)) {
+    if (ticketProvider.checkSeatByUser(seat.id, userProvider.user!.id)) {
       seatByUser = true;
     }
 

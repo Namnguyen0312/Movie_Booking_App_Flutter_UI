@@ -100,7 +100,6 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
       child: CarouselSlider(
         options: CarouselOptions(
           height: widget.size.height / 2.6,
-          autoPlay: true,
           initialPage: 0,
           aspectRatio: 16 / 9,
           enlargeCenterPage: true,

@@ -70,9 +70,9 @@ class TicketProvider with ChangeNotifier {
     );
   }
 
-  bool checkSeatByUser(int seatId, String userName) {
+  bool checkSeatByUser(int seatId, int userId) {
     return _tickets!.any((ticket) {
-      return ticket.userName == userName &&
+      return ticket.userId == userId &&
           ticket.seats.any(
             (seatTicket) {
               return seatTicket.id == seatId;

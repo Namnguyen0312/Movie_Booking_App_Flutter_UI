@@ -87,7 +87,7 @@ class ComingSoonMovieWidget extends StatelessWidget {
                 },
               ),
               Positioned(
-                top: size.height / 5, // Adjust based on your design
+                top: size.height / 10, // Adjust based on your design
                 left: size.width / 6,
                 right: size.width / 6,
                 child: Container(
@@ -135,7 +135,7 @@ class ComingSoonMovieWidget extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.center,
-                margin: EdgeInsets.only(top: size.height / 3.5),
+                margin: EdgeInsets.only(top: size.height / 5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -198,7 +198,7 @@ class ComingSoonMovieWidget extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: size.height / 2),
+                margin: EdgeInsets.only(top: size.height / 3),
                 child: CarouselSliderFirm(
                   size: size,
                   movies: movies,

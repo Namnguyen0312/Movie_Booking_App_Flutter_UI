@@ -85,7 +85,7 @@ class CurrentMovieWidget extends StatelessWidget {
                 },
               ),
               Positioned(
-                top: size.height / 5, // Adjust based on your design
+                top: size.height / 10, // Adjust based on your design
                 left: size.width / 6,
                 right: size.width / 6,
                 child: Container(
@@ -133,7 +133,7 @@ class CurrentMovieWidget extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.center,
-                margin: EdgeInsets.only(top: size.height / 3.5),
+                margin: EdgeInsets.only(top: size.height / 5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -195,21 +195,25 @@ class CurrentMovieWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: size.height / 2),
-                child: CarouselSliderFirm(
-                  size: size,
-                  movies: movies,
-                  onMovieChanged: (movie) {
-                    _currentMovieImage.value = movie.image;
-                    _currentMovieTitle.value = movie.title;
-                    _currentMovieGenres.value =
-                        movie.genres.map((genre) => genre.name).join(', ');
-                    _currentMovieDuration.value = '${movie.duration} phút';
-                    _currentMovieStar.value = movie.rating;
-                  },
-                ),
-              ),
+              Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: size.height / 3),
+                    child: CarouselSliderFirm(
+                      size: size,
+                      movies: movies,
+                      onMovieChanged: (movie) {
+                        _currentMovieImage.value = movie.image;
+                        _currentMovieTitle.value = movie.title;
+                        _currentMovieGenres.value =
+                            movie.genres.map((genre) => genre.name).join(', ');
+                        _currentMovieDuration.value = '${movie.duration} phút';
+                        _currentMovieStar.value = movie.rating;
+                      },
+                    ),
+                  ),
+                ],
+              )
             ],
           );
   }

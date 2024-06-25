@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/new_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/review_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/ticket_provider.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => UserProvider()),
           ChangeNotifierProvider(create: (context) => ReviewProvider()),
           ChangeNotifierProvider(create: (context) => TicketProvider()),
+          ChangeNotifierProvider(create: (context) => NewProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

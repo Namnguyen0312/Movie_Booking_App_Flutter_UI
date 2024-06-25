@@ -7,6 +7,7 @@ import 'package:movie_ticker_app_flutter/models/request/create_user_request.dart
 import 'package:movie_ticker_app_flutter/models/request/login_user_request.dart';
 import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
 import 'package:movie_ticker_app_flutter/models/request/review_request.dart';
+import 'package:movie_ticker_app_flutter/models/response/new_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/province_district_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/province_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/province_ward_response.dart';
@@ -167,6 +168,19 @@ class ApiService {
   }
 
   //*GET
+
+  Future<List<NewResponse>> getAllNews() async {
+    final response = await http.get(Uri.parse('$baseUrl/new/getAll'));
+    if (response.statusCode == 200) {
+      final List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      final news = jsonResponse.map((newFeed) {
+        return NewResponse.fromJson(newFeed);
+      }).toList();
+      return news;
+    } else {
+      throw Exception('Failed to load news');
+    }
+  }
 
   Future<List<ProvinceResponse>> getAllProvince() async {
     final response =
