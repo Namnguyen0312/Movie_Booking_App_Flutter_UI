@@ -22,7 +22,7 @@ class TicketDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     DateTime dateTime = DateTime.parse(ticket.orderTime);
 
-    String formattedString = DateFormat('yy-MM-dd HH:mm').format(dateTime);
+    String formattedString = DateFormat('dd-MM-yyyy, HH:mm').format(dateTime);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       width: _isAmberExpanded ? size.width / 8 : size.width / 1.15,

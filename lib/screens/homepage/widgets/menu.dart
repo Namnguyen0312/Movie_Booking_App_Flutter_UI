@@ -6,6 +6,7 @@ import 'package:movie_ticker_app_flutter/screens/cinema/select_cinema_page.dart'
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/screens/myticket/my_ticket_page.dart';
+import 'package:movie_ticker_app_flutter/screens/news/news_page.dart';
 import 'package:movie_ticker_app_flutter/screens/profile/profile_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
@@ -70,6 +71,20 @@ class Menu extends StatelessWidget {
               Navigator.of(context).push(
                   AnimateLeftCurve.createRoute(const SelectCinemaByCity()));
               context.read<AppProvider>().reset();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.newspaper),
+            title: Text(
+              'Tin tức',
+              style: GoogleFonts.beVietnamPro(
+                textStyle:
+                    const TextStyle(fontSize: 15, color: AppColors.veryDark),
+              ),
+            ),
+            onTap: () {
+              Navigator.of(context)
+                  .push(AnimateLeftCurve.createRoute(const NewsPage()));
             },
           ),
           if (isLoggedIn)

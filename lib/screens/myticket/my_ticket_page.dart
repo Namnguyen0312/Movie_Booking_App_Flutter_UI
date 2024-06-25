@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/custom_back_arrow.dart';
@@ -126,14 +127,14 @@ class _MyTicketPageState extends State<MyTicketPage> {
                             child: Card(
                               color: Colors.white,
                               child: Padding(
-                                padding: const EdgeInsets.all(kDefaultPadding),
-                                child: Opacity(
-                                    opacity: _isAmberExpanded ? 1 : 0,
-                                    child: Image.network(
-                                      ticket.qrcode,
-                                      fit: BoxFit.scaleDown,
-                                    )),
-                              ),
+                                  padding:
+                                      const EdgeInsets.all(kDefaultPadding),
+                                  child: Opacity(
+                                      opacity: _isAmberExpanded ? 1 : 0,
+                                      child: CachedNetworkImage(
+                                        imageUrl: ticket.qrcode,
+                                        fit: BoxFit.scaleDown,
+                                      ))),
                             ),
                           ),
                         ),

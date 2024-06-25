@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
 import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/widgets/carousel_slide.dart';
+import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/constants.dart';
 
 class CurrentMovieWidget extends StatelessWidget {
@@ -90,7 +91,8 @@ class CurrentMovieWidget extends StatelessWidget {
                 right: size.width / 6,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white70, width: 3),
+                    color: AppColors.darkerBackground,
+                    border: Border.all(color: Colors.white, width: 3),
                   ),
                   child: Stack(
                     children: [
@@ -99,7 +101,7 @@ class CurrentMovieWidget extends StatelessWidget {
                         dividerColor: Colors.transparent,
                         indicatorColor: Colors.transparent,
                         controller: _tabController,
-                        labelColor: Colors.greenAccent.shade200,
+                        labelColor: Colors.pink,
                         unselectedLabelColor: Colors.white,
                         tabs: [
                           Tab(
@@ -123,7 +125,7 @@ class CurrentMovieWidget extends StatelessWidget {
                         top: 0,
                         bottom: 0,
                         child: Container(
-                          width: 1.5,
+                          width: 3,
                           color: Colors.white,
                         ),
                       ),
