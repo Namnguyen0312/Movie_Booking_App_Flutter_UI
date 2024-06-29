@@ -184,7 +184,7 @@ class ApiService {
 
   Future<List<ProvinceResponse>> getAllProvince() async {
     final response =
-        await http.get(Uri.parse('https://vapi.vnappmob.com/api/province'));
+        await http.get(Uri.parse('https://vapi.vnappmob.com/api/province/'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse =

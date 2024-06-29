@@ -37,9 +37,8 @@ class _SelectDateWidgetState extends State<SelectDateWidget> {
       if (index != -1) {
         appProvider.updateIsSelected(index, appProvider.days);
         appProvider.selectDate(appProvider.days[index]);
-        appProvider.getScreeningsByMovieAndCity(
-          appProvider.selectedMovie!.id,
-          appProvider.selectedCity!,
+        appProvider.getScreeningsByCinema(
+          appProvider.selectedCinema!.id,
           appProvider.days[index],
         );
       }
@@ -63,10 +62,9 @@ class _SelectDateWidgetState extends State<SelectDateWidget> {
                     .read<AppProvider>()
                     .updateIsSelected(index, provider.days);
                 context.read<AppProvider>().selectDate(provider.days[index]);
-                await context.read<AppProvider>().getScreeningsByMovieAndCity(
-                      provider.selectedMovie!.id,
-                      provider.selectedCity!,
-                      provider.days[index],
+                await context.read<AppProvider>().getScreeningsByCinema(
+                      provider.selectedCinema!.id,
+                      provider.selectedDate!,
                     );
               },
               child: Container(

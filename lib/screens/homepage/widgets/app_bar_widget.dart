@@ -1,12 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/models/response/new_response.dart';
 import 'package:movie_ticker_app_flutter/provider/new_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/widgets/custom_serach_delegate.dart';
 import 'package:movie_ticker_app_flutter/screens/news/news_detail_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
+import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class AppBarWidget extends StatefulWidget {
@@ -23,10 +27,10 @@ class AppBarWidget extends StatefulWidget {
 
 class _AppBarWidgetState extends State<AppBarWidget> {
   final ValueNotifier<int> _currentIndexNotifier = ValueNotifier<int>(0);
-
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    final userProvider = context.watch<UserProvider>();
     return AppBar(
       flexibleSpace: Stack(
         children: [
@@ -54,8 +58,12 @@ class _AppBarWidgetState extends State<AppBarWidget> {
                       children: [
                         CachedNetworkImage(
                           imageUrl: newfeed.imageUrl!,
-                          placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
+                          placeholder: (context, url) => const Center(
+                            child: SpinKitFadingCircle(
+                              color: Colors.grey,
+                              size: 20.0,
+                            ),
+                          ),
                           errorWidget: (context, url, error) =>
                               const Center(child: Icon(Icons.error)),
                           fit: BoxFit.cover,
@@ -87,7 +95,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
             }).toList(),
           ),
           Positioned(
-            bottom: 16,
+            bottom: 8,
             left: 0,
             right: 0,
             child: Center(
@@ -115,6 +123,17 @@ class _AppBarWidgetState extends State<AppBarWidget> {
               ),
             ),
           ),
+          if (userProvider.isLoggedIn)
+            Container(
+              alignment: Alignment.bottomRight,
+              margin: const EdgeInsets.only(
+                  bottom: kMinPadding, right: kMinPadding),
+              child: (Text(
+                'Chào ${userProvider.user!.name}',
+                style:
+                    GoogleFonts.beVietnamPro(color: Colors.white, fontSize: 15),
+              )),
+            )
         ],
       ),
       actions: [

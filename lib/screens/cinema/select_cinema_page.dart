@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/cinema/widgets/select_cinema_widget.dart';
@@ -64,10 +65,17 @@ class _SelectCinemaByCityState extends State<SelectCinemaByCity> {
                 color: Colors.white60,
               )),
         ],
+        elevation: 10,
+        shadowColor: Colors.black,
       ),
       body: SafeArea(
         child: provider.isCityLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: SpinKitFadingCircle(
+                  color: Colors.grey,
+                  size: 50.0,
+                ),
+              )
             : const SelectCinemaWidget(),
       ),
     );

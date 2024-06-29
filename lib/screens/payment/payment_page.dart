@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:movie_ticker_app_flutter/provider/ticket_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/checkout/my_ticket.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
@@ -67,7 +68,10 @@ class _PaymentPageState extends State<PaymentPage> {
           WebViewWidget(controller: controller),
           if (isLoading)
             const Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingCircle(
+                color: Colors.grey,
+                size: 50.0,
+              ),
             ),
         ],
       ),

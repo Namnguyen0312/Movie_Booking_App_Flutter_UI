@@ -80,4 +80,17 @@ class TicketProvider with ChangeNotifier {
           );
     });
   }
+
+  bool checkScreeningEndTime(TicketResponse ticket) {
+    DateTime now = DateTime.now();
+
+    String screeningDateStr = ticket.screeningDate;
+    String screeningStartTimeStr = ticket.screeningStartTime.substring(0, 5);
+
+    DateTime screeningStartTime =
+        DateTime.parse('$screeningDateStr $screeningStartTimeStr');
+    DateTime screeningEndTime = screeningStartTime
+        .subtract(Duration(minutes: ticket.screening.movie.duration));
+    return now.isAfter(screeningEndTime);
+  }
 }

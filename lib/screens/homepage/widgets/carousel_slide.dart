@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
 import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
@@ -80,8 +81,12 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
               ),
               CachedNetworkImage(
                 imageUrl: movie.image,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
+                placeholder: (context, url) => const Center(
+                  child: SpinKitFadingCircle(
+                    color: Colors.grey,
+                    size: 50.0,
+                  ),
+                ),
                 errorWidget: (context, url, error) =>
                     const Center(child: Icon(Icons.error)),
                 fit: BoxFit.cover,
@@ -132,8 +137,12 @@ class _CarouselSliderFirmState extends State<CarouselSliderFirm> {
                   ),
                   child: CachedNetworkImage(
                     imageUrl: movie.image,
-                    placeholder: (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
+                    placeholder: (context, url) => const Center(
+                      child: SpinKitFadingCircle(
+                        color: Colors.grey,
+                        size: 50.0,
+                      ),
+                    ),
                     errorWidget: (context, url, error) =>
                         const Center(child: Icon(Icons.error)),
                     fit: BoxFit.cover,

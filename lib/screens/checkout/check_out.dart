@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/custom_back_arrow.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/list_star_widget.dart';
@@ -33,7 +34,8 @@ class _CheckOutState extends State<CheckOut> {
     final userProvider = context.watch<UserProvider>();
     final ticketProvider = context.watch<TicketProvider>();
 
-    List<SeatResponse> sortedSeats = seatProvider.getSortedSeats();
+    List<SeatResponse> sortedSeats =
+        seatProvider.getSortedSeats(seatProvider.seats);
 
     String seat = sortedSeats
         .where((seat) => seatProvider.selectedSeatIds.contains(seat.id))
@@ -44,11 +46,12 @@ class _CheckOutState extends State<CheckOut> {
         appProvider.selectedMovie!.genres.map((genre) => genre.name).join(', ');
 
     String address =
-        '${userProvider.user!.address.ward}, ${userProvider.user!.address.street}, ${userProvider.user!.address.district}, ${userProvider.user!.address.city}';
+        ' ${userProvider.user!.address.street}, ${userProvider.user!.address.district}, ${userProvider.user!.address.ward}, ${userProvider.user!.address.city}';
 
-    int price = int.parse(seatProvider.totalPrice.toStringAsFixed(0)) * 1000;
-    int sale = int.parse(seatProvider.totalPrice.toStringAsFixed(0)) * 1000;
-    int totalPrice = price - 0;
+    int price = (seatProvider.totalPrice * 1000).toInt();
+    int discountByMembership =
+        (price * userProvider.user!.membership.discountRate).toInt();
+    int totalPrice = price - discountByMembership;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -76,6 +79,8 @@ class _CheckOutState extends State<CheckOut> {
                 color: Colors.white60,
               )),
         ],
+        elevation: 10,
+        shadowColor: Colors.black,
       ),
       body: SafeArea(
         child: Column(
@@ -92,8 +97,12 @@ class _CheckOutState extends State<CheckOut> {
                     width: size.width / 3,
                     child: CachedNetworkImage(
                       imageUrl: appProvider.selectedMovie!.image,
-                      placeholder: (context, url) =>
-                          const Center(child: CircularProgressIndicator()),
+                      placeholder: (context, url) => const Center(
+                        child: SpinKitFadingCircle(
+                          color: Colors.grey,
+                          size: 50.0,
+                        ),
+                      ),
                       errorWidget: (context, url, error) =>
                           const Center(child: Icon(Icons.error)),
                       fit: BoxFit.cover,
@@ -179,7 +188,9 @@ class _CheckOutState extends State<CheckOut> {
                         thickness: 2.0,
                       ),
                       BuildPriceTag(
-                          content: 'Ưu đãi theo bậc', price: '${sale * 0}'),
+                          content:
+                              'Ưu đãi theo bậc (${userProvider.user!.membership.description})',
+                          price: '$discountByMembershipđ'),
                       const Divider(
                         thickness: 1.7,
                       ),
@@ -238,7 +249,7 @@ class _CheckOutState extends State<CheckOut> {
                                     GestureDetector(
                                       onTap: () async {
                                         await ticketProvider.submitOrder(
-                                          price,
+                                          totalPrice,
                                           seatProvider.selectedSeatIds,
                                           appProvider.selectedScreening!.id,
                                           userProvider.user!.id,

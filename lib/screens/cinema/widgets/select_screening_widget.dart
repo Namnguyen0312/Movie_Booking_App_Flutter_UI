@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
@@ -23,20 +24,31 @@ class _SelectScreeningWidgetState extends State<SelectScreeningWidget> {
     if (provider.selectedCinema != null &&
         provider.selectedDate != null &&
         _fetchScreeningsFuture == null) {
-      _fetchScreeningsFuture = provider.getScreeningsByCinema(
-        provider.selectedCinema!.id,
-        provider.selectedDate!,
-      );
+      _fetchScreeningsFuture =
+          context.read<AppProvider>().getScreeningsByCinema(
+                provider.selectedCinema!.id,
+                provider.selectedDate!,
+              );
     }
 
     return Expanded(
       child: _fetchScreeningsFuture == null
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: SpinKitFadingCircle(
+                color: Colors.grey,
+                size: 50.0,
+              ),
+            )
           : FutureBuilder<void>(
               future: _fetchScreeningsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: SpinKitFadingCircle(
+                      color: Colors.grey,
+                      size: 50.0,
+                    ),
+                  );
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {

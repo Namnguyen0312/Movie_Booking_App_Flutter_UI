@@ -1,14 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:movie_ticker_app_flutter/common/widgets/stateless/custom_back_arrow.dart';
+import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
+import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/ticket_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
+import 'package:movie_ticker_app_flutter/screens/myticket/ticket_detail.page.dart';
 import 'package:movie_ticker_app_flutter/screens/myticket/widgets/ticket_detail_widget.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
-import 'package:movie_ticker_app_flutter/utils/constants.dart';
 import 'package:provider/provider.dart';
 
 class MyTicketPage extends StatefulWidget {
@@ -20,7 +24,6 @@ class MyTicketPage extends StatefulWidget {
 
 class _MyTicketPageState extends State<MyTicketPage> {
   bool _isLoading = true;
-  bool _isAmberExpanded = false;
 
   @override
   void initState() {
@@ -41,7 +44,6 @@ class _MyTicketPageState extends State<MyTicketPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -70,10 +72,15 @@ class _MyTicketPageState extends State<MyTicketPage> {
             ),
           ),
         ],
+        elevation: 10,
+        shadowColor: Colors.black,
       ),
       body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: SpinKitFadingCircle(
+                color: Colors.grey,
+                size: 50.0,
+              ),
             )
           : Consumer<TicketProvider>(
               builder: (context, ticketProvider, child) {
@@ -86,56 +93,35 @@ class _MyTicketPageState extends State<MyTicketPage> {
                   itemCount: ticketProvider.ticketsByUser!.length,
                   itemBuilder: (context, index) {
                     final ticket = ticketProvider.ticketsByUser![index];
-                    ticket.seats.sort(
-                      (a, b) => a.id.compareTo(b.id),
-                    );
-                    String seats = '';
-                    seats = ticket.seats
-                        .map(
-                          (seat) => '${seat.rowSeat}${seat.numberSeat}',
-                        )
+                    final seatProvider = context.read<SeatProvider>();
+                    List<SeatResponse> sortedSeats =
+                        seatProvider.getSortedSeats(ticket.seats);
+                    DateTime dateTime = DateTime.parse(ticket.orderTime);
+                    String formattedString =
+                        DateFormat('yyyy-MM-dd, HH:mm').format(dateTime);
+
+                    String seats = sortedSeats
+                        .map((seat) => '${seat.rowSeat}${seat.numberSeat}')
                         .join(', ');
                     return Row(
                       children: [
                         GestureDetector(
                           onTap: () {
-                            setState(() {
-                              _isAmberExpanded = false;
-                            });
+                            if (!ticketProvider.checkScreeningEndTime(ticket)) {
+                              Navigator.of(context).push(
+                                AnimateLeftCurve.createRoute(TicketDetailPage(
+                                  size: size,
+                                  ticket: ticket,
+                                  seats: seats,
+                                )),
+                              );
+                            }
                           },
                           child: TicketDetailWidget(
-                            isAmberExpanded: _isAmberExpanded,
                             size: size,
                             ticket: ticket,
                             seats: seats,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _isAmberExpanded = true;
-                            });
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            width: _isAmberExpanded
-                                ? size.width / 1.15
-                                : size.width / 8,
-                            height: _isAmberExpanded
-                                ? size.height / 4.5
-                                : size.height / 5,
-                            child: Card(
-                              color: Colors.white,
-                              child: Padding(
-                                  padding:
-                                      const EdgeInsets.all(kDefaultPadding),
-                                  child: Opacity(
-                                      opacity: _isAmberExpanded ? 1 : 0,
-                                      child: CachedNetworkImage(
-                                        imageUrl: ticket.qrcode,
-                                        fit: BoxFit.scaleDown,
-                                      ))),
-                            ),
+                            formattedString: formattedString,
                           ),
                         ),
                       ],

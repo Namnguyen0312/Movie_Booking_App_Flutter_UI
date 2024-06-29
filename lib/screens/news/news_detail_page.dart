@@ -41,71 +41,75 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
 
     String formattedString = DateFormat('dd/MM/yyyy, HH:mm')
         .format(newProvider.selectedNew!.created!);
+
     return Scaffold(
       appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          foregroundColor: AppColors.white,
-          leading: const CustomBackArrow()),
-      extendBodyBehindAppBar: true,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              CachedNetworkImage(
-                imageUrl: newProvider.selectedNew!.imageUrl!,
-                width: size.width,
-                fit: BoxFit.cover,
-              ),
-              Container(
-                width: size.width,
-                height: size.height / 3,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.black38,
-                      Colors.black12,
-                      Colors.transparent
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.0, 0.5, 1.0],
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.white,
+        leading: const CustomBackArrow(),
+        elevation: 10,
+        shadowColor: Colors.black,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
+              children: [
+                CachedNetworkImage(
+                  imageUrl: newProvider.selectedNew!.imageUrl!,
+                  // width: size.width,
+                  // height: size.height / 2,
+                  fit: BoxFit.cover,
+                ),
+                Container(
+                  width: size.width,
+                  height: size.height / 3,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black38,
+                        Colors.black12,
+                        Colors.transparent
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      stops: [0.0, 0.5, 1.0],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: kMediumPadding,
-          ),
-          Flexible(
-              child: Text(
-            '${newProvider.selectedNew!.title}',
-            style: GoogleFonts.beVietnamPro(color: Colors.white, fontSize: 25),
-          )),
-          const SizedBox(
-            height: kMinPadding,
-          ),
-          Flexible(
-              child: Text(
-            formattedString,
-            style:
-                GoogleFonts.beVietnamPro(color: Colors.white24, fontSize: 15),
-          )),
-          const SizedBox(
-            height: kDefaultPadding,
-          ),
-          Flexible(
-              child: GestureDetector(
-            onTap: () => _showContentDialog(newProvider.selectedNew!.content!),
-            child: Text(
-              '${newProvider.selectedNew!.content}',
-              style:
-                  GoogleFonts.beVietnamPro(color: Colors.white54, fontSize: 15),
+              ],
             ),
-          )),
-        ],
+            const SizedBox(height: kMediumPadding),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: Text(
+                '${newProvider.selectedNew!.title}',
+                style:
+                    GoogleFonts.beVietnamPro(color: Colors.white, fontSize: 25),
+              ),
+            ),
+            const SizedBox(height: kMinPadding),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: Text(
+                formattedString,
+                style: GoogleFonts.beVietnamPro(
+                    color: Colors.white24, fontSize: 15),
+              ),
+            ),
+            const SizedBox(height: kDefaultPadding),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: kDefaultPadding),
+              child: Text(
+                '${newProvider.selectedNew!.content}',
+                style: GoogleFonts.beVietnamPro(
+                    color: Colors.white54, fontSize: 15),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

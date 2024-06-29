@@ -15,6 +15,7 @@ class BuildPriceTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: kItemPadding),
       child: Row(
@@ -28,7 +29,7 @@ class BuildPriceTag extends StatelessWidget {
           ),
           Flexible(
             child: Padding(
-              padding: const EdgeInsets.only(left: 70),
+              padding: EdgeInsets.only(left: size.width / 4.5),
               child: Text(
                 price,
                 style: GoogleFonts.beVietnamPro(

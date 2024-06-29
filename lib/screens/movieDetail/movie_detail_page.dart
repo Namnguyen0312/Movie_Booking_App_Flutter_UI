@@ -66,6 +66,8 @@ class _MovieDetailPageState extends State<MovieDetailPage>
               Icons.arrow_back,
               color: Colors.white60,
             )),
+        elevation: 10,
+        shadowColor: Colors.black,
       ),
       body: SingleChildScrollView(
         child: Column(

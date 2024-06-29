@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
@@ -132,7 +133,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
-                        child: CircularProgressIndicator(),
+                        child: SpinKitFadingCircle(
+                          color: Colors.grey,
+                          size: 50.0,
+                        ),
                       );
                     } else {
                       return ElevatedButton(

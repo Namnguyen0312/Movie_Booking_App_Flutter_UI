@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
@@ -89,173 +90,186 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
                 color: Colors.white60,
               )),
         ],
+        elevation: 10,
+        shadowColor: Colors.black,
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const MovieTitle(),
-            Padding(
-              padding: const EdgeInsets.all(kDefaultPadding),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const BuiltSeatStatusBar(
-                        color: AppColors.grey,
-                        status: 'Có sẵn',
-                      ),
-                      BuiltSeatStatusBar(
-                        color: Colors.grey[850],
-                        status: 'Đã hết',
-                      ),
-                      const BuiltSeatStatusBar(
-                        color: AppColors.blueMain,
-                        status: 'Ghế của bạn',
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const BuiltSeatType(
-                        color: Colors.green,
-                        status: 'Thường',
-                      ),
-                      const BuiltSeatType(
-                        color: Colors.red,
-                        status: 'Vip',
-                      ),
-                      BuiltSeatStatusBar(
-                        color: Colors.pink[200],
-                        status: 'SweetBox',
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              child: SizedBox(
-                height: size.height / 1.6,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: size.width,
-                      height: size.height / 11,
-                      child: Image.asset(
-                        AssetHelper.imgSeat,
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    const Divider(
-                      color: AppColors.grey,
-                      thickness: 2,
-                      indent: kDefaultPadding,
-                      endIndent: kDefaultPadding,
-                    ),
-                    Expanded(
-                      child: FutureBuilder<void>(
-                        future: _fetchSeatFuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(
-                                child: Text('Error: ${snapshot.error}'));
-                          } else {
-                            return Consumer<SeatProvider>(
-                              builder: (context, seatProvider, child) {
-                                if (seatProvider.seats.isEmpty) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                } else {
-                                  return Padding(
-                                    padding:
-                                        const EdgeInsets.all(kDefaultPadding),
-                                    child: generateSeatGrid(
-                                        seatProvider,
-                                        appProvider,
-                                        ticketProvider,
-                                        userProvider),
-                                  );
-                                }
-                              },
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const MovieTitle(),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      left: kDefaultPadding, bottom: kMediumPadding),
+                  padding: const EdgeInsets.all(kDefaultPadding),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Giá vé',
-                        style: GoogleFonts.beVietnamPro(
-                          textStyle: Theme.of(context).textTheme.labelLarge,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const BuiltSeatStatusBar(
+                            color: AppColors.grey,
+                            status: 'Có sẵn',
+                          ),
+                          BuiltSeatStatusBar(
+                            color: Colors.grey[850],
+                            status: 'Đã hết',
+                          ),
+                          const BuiltSeatStatusBar(
+                            color: AppColors.blueMain,
+                            status: 'Ghế của bạn',
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const BuiltSeatType(
+                            color: Colors.green,
+                            status: 'Thường',
+                          ),
+                          const BuiltSeatType(
+                            color: Colors.red,
+                            status: 'Vip',
+                          ),
+                          BuiltSeatStatusBar(
+                            color: Colors.pink[200],
+                            status: 'SweetBox',
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: size.height / 1.6,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: size.width,
+                        height: size.height / 11,
+                        child: Image.asset(
+                          AssetHelper.imgSeat,
+                          fit: BoxFit.fill,
                         ),
                       ),
-                      Consumer<SeatProvider>(
-                        builder: (context, seatProvider, child) {
-                          final totalPrice = int.parse(
-                                  seatProvider.totalPrice.toStringAsFixed(0)) *
-                              1000;
-                          return Text(
-                            '$totalPriceđ',
-                            style: AppStyles.h3,
-                          );
-                        },
+                      const Divider(
+                        color: AppColors.grey,
+                        thickness: 2,
+                        indent: kDefaultPadding,
+                        endIndent: kDefaultPadding,
+                      ),
+                      Expanded(
+                        child: FutureBuilder<void>(
+                          future: _fetchSeatFuture,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: SpinKitFadingCircle(
+                                  color: Colors.grey,
+                                  size: 50.0,
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            } else {
+                              return Consumer<SeatProvider>(
+                                builder: (context, seatProvider, child) {
+                                  if (seatProvider.seats.isEmpty) {
+                                    return const Center(
+                                      child: SpinKitFadingCircle(
+                                        color: Colors.grey,
+                                        size: 50.0,
+                                      ),
+                                    );
+                                  } else {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.all(kDefaultPadding),
+                                      child: generateSeatGrid(
+                                          seatProvider,
+                                          appProvider,
+                                          ticketProvider,
+                                          userProvider),
+                                    );
+                                  }
+                                },
+                              );
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),
                 ),
-                if (seatPovider.selectedSeatIds.isNotEmpty)
-                  Container(
-                    margin: const EdgeInsets.only(bottom: kDefaultPadding),
-                    alignment: Alignment.bottomRight,
-                    padding: const EdgeInsets.only(right: kDefaultPadding),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          AnimateLeftCurve.createRoute(const CheckOut()),
-                        );
-                      },
-                      child: Container(
-                        height: size.height / 16,
-                        width: size.width / 3,
-                        decoration: BoxDecoration(
-                          color: AppColors.blueMain,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Đặt vé',
-                          style: GoogleFonts.beVietnamPro(
-                            textStyle: Theme.of(context).textTheme.titleMedium,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: kDefaultPadding, bottom: kMediumPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Giá vé',
+                            style: GoogleFonts.beVietnamPro(
+                              textStyle: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ),
+                          Consumer<SeatProvider>(
+                            builder: (context, seatProvider, child) {
+                              final totalPrice =
+                                  (seatProvider.totalPrice * 1000).toInt();
+                              return Text(
+                                '$totalPriceđ',
+                                style: AppStyles.h3,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (seatPovider.selectedSeatIds.isNotEmpty)
+                      Container(
+                        margin: const EdgeInsets.only(bottom: kDefaultPadding),
+                        alignment: Alignment.bottomRight,
+                        padding: const EdgeInsets.only(right: kDefaultPadding),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              AnimateLeftCurve.createRoute(const CheckOut()),
+                            );
+                          },
+                          child: Container(
+                            height: size.height / 16,
+                            width: size.width / 3,
+                            decoration: BoxDecoration(
+                              color: AppColors.blueMain,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Đặt vé',
+                              style: GoogleFonts.beVietnamPro(
+                                textStyle:
+                                    Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -263,7 +277,8 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
 
   Widget generateSeatGrid(SeatProvider seatProvider, AppProvider appProvider,
       TicketProvider ticketProvider, UserProvider userProvider) {
-    List<SeatResponse> sortedSeats = seatProvider.getSortedSeats();
+    List<SeatResponse> sortedSeats =
+        seatProvider.getSortedSeats(seatProvider.seats);
 
     // Generate row letters based on the sorted seats
     List<String> seatRowLetters =
@@ -298,7 +313,8 @@ class _SelectSeatPageState extends State<SelectSeatPage> {
       seatAvailable = false;
     }
     bool seatByUser = false;
-    if (ticketProvider.checkSeatByUser(seat.id, userProvider.user!.id)) {
+    if (ticketProvider.tickets != null &&
+        ticketProvider.checkSeatByUser(seat.id, userProvider.user!.id)) {
       seatByUser = true;
     }
 

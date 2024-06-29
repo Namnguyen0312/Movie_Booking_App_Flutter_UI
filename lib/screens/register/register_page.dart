@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:movie_ticker_app_flutter/models/request/address_request.dart';
@@ -264,9 +265,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: const SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                child: SpinKitFadingCircle(
+                  color: Colors.grey,
+                  size: 50.0,
                 ),
               ),
             ),
@@ -430,7 +431,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
-                        child: CircularProgressIndicator(),
+                        child: SpinKitFadingCircle(
+                          color: Colors.grey,
+                          size: 50.0,
+                        ),
                       );
                     } else if (snapshot.connectionState ==
                         ConnectionState.done) {

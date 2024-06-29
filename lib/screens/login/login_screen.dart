@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
 import 'package:movie_ticker_app_flutter/screens/resetpassword/verify_email_page.dart';
 import 'package:movie_ticker_app_flutter/screens/register/register_page.dart';
@@ -144,7 +145,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
-                          child: CircularProgressIndicator(),
+                          child: SpinKitFadingCircle(
+                            color: Colors.grey,
+                            size: 50.0,
+                          ),
                         );
                       } else {
                         return ElevatedButton(

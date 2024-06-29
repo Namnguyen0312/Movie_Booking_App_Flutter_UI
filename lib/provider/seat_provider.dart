@@ -9,7 +9,7 @@ class SeatProvider with ChangeNotifier {
   List<int> _selectedSeatIds = [];
   List<int> get selectedSeatIds => _selectedSeatIds;
 
-  double _totalPrice = 0.0;
+  double _totalPrice = 0;
   double get totalPrice => _totalPrice;
 
   Future<void> getAllSeatByAuditorium(int auditoriumId) async {
@@ -65,8 +65,8 @@ class SeatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<SeatResponse> getSortedSeats() {
-    List<SeatResponse> sortedSeats = _seats.toList()
+  List<SeatResponse> getSortedSeats(List<SeatResponse> seats) {
+    List<SeatResponse> sortedSeats = seats
       ..sort((a, b) {
         int rowComparison = a.rowSeat.compareTo(b.rowSeat);
         if (rowComparison != 0) {
@@ -75,24 +75,19 @@ class SeatProvider with ChangeNotifier {
         return a.numberSeat.compareTo(b.numberSeat);
       });
 
-    List<String> seatRowLetters =
-        sortedSeats.map((seat) => seat.rowSeat).toSet().toList()..sort();
+    Map<String, int> rowNumberMap = {};
 
     List<SeatResponse> modifiedSeats = [];
-    for (String rowLetter in seatRowLetters) {
-      List<SeatResponse> rowSeats =
-          sortedSeats.where((seat) => seat.rowSeat == rowLetter).toList();
-
-      if (rowLetter != 'A') {
-        int currentNumber = 1;
-        rowSeats = rowSeats.map((seat) {
-          SeatResponse modifiedSeat = seat.copyWith(numberSeat: currentNumber);
-          currentNumber++;
-          return modifiedSeat;
-        }).toList();
+    for (SeatResponse seat in sortedSeats) {
+      if (!rowNumberMap.containsKey(seat.rowSeat)) {
+        rowNumberMap[seat.rowSeat] = 1;
       }
 
-      modifiedSeats.addAll(rowSeats);
+      // Assign numberSeat based on its original numberSeat value
+      SeatResponse modifiedSeat = seat.copyWith(numberSeat: seat.numberSeat);
+      modifiedSeats.add(modifiedSeat);
+
+      rowNumberMap[seat.rowSeat] = rowNumberMap[seat.rowSeat]! + 1;
     }
 
     return modifiedSeats;

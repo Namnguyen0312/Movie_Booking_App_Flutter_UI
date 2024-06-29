@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/new_response.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
@@ -59,10 +60,13 @@ class _HomeScreenState extends State<HomeScreen>
       future: _fetchNewsFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return AppBar(
-            title: const Center(child: CircularProgressIndicator()),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
+          return const Center(
+            child: Center(
+              child: SpinKitFadingCircle(
+                color: Colors.grey,
+                size: 20.0,
+              ),
+            ),
           );
         } else if (snapshot.hasError) {
           return AppBar(
@@ -99,7 +103,12 @@ class _HomeScreenState extends State<HomeScreen>
         future: _fetchMoviesFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: SpinKitFadingCircle(
+                color: Colors.grey,
+                size: 50.0,
+              ),
+            );
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {

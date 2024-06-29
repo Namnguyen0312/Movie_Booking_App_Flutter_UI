@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
@@ -102,7 +103,10 @@ class _SelectCinemaWidgetState extends State<SelectCinemaWidget> {
           const SizedBox(height: 20),
           appProvider.isLoading
               ? const Center(
-                  child: CircularProgressIndicator(),
+                  child: SpinKitFadingCircle(
+                    color: Colors.grey,
+                    size: 50.0,
+                  ),
                 )
               : ListView.builder(
                   shrinkWrap: true,
