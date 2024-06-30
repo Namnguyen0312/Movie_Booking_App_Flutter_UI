@@ -305,7 +305,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         padding: EdgeInsets.only(top: size.height / 12),
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -464,7 +464,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     } else {
                       return ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(307, 56),
+                          minimumSize: Size(size.width, size.height / 16),
                           backgroundColor: const Color(0xFF755DC1),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),

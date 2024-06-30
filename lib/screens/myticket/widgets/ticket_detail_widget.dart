@@ -7,12 +7,12 @@ import 'package:provider/provider.dart';
 
 class TicketDetailWidget extends StatelessWidget {
   const TicketDetailWidget({
-    Key? key,
+    super.key,
     required this.size,
     required this.ticket,
     required this.seats,
     required this.formattedString,
-  }) : super(key: key);
+  });
 
   final Size size;
   final TicketResponse ticket;
@@ -31,7 +31,7 @@ class TicketDetailWidget extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: ticketProvider.checkScreeningEndTime(ticket)
-                ? Colors.white
+                ? Colors.transparent
                 : Colors.amber.withOpacity(0.5),
             spreadRadius: 3,
             blurRadius: 5,
@@ -39,7 +39,7 @@ class TicketDetailWidget extends StatelessWidget {
           ),
         ],
         color: ticketProvider.checkScreeningEndTime(ticket)
-            ? Colors.black12
+            ? Colors.grey
             : Colors.white,
         borderRadius: BorderRadius.circular(10),
       ),

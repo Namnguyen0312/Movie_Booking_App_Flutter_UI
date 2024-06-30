@@ -10,10 +10,10 @@ import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
 import 'package:provider/provider.dart';
 
 class NewsPage extends StatefulWidget {
-  const NewsPage({Key? key}) : super(key: key);
+  const NewsPage({super.key});
 
   @override
-  _NewsPageState createState() => _NewsPageState();
+  State<NewsPage> createState() => _NewsPageState();
 }
 
 class _NewsPageState extends State<NewsPage> {

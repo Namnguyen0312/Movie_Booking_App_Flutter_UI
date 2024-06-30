@@ -112,6 +112,15 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  Future<void> updateUser(
+      int userId, UserCreationRequest user, String token) async {
+    try {
+      await ApiService().updateUser(userId, token, user);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
   Future<void> logoutUser() async {
     _token = null;
     _user = null;

@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:movie_ticker_app_flutter/themes/app_styles.dart';
-import 'package:movie_ticker_app_flutter/utils/helper.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:movie_ticker_app_flutter/common/widgets/stateless/custom_back_arrow.dart';
+import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
+import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
+import 'package:movie_ticker_app_flutter/screens/profile/edit_profile_page.dart';
+import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';
+import 'package:movie_ticker_app_flutter/utils/animate_right_curve.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,7 +20,30 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
+    final userProvider = context.watch<UserProvider>();
+    String name = '';
+    String email = '';
+    if (userProvider.isLoggedIn) {
+      name = userProvider.user!.name;
+      email = userProvider.user!.email;
+    }
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'Hồ sơ',
+          style: GoogleFonts.beVietnamPro(
+            textStyle: const TextStyle(
+              fontSize: 18,
+            ),
+          ),
+        ),
+        backgroundColor: AppColors.darkerBackground,
+        foregroundColor: AppColors.white,
+        leading: const CustomBackArrow(),
+        elevation: 10,
+        shadowColor: Colors.black,
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -23,53 +53,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    // Avatar
-                    const Center(
-                      child: GFAvatar(
-                        radius: 50,
-                        backgroundImage: AssetImage(AssetHelper.imgProfile),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Username
                     Center(
                       child: Text(
-                        'John Doe',
-                        style: AppStyles.h2,
+                        name,
+                        style: GoogleFonts.beVietnamPro(
+                            textStyle: const TextStyle(
+                                fontSize: 24, color: Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 10),
-
-                    // Email
                     Center(
                       child: Text(
-                        'john.doe@example.com',
-                        style: AppStyles.h5Light,
+                        email,
+                        style: GoogleFonts.beVietnamPro(
+                            textStyle: const TextStyle(
+                                fontSize: 12, color: Colors.white60)),
                       ),
                     ),
                     const SizedBox(height: 30),
-
-                    // Divider
                     const Divider(),
-
-                    // Profile options using GFListTile
                     GFListTile(
                       avatar: const GFAvatar(
                         backgroundColor: Colors.grey,
                         child: Icon(Icons.edit, color: Colors.white),
                       ),
-                      title: const Text('Edit Profile'),
+                      title: Text(
+                        'Chỉnh Sửa Hồ Sơ',
+                        style: GoogleFonts.beVietnamPro(
+                            textStyle: const TextStyle(
+                                fontSize: 14, color: Colors.white)),
+                      ),
                       onTap: () {
-                        // Navigate to Edit Profile screen
+                        Navigator.of(context).push(
+                          AnimateLeftCurve.createRoute(const EditProfilePage()),
+                        );
                       },
+                    ),
+                    GFListTile(
+                      avatar: const GFAvatar(
+                        backgroundColor: Colors.grey,
+                        child: Icon(Icons.card_membership, color: Colors.white),
+                      ),
+                      title: Text(
+                        'Thành viên',
+                        style: GoogleFonts.beVietnamPro(
+                            textStyle: const TextStyle(
+                                fontSize: 14, color: Colors.white)),
+                      ),
+                      onTap: () {},
                     ),
                     GFListTile(
                       avatar: const GFAvatar(
                         backgroundColor: Colors.grey,
                         child: Icon(Icons.settings, color: Colors.white),
                       ),
-                      title: const Text('Settings'),
+                      title: Text(
+                        'Cài đặt',
+                        style: GoogleFonts.beVietnamPro(
+                            textStyle: const TextStyle(
+                                fontSize: 14, color: Colors.white)),
+                      ),
                       onTap: () {
                         // Navigate to Settings screen
                       },
@@ -79,9 +122,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         backgroundColor: Colors.grey,
                         child: Icon(Icons.logout, color: Colors.white),
                       ),
-                      title: const Text('Logout'),
+                      title: Text(
+                        'Đăng xuất',
+                        style: GoogleFonts.beVietnamPro(
+                            textStyle: const TextStyle(
+                                fontSize: 14, color: Colors.white)),
+                      ),
                       onTap: () {
-                        // Handle logout
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Bạn đã đăng xuất.'),
+                          ),
+                        );
+                        Provider.of<UserProvider>(context, listen: false)
+                            .logoutUser();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          AnimateRightCurve.createRoute(const HomeScreen()),
+                          (route) => false,
+                        );
                       },
                     ),
                   ],

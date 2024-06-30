@@ -16,24 +16,6 @@ class NewsDetailPage extends StatefulWidget {
 }
 
 class _NewsDetailPageState extends State<NewsDetailPage> {
-  void _showContentDialog(String content) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          child: SingleChildScrollView(
-            child: Text(
-              content,
-              style:
-                  GoogleFonts.beVietnamPro(color: Colors.white, fontSize: 17),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final newProvider = context.watch<NewProvider>();

@@ -31,11 +31,29 @@ class ApiService {
     if (response.statusCode == 200) {
       print('Review delete successfully');
     } else {
-      throw Exception('Failed to create review');
+      throw Exception('Failed to update review');
     }
   }
 
   //*PUT
+
+  Future<void> updateUser(
+      int userId, String token, UserCreationRequest user) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/user/updateUser/$userId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(user.toJson()),
+    );
+    if (response.statusCode == 200) {
+      print('User updated successfully');
+    } else {
+      throw Exception('Failed to update user');
+    }
+  }
+
   Future<void> updateReview(
       int reviewId, String token, ReviewRequest review) async {
     final response = await http.put(
@@ -49,7 +67,7 @@ class ApiService {
     if (response.statusCode == 200) {
       print('Review updated successfully');
     } else {
-      throw Exception('Failed to create review');
+      throw Exception('Failed to update review');
     }
   }
 

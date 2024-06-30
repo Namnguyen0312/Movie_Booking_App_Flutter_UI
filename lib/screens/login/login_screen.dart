@@ -22,6 +22,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passController = TextEditingController();
   Future<void>? _loginFuture;
 
+  Future<void> _loginUser() async {
+    final email = _emailController.text;
+    final password = _passController.text;
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      try {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        final UserLoginRequest user =
+            UserLoginRequest(email: email, password: password);
+        await userProvider.loginUser(user);
+        if (!mounted) return;
+        Navigator.of(context).pushAndRemoveUntil(
+          AnimateLeftCurve.createRoute(userProvider.widget!),
+          (route) => false,
+        );
+      } catch (e) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đăng nhập thất bại. Vui lòng thử lại sau.'),
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vui lòng nhập đầy đủ thông tin đăng nhập.'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -50,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 textDirection: TextDirection.ltr,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       } else {
                         return ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(307, 56),
+                            minimumSize: Size(size.width, size.height / 16),
                             backgroundColor: const Color(0xFF755DC1),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -232,37 +264,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _loginUser() async {
-    final email = _emailController.text;
-    final password = _passController.text;
-
-    if (email.isNotEmpty && password.isNotEmpty) {
-      try {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        final UserLoginRequest user =
-            UserLoginRequest(email: email, password: password);
-        await userProvider.loginUser(user);
-        if (!mounted) return;
-        Navigator.of(context).pushAndRemoveUntil(
-          AnimateLeftCurve.createRoute(userProvider.widget!),
-          (route) => false,
-        );
-      } catch (e) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Đăng nhập thất bại. Vui lòng thử lại sau.'),
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vui lòng nhập đầy đủ thông tin đăng nhập.'),
-        ),
-      );
-    }
   }
 }
