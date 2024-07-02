@@ -103,6 +103,19 @@ class ImageWidget extends StatelessWidget {
                   ),
                 ),
               ),
+              Container(
+                margin: const EdgeInsets.only(
+                  left: kDefaultPadding,
+                  bottom: kDefaultPadding,
+                ),
+                width: size.width,
+                child: Text(
+                  'Mã giảm giá: ${ticket.vourcher.content}',
+                  style: GoogleFonts.beVietnamPro(
+                    textStyle: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ),
+              ),
             ],
           ),
         ),

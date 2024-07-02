@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:movie_ticker_app_flutter/provider/app_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/membership_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/new_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/review_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/seat_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/ticket_provider.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
+import 'package:movie_ticker_app_flutter/provider/vourcher_provider.dart';
 
 import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
@@ -30,6 +32,8 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => ReviewProvider()),
           ChangeNotifierProvider(create: (context) => TicketProvider()),
           ChangeNotifierProvider(create: (context) => NewProvider()),
+          ChangeNotifierProvider(create: (context) => VourcherProvider()),
+          ChangeNotifierProvider(create: (context) => MembershipProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

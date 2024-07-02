@@ -1,5 +1,6 @@
 import 'package:movie_ticker_app_flutter/models/response/screening_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/vourcher_response.dart';
 
 class TicketResponse {
   final String userName;
@@ -13,6 +14,7 @@ class TicketResponse {
   final ScreeningResponse screening;
   final String orderTime;
   final int userId;
+  final VourcherResponse vourcher;
 
   TicketResponse({
     required this.userName,
@@ -26,6 +28,7 @@ class TicketResponse {
     required this.screening,
     required this.orderTime,
     required this.userId,
+    required this.vourcher,
   });
 
   factory TicketResponse.fromJson(Map<String, dynamic> json) {
@@ -42,7 +45,8 @@ class TicketResponse {
             .toList(),
         screening: ScreeningResponse.fromJson(json['screening']),
         orderTime: json['orderTime'],
-        userId: json['userid']);
+        userId: json['userid'],
+        vourcher: VourcherResponse.fromJson(json['vourcher']));
   }
 
   Map<String, dynamic> toJson() {
@@ -58,6 +62,7 @@ class TicketResponse {
       'screening': screening.toJson(),
       'orderTime': orderTime,
       'userid': userId,
+      'vourcher': vourcher.toJson(),
     };
   }
 }

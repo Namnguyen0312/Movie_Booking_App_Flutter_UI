@@ -26,7 +26,7 @@ class TicketDetailWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(kDefaultPadding),
       width: size.width / 1.1,
-      height: size.height / 5,
+      height: size.height / 4.1,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
@@ -119,6 +119,17 @@ class TicketDetailWidget extends StatelessWidget {
             Flexible(
               child: Text(
                 'Giá vé: ${ticket.total}đ',
+                style: GoogleFonts.beVietnamPro(
+                  textStyle: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              child: Text(
+                'Mã giảm giá: ${ticket.vourcher.content}',
                 style: GoogleFonts.beVietnamPro(
                   textStyle: const TextStyle(
                     fontSize: 14,

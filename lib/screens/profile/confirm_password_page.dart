@@ -5,7 +5,6 @@ import 'package:movie_ticker_app_flutter/common/widgets/stateless/custom_back_ar
 import 'package:movie_ticker_app_flutter/models/request/address_request.dart';
 import 'package:movie_ticker_app_flutter/models/request/create_user_request.dart';
 import 'package:movie_ticker_app_flutter/provider/user_provider.dart';
-import 'package:movie_ticker_app_flutter/screens/homepage/home_page.dart';
 import 'package:movie_ticker_app_flutter/screens/login/login_screen.dart';
 import 'package:movie_ticker_app_flutter/themes/app_colors.dart';
 import 'package:movie_ticker_app_flutter/utils/animate_left_curve.dart';

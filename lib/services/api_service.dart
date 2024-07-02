@@ -5,6 +5,7 @@ import 'package:movie_ticker_app_flutter/models/response/jwt_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/cinema_response.dart';
 import 'package:movie_ticker_app_flutter/models/request/create_user_request.dart';
 import 'package:movie_ticker_app_flutter/models/request/login_user_request.dart';
+import 'package:movie_ticker_app_flutter/models/response/membership_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/movie_response.dart';
 import 'package:movie_ticker_app_flutter/models/request/review_request.dart';
 import 'package:movie_ticker_app_flutter/models/response/new_response.dart';
@@ -16,6 +17,7 @@ import 'package:movie_ticker_app_flutter/models/response/review_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/screening_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/seat_response.dart';
 import 'package:movie_ticker_app_flutter/models/response/ticket_response.dart';
+import 'package:movie_ticker_app_flutter/models/response/vourcher_response.dart';
 
 class ApiService {
   static const String baseUrl = 'http://192.168.56.1:8070';
@@ -79,6 +81,7 @@ class ApiService {
     int screeningId,
     int userId,
     int movieId,
+    int vourcherId,
   ) async {
     final url = Uri.parse('$baseUrl/submitOrder');
     final response = await http.post(
@@ -92,6 +95,7 @@ class ApiService {
         'screeningId': screeningId.toString(),
         'userId': userId.toString(),
         'movieId': movieId.toString(),
+        'voucherID': vourcherId.toString(),
       },
     );
     if (response.statusCode == 200) {
@@ -186,6 +190,33 @@ class ApiService {
   }
 
   //*GET
+
+  Future<List<MembershipResponse>> getAllMembership() async {
+    final response = await http.get(Uri.parse('$baseUrl/memberships/getall'));
+    if (response.statusCode == 200) {
+      final List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+
+      final memberships = jsonResponse.map((membership) {
+        return MembershipResponse.fromJson(membership);
+      }).toList();
+      return memberships;
+    } else {
+      throw Exception('Failed to load membership');
+    }
+  }
+
+  Future<List<VourcherResponse>> getAllVourchers() async {
+    final response = await http.get(Uri.parse('$baseUrl/vourchers/GetAll'));
+    if (response.statusCode == 200) {
+      final List jsonResponse = json.decode(utf8.decode(response.bodyBytes));
+      final vourchers = jsonResponse.map((vourcher) {
+        return VourcherResponse.fromJson(vourcher);
+      }).toList();
+      return vourchers;
+    } else {
+      throw Exception('Failed to load vouchers');
+    }
+  }
 
   Future<List<NewResponse>> getAllNews() async {
     final response = await http.get(Uri.parse('$baseUrl/new/getAll'));

@@ -21,10 +21,11 @@ class TicketProvider with ChangeNotifier {
     int screeningId,
     int userId,
     int movieId,
+    int vourcherId,
   ) async {
     try {
-      _url = await ApiService()
-          .submitOrder(orderTotal, seatIds, screeningId, userId, movieId);
+      _url = await ApiService().submitOrder(
+          orderTotal, seatIds, screeningId, userId, movieId, vourcherId);
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to create order: $e');

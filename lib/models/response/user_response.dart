@@ -7,6 +7,7 @@ class UserResponse {
   final String name;
   final String email;
   final String phone;
+  final int totalprice;
   final AddressResponse address;
   final MembershipResponse membership;
   final Set<RoleResponse> roles;
@@ -16,6 +17,7 @@ class UserResponse {
     required this.name,
     required this.email,
     required this.phone,
+    required this.totalprice,
     required this.address,
     required this.membership,
     required this.roles,
@@ -27,6 +29,7 @@ class UserResponse {
       name: json['name'],
       email: json['email'],
       phone: json['phone'],
+      totalprice: json['totalprice'],
       address: AddressResponse.fromJson(json['address']),
       membership: MembershipResponse.fromJson(json['membership']),
       roles: (json['roles'] as List<dynamic>)
@@ -41,7 +44,7 @@ class UserResponse {
       'name': name,
       'email': email,
       'phone': phone,
-      // Lưu ý: Không bao gồm trường password trong JSON gửi đi
+      'totalprice': totalprice,
       'address': address.toJson(),
       'membership': membership.toJson(),
       'roles': roles.map((role) => role.toJson()).toList(),

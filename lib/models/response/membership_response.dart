@@ -3,12 +3,14 @@ class MembershipResponse {
   final String name;
   final String description;
   final double discountRate;
+  final int rankprice;
 
   MembershipResponse({
     required this.id,
     required this.discountRate,
     required this.description,
     required this.name,
+    required this.rankprice,
   });
 
   factory MembershipResponse.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class MembershipResponse {
       name: json['name'],
       description: json['description'],
       discountRate: json['discount_rate'],
+      rankprice: json['rankprice'],
     );
   }
 
@@ -26,6 +29,7 @@ class MembershipResponse {
       'name': name,
       'description': description,
       'discount_rate': discountRate,
+      'rankprice': rankprice,
     };
   }
 }
